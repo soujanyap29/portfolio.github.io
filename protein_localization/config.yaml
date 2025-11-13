@@ -1,0 +1,127 @@
+# Configuration for Protein Sub-Cellular Localization Pipeline
+
+# Data configuration
+data:
+  input_dir: "data/raw"
+  processed_dir: "data/processed"
+  graph_dir: "data/graphs"
+  labels_dir: "data/labels"
+  output_dir: "outputs"
+  image_size: [512, 512]
+  supported_formats: [".tif", ".tiff"]
+
+# Preprocessing configuration
+preprocessing:
+  normalize: true
+  denoise: true
+  denoise_method: "gaussian"  # Options: gaussian, bilateral, nlmeans
+  enhance_contrast: true
+  contrast_method: "clahe"  # Options: clahe, histogram_equalization
+  remove_artifacts: true
+  z_stack_projection: "max"  # Options: max, mean, median for 3D images
+
+# Graph construction configuration
+graph:
+  node_features:
+    - "intensity_mean"
+    - "intensity_std"
+    - "texture_contrast"
+    - "texture_homogeneity"
+    - "morphology_area"
+    - "morphology_eccentricity"
+  edge_threshold: 0.5
+  edge_feature: "distance"  # Options: distance, intensity_similarity
+  superpixel_method: "slic"  # Options: slic, felzenszwalb, watershed
+  num_segments: 500
+  compactness: 10
+
+# Model configuration
+model:
+  type: "gnn"  # Options: cnn, gnn, hybrid
+  architecture:
+    hidden_dim: 128
+    num_layers: 3
+    dropout: 0.3
+    activation: "relu"
+  gnn:
+    conv_type: "gcn"  # Options: gcn, gat, graphsage
+    aggregation: "mean"  # Options: mean, max, add
+    num_heads: 4  # For GAT
+  cnn:
+    base_model: "resnet50"  # Options: resnet50, efficientnet, vgg16
+    pretrained: true
+    freeze_backbone: false
+
+# Training configuration
+training:
+  batch_size: 16
+  epochs: 100
+  learning_rate: 0.001
+  optimizer: "adam"  # Options: adam, sgd, adamw
+  scheduler: "cosine"  # Options: cosine, step, plateau
+  weight_decay: 0.0001
+  early_stopping:
+    enabled: true
+    patience: 15
+    min_delta: 0.001
+  device: "cuda"  # Options: cuda, cpu, auto
+  mixed_precision: true
+  gradient_clip: 1.0
+  num_workers: 4
+  pin_memory: true
+
+# Labels configuration
+labels:
+  num_classes: 10
+  class_names:
+    - "nucleus"
+    - "cytoplasm"
+    - "mitochondria"
+    - "endoplasmic_reticulum"
+    - "golgi_apparatus"
+    - "plasma_membrane"
+    - "lysosome"
+    - "peroxisome"
+    - "vesicles"
+    - "other"
+  label_smoothing: 0.1
+  class_weights: "auto"  # Options: auto, balanced, or list of weights
+
+# Inference configuration
+inference:
+  batch_size: 32
+  device: "cuda"
+  save_predictions: true
+  save_visualizations: true
+  ensemble: false
+  tta: false  # Test Time Augmentation
+
+# Evaluation configuration
+evaluation:
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1_score"
+    - "confusion_matrix"
+    - "roc_auc"
+  save_results: true
+  generate_report: true
+
+# Visualization configuration
+visualization:
+  dpi: 300
+  figure_size: [12, 8]
+  colormap: "viridis"
+  save_format: "png"
+  show_plots: false
+
+# Logging configuration
+logging:
+  level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR
+  log_dir: "outputs/logs"
+  log_to_file: true
+  log_to_console: true
+
+# Reproducibility
+seed: 42
