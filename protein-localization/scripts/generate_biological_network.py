@@ -5,6 +5,11 @@ Creates minimal, scientific, bioinformatics-style visualizations
 
 import sys
 import os
+
+# Set matplotlib to use non-interactive backend for headless environments
+import matplotlib
+matplotlib.use('Agg')
+
 import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx

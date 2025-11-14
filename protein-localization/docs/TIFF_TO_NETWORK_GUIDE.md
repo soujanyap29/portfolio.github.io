@@ -225,6 +225,31 @@ fig = visualizer.visualize_biological_network(
 
 ## Troubleshooting
 
+### Issue: Qt platform plugin error / Display issues
+
+**Error Message:**
+```
+qt.qpa.plugin: Could not load the Qt platform plugin "xcb"
+This application failed to start because no Qt platform plugin could be initialized.
+```
+
+**Solution:**
+The script now uses matplotlib's non-interactive backend (Agg) automatically. This fixes the issue for headless environments (WSL, SSH, Docker, etc.).
+
+**Alternative Solution (if needed):**
+Set the MPLBACKEND environment variable before running:
+```bash
+export MPLBACKEND=Agg
+python generate_biological_network.py --input image.tif --output network.png
+```
+
+Or in Python:
+```python
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+```
+
 ### Issue: "Could not load TIFF image"
 
 **Solution:**
