@@ -146,7 +146,42 @@ from visualization import GraphVisualizer
 
 visualizer = GraphVisualizer()
 visualizer.visualize_graph(graph, predictions, save_path="graph.png")
+
+# Or generate a clean biological network diagram
+visualizer.visualize_biological_network(
+    graph,
+    central_node=0,  # Highlight node 0 as central hub
+    save_path="bio_network.png"
+)
 ```
+
+### Biological Network Diagram Generator 🆕
+
+Generate clean, scientific-style biological network diagrams:
+
+**Web Interface (No Installation Required)**:
+```bash
+cd frontend
+python -m http.server 8000
+# Open http://localhost:8000/biological_network_generator.html
+```
+
+**Python Script**:
+```bash
+cd scripts
+# Generate from TIFF image
+python generate_biological_network.py --input path/to/image.tif --output network.png
+
+# Generate demo network
+python generate_biological_network.py --demo --output demo_network.png
+```
+
+**Features**:
+- Soft grey rounded rectangle nodes with distinct blue central hub
+- Thin, light-grey curved connection lines
+- Translucent cluster groupings
+- Minimal, scientific, bioinformatics-style aesthetic
+- Soft shadows and light grey background
 
 ### Using the Web Interface
 
