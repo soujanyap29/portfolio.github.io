@@ -65,7 +65,24 @@ protein-localization/
 
 ## Usage
 
-### Running the Complete Pipeline
+### Option 1: Jupyter Notebook (Recommended for Interactive Use) 🆕
+
+**No need to copy-paste code!** Use the provided Jupyter notebook for interactive exploration:
+
+1. **Open the notebook**:
+   ```bash
+   jupyter notebook Protein_Localization_Pipeline.ipynb
+   ```
+
+2. **Run cells step-by-step** or use the complete pipeline in one go
+
+3. The notebook includes:
+   - Easy import of all modules
+   - Step-by-step execution with visualizations
+   - Demo with synthetic data
+   - Training and prediction examples
+
+### Option 2: Command Line (For Batch Processing)
 
 To run the entire pipeline from loading images to training and visualization:
 
@@ -79,7 +96,7 @@ python pipeline.py --input /path/to/input/directory --output /path/to/output/dir
 - `--output`: Directory for saving outputs (default: `D:\5TH_SEM\CELLULAR\output`)
 - `--epochs`: Number of training epochs (default: 50)
 
-### Individual Components
+### Option 3: Import as Python Modules
 
 #### 1. Load TIFF Files
 

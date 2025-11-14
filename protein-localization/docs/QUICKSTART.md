@@ -2,7 +2,30 @@
 
 ## Getting Started with the Protein Localization Pipeline
 
-### 5-Minute Setup
+### 🎯 Easiest Way: Jupyter Notebook (Recommended)
+
+**No need to copy-paste code!** Just open the notebook:
+
+1. **Install Jupyter** (if not already installed):
+   ```bash
+   pip install jupyter
+   ```
+
+2. **Open the notebook**:
+   ```bash
+   cd protein-localization
+   jupyter notebook Protein_Localization_Pipeline.ipynb
+   ```
+
+3. **Run the cells** to execute the pipeline interactively with visualizations
+
+The notebook includes everything: imports, step-by-step execution, and demos with synthetic data.
+
+---
+
+### Alternative: Command Line
+
+#### 5-Minute Setup
 
 1. **Install Dependencies**
    ```bash
