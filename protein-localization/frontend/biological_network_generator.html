@@ -133,8 +133,19 @@
         <p class="subtitle">Clean, scientific visualization of protein interaction networks</p>
 
         <div class="controls">
-            <button onclick="generateNetwork()">Generate New Network</button>
+            <button onclick="generateNetwork()">Generate Demo Network</button>
             <button onclick="downloadCanvas()">Download Image</button>
+        </div>
+
+        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #2196f3;">
+            <strong>💡 To process YOUR TIFF images:</strong>
+            <p style="margin: 10px 0 5px 0; color: #555;">Use the Python command-line tool to generate networks from any TIFF file:</p>
+            <code style="background: #fff; padding: 8px 12px; display: block; border-radius: 4px; font-family: monospace; margin: 5px 0;">
+                python scripts/generate_biological_network.py --input your_image.tif --output network.png
+            </code>
+            <p style="margin: 10px 0 0 0; color: #555; font-size: 0.9em;">
+                This demo generates synthetic networks. For real TIFF image processing, use the command above.
+            </p>
         </div>
 
         <div id="canvas-container">
@@ -142,7 +153,7 @@
         </div>
 
         <div class="info">
-            <p id="networkInfo">Click "Generate New Network" to create a biological network diagram</p>
+            <p id="networkInfo">Click "Generate Demo Network" to create a biological network diagram</p>
             <div class="legend">
                 <div class="legend-item">
                     <div class="legend-box central"></div>

@@ -157,26 +157,35 @@ visualizer.visualize_biological_network(
 
 ### Biological Network Diagram Generator 🆕
 
-Generate clean, scientific-style biological network diagrams:
+Generate clean, scientific-style biological network diagrams from **any TIFF image you provide**:
 
-**Web Interface (No Installation Required)**:
+**Process YOUR TIFF Images (Recommended)**:
+```bash
+cd scripts
+# Process any TIFF file - automatically segments, builds graph, and visualizes
+python generate_biological_network.py --input /path/to/your/image.tif --output network.png
+
+# Works with all TIFF formats: 2D, 3D, 4D, multi-page
+python generate_biological_network.py --input "D:\5TH_SEM\CELLULAR\input\sample.tif" --output network.png
+```
+
+**Web Interface (Demo Only - Synthetic Networks)**:
 ```bash
 cd frontend
 python -m http.server 8000
 # Open http://localhost:8000/biological_network_generator.html
+# Note: Web version generates synthetic networks for quick demos
+# For real TIFF processing, use the Python script above
 ```
 
-**Python Script**:
-```bash
-cd scripts
-# Generate from TIFF image
-python generate_biological_network.py --input path/to/image.tif --output network.png
-
-# Generate demo network
-python generate_biological_network.py --demo --output demo_network.png
-```
+**How It Works**:
+1. Loads your TIFF image (any format/size)
+2. Segments cellular structures automatically
+3. Builds graph network from segmented regions
+4. Generates diagram with requested aesthetic
 
 **Features**:
+- Processes **any TIFF image** you provide as input
 - Soft grey rounded rectangle nodes with distinct blue central hub
 - Thin, light-grey curved connection lines
 - Translucent cluster groupings

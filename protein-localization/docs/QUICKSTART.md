@@ -2,6 +2,30 @@
 
 ## Getting Started with the Protein Localization Pipeline
 
+### 🎯 Process YOUR TIFF Images to Network Diagrams (New!)
+
+**Generate biological network diagrams from any TIFF image:**
+
+```bash
+cd protein-localization/scripts
+python generate_biological_network.py --input your_image.tif --output network.png
+```
+
+This will:
+1. Load your TIFF image (any format: 2D, 3D, 4D)
+2. Automatically segment cellular structures
+3. Build a graph network from segmented regions
+4. Generate a clean biological network diagram with:
+   - Soft grey rounded nodes
+   - Blue central hub
+   - Curved grey connection lines
+   - Translucent cluster backgrounds
+   - Scientific minimal aesthetic
+
+**📖 See detailed guide:** `docs/TIFF_TO_NETWORK_GUIDE.md`
+
+---
+
 ### 🎯 Easiest Way: Jupyter Notebook (Recommended)
 
 **No need to copy-paste code!** Just open the notebook:
