@@ -27,17 +27,19 @@ from torch_geometric.data import Data, DataLoader
 class ProteinLocalizationPipeline:
     """Complete pipeline for protein localization prediction"""
     
-    def __init__(self, input_dir: str, output_dir: str):
+    def __init__(self, input_dir: str, output_dir: str, max_files: int = None):
         """
         Initialize pipeline
         
         Args:
             input_dir: Directory containing TIFF images
             output_dir: Directory for outputs
+            max_files: Maximum number of files to process (None = all files)
         """
         self.input_dir = input_dir
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.max_files = max_files
         
         # Create subdirectories
         (self.output_dir / 'graphs').mkdir(exist_ok=True)
@@ -76,8 +78,14 @@ class ProteinLocalizationPipeline:
         
         # Process each TIFF file
         all_features = []
-        for i, file_path in enumerate(tiff_files[:10]):  # Limit to 10 for demo
-            print(f"\nProcessing {i+1}/{min(10, len(tiff_files))}: {file_path.name}")
+        files_to_process = tiff_files if self.max_files is None else tiff_files[:self.max_files]
+        total_files = len(files_to_process)
+        
+        print(f"\nProcessing {total_files} TIFF files from all subdirectories...")
+        
+        for i, file_path in enumerate(files_to_process):
+            print(f"\nProcessing {i+1}/{total_files}: {file_path.name}")
+            print(f"  Location: {file_path.parent.name}/")
             
             image = self.loader.load_single_tiff(file_path)
             if image is not None:
@@ -90,7 +98,7 @@ class ProteinLocalizationPipeline:
                     pickle.dump(features, f)
         
         self.features_list = all_features
-        print(f"\nPreprocessed {len(all_features)} images")
+        print(f"\n✓ Preprocessed {len(all_features)} images from all protein folders")
         return all_features
     
     def _create_synthetic_data(self):
@@ -370,11 +378,13 @@ def main():
                        help='Output directory')
     parser.add_argument('--epochs', type=int, default=50,
                        help='Number of training epochs')
+    parser.add_argument('--max-files', type=int, default=None,
+                       help='Maximum number of files to process (default: all files)')
     
     args = parser.parse_args()
     
     # Create pipeline
-    pipeline = ProteinLocalizationPipeline(args.input, args.output)
+    pipeline = ProteinLocalizationPipeline(args.input, args.output, max_files=args.max_files)
     
     # Run pipeline
     pipeline.run_complete_pipeline(epochs=args.epochs)

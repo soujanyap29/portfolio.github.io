@@ -70,25 +70,35 @@ The notebook includes everything: imports, step-by-step execution, and demos wit
 ### Using Your Own Data
 
 1. **Organize Your TIFF Files**
-   Place your TIFF files in any directory structure:
+   The pipeline automatically processes **ALL files** from **ALL subdirectories**:
    ```
-   my_data/
-   ├── experiment1/
-   │   ├── image1.tif
-   │   └── image2.tif
-   └── experiment2/
-       └── image3.tif
+   D:\5TH_SEM\CELLULAR\input\
+   ├── AAMP_ENSG00000127837\
+   │   ├── OC-FOV_AAMP_ENSG00000127837_CID001050_FID00013888_stack.tif
+   │   ├── OC-FOV_AAMP_ENSG00000127837_CID001050_FID00026369_stack.tif
+   │   └── ... (all TIFF files processed)
+   ├── AATF_ENSG00000275700\
+   │   ├── OC-FOV_AATF_ENSG00000275700_*.tif
+   │   └── ... (all TIFF files processed)
+   └── ... (all protein folders scanned recursively)
    ```
 
-2. **Run Pipeline**
+2. **Run Pipeline on ALL Files**
    ```bash
-   python pipeline.py --input /path/to/my_data --output ./results --epochs 50
+   # Process ALL TIFF files from ALL protein folders
+   python pipeline.py --input D:\5TH_SEM\CELLULAR\input --output D:\5TH_SEM\CELLULAR\output --epochs 50
+   
+   # Or limit to first 50 files for testing
+   python pipeline.py --input D:\5TH_SEM\CELLULAR\input --output D:\5TH_SEM\CELLULAR\output --max-files 50
    ```
 
 3. **Review Outputs**
    - Trained model: `results/models/graph_cnn.pt`
-   - Graphs: `results/graphs/*.gml`
+   - Graphs: `results/graphs/*.gml` (one per processed TIFF)
    - Visualizations: `results/visualizations/*.png`
+   - Processed features: `results/data/*.pkl`
+
+**Note:** By default, the pipeline processes **ALL TIFF files** from **ALL subdirectories**. The recursive scanner finds every `.tif` and `.tiff` file in your entire directory tree!
 
 ### Web Interface Demo
 

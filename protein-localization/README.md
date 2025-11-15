@@ -95,6 +95,19 @@ python pipeline.py --input /path/to/input/directory --output /path/to/output/dir
 - `--input`: Directory containing TIFF files (default: `D:\5TH_SEM\CELLULAR\input`)
 - `--output`: Directory for saving outputs (default: `D:\5TH_SEM\CELLULAR\output`)
 - `--epochs`: Number of training epochs (default: 50)
+- `--max-files`: Maximum number of files to process (default: all files in all subdirectories)
+
+**Examples:**
+
+```bash
+# Process ALL TIFF files from all protein folders (AAMP_*, AATF_*, etc.)
+python pipeline.py --input D:\5TH_SEM\CELLULAR\input --output D:\5TH_SEM\CELLULAR\output --epochs 20
+
+# Process first 50 files only (for testing)
+python pipeline.py --input D:\5TH_SEM\CELLULAR\input --output D:\5TH_SEM\CELLULAR\output --max-files 50
+```
+
+**Note:** The pipeline now processes **ALL TIFF files** from **ALL subdirectories** by default. Your directory structure with multiple protein folders (AAMP_ENSG00000127837, AATF_ENSG00000275700, etc.) is fully supported!
 
 ### Option 3: Import as Python Modules
 
