@@ -61,6 +61,14 @@ class CellposeSegmenter:
     def __init__(self, model_type: str = 'cyto2', gpu: bool = True):
         import torch
         
+        # Disable autocast and set default dtype to float32 to avoid BFloat16 issues with PyTorch 2.6+
+        # This must be done before model initialization
+        torch.set_default_dtype(torch.float32)
+        
+        # Also ensure we're not in autocast mode
+        if hasattr(torch, 'autocast'):
+            torch.autocast('cuda', enabled=False).__enter__()
+        
         # Use CellposeModel for Cellpose 2.0+ compatibility
         self.model = models.CellposeModel(model_type=model_type, gpu=gpu)
         self.diameter = None  # Auto-detect
@@ -110,15 +118,17 @@ class CellposeSegmenter:
         # Ensure image is float32 to avoid dtype compatibility issues
         if img_2d.dtype != np.float32:
             img_2d = img_2d.astype(np.float32)
-            
-        # Run segmentation
-        masks, flows, styles, diams = self.model.eval(
-            img_2d,
-            diameter=self.diameter,
-            channels=channels,
-            flow_threshold=0.4,
-            cellprob_threshold=0.0
-        )
+        
+        # Run segmentation with explicit float32 context to avoid BFloat16 issues
+        import torch
+        with torch.autocast('cuda', enabled=False) if torch.cuda.is_available() else torch.no_grad():
+            masks, flows, styles, diams = self.model.eval(
+                img_2d,
+                diameter=self.diameter,
+                channels=channels,
+                flow_threshold=0.4,
+                cellprob_threshold=0.0
+            )
         
         metadata = {
             'diameters': diams,
