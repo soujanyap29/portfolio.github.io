@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protein Sub-Cellular Localization Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .upload-section {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-section:hover {
+            border-color: #764ba2;
+            background: #f8f9ff;
+        }
+        
+        .upload-section input[type="file"] {
+            display: none;
+        }
+        
+        .upload-label {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: transform 0.2s ease;
+        }
+        
+        .upload-label:hover {
+            transform: scale(1.05);
+        }
+        
+        .file-name {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .process-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .process-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+        
+        .process-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .result-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .result-section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .prediction {
+            font-size: 2em;
+            font-weight: bold;
+            color: #764ba2;
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            color: #667eea;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .visualization {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .visualization img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 10px 0;
+        }
+        
+        .probability-bars {
+            margin-top: 15px;
+        }
+        
+        .prob-bar {
+            margin-bottom: 10px;
+        }
+        
+        .prob-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        
+        .prob-fill {
+            height: 25px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .error {
+            background: #fee;
+            border: 2px solid #f88;
+            color: #c00;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧬 Protein Sub-Cellular Localization</h1>
+        <p class="subtitle">Upload a 4D TIFF image to predict protein localization in neurons</p>
+        
+        <div class="upload-section">
+            <input type="file" id="fileInput" accept=".tif,.tiff">
+            <label for="fileInput" class="upload-label">
+                📁 Choose TIFF File
+            </label>
+            <div class="file-name" id="fileName"></div>
+        </div>
+        
+        <button class="process-btn" id="processBtn" disabled>
+            🚀 Process & Predict
+        </button>
+        
+        <div class="error" id="errorMsg"></div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing your image... This may take a few minutes.</p>
+        </div>
+        
+        <div class="results" id="results">
+            <div class="result-section">
+                <h2>🎯 Prediction</h2>
+                <div class="prediction" id="predictionResult"></div>
+                
+                <h3 style="margin-top: 20px; color: #667eea;">Confidence Scores:</h3>
+                <div class="probability-bars" id="probBars"></div>
+            </div>
+            
+            <div class="result-section">
+                <h2>📊 Analysis Metrics</h2>
+                <div class="metrics-grid" id="metricsGrid"></div>
+            </div>
+            
+            <div class="result-section">
+                <h2>🖼️ Visualizations</h2>
+                <div class="visualization" id="visualizations"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let uploadedFilePath = null;
+        
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileName').textContent = `Selected: ${file.name}`;
+                uploadFile(file);
+            }
+        });
+        
+        function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    uploadedFilePath = data.filepath;
+                    document.getElementById('processBtn').disabled = false;
+                    showError('');
+                } else {
+                    showError(data.error || 'Upload failed');
+                }
+            })
+            .catch(error => {
+                showError('Upload error: ' + error);
+            });
+        }
+        
+        document.getElementById('processBtn').addEventListener('click', function() {
+            if (!uploadedFilePath) return;
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            showError('');
+            
+            fetch('/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({filepath: uploadedFilePath})
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    showError(data.error || 'Processing failed');
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                showError('Processing error: ' + error);
+            });
+        });
+        
+        function displayResults(data) {
+            // Prediction
+            document.getElementById('predictionResult').textContent = data.prediction.class;
+            
+            // Probability bars
+            const probBars = document.getElementById('probBars');
+            probBars.innerHTML = '';
+            
+            for (const [className, prob] of Object.entries(data.prediction.probabilities)) {
+                const barDiv = document.createElement('div');
+                barDiv.className = 'prob-bar';
+                barDiv.innerHTML = `
+                    <div class="prob-label">
+                        <span>${className}</span>
+                        <span>${(prob * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="prob-fill" style="width: ${prob * 100}%"></div>
+                `;
+                probBars.appendChild(barDiv);
+            }
+            
+            // Metrics
+            const metricsGrid = document.getElementById('metricsGrid');
+            metricsGrid.innerHTML = '';
+            
+            const allMetrics = {...data.metrics, ...data.features};
+            for (const [key, value] of Object.entries(allMetrics)) {
+                const metricCard = document.createElement('div');
+                metricCard.className = 'metric-card';
+                const displayValue = typeof value === 'number' ? value.toFixed(2) : value;
+                metricCard.innerHTML = `
+                    <div class="metric-label">${key.replace(/_/g, ' ').toUpperCase()}</div>
+                    <div class="metric-value">${displayValue}</div>
+                `;
+                metricsGrid.appendChild(metricCard);
+            }
+            
+            // Visualizations
+            const vizDiv = document.getElementById('visualizations');
+            vizDiv.innerHTML = '';
+            
+            for (const [key, filename] of Object.entries(data.visualizations)) {
+                const img = document.createElement('img');
+                img.src = `/outputs/${filename}`;
+                img.alt = key;
+                img.title = key;
+                vizDiv.appendChild(img);
+            }
+            
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMsg');
+            if (message) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            } else {
+                errorDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
