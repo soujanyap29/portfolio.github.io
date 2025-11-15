@@ -148,12 +148,35 @@ class GraphConstructor:
             filepath: Output file path
             format: File format ('gml', 'graphml', 'gexf')
         """
+        # Create a copy to avoid modifying the original graph
+        G_copy = G.copy()
+        
+        # Convert numpy types and tuples to native Python types for GML compatibility
+        for node in G_copy.nodes():
+            node_data = G_copy.nodes[node]
+            for key, value in list(node_data.items()):
+                if isinstance(value, (tuple, list)):
+                    # Convert tuples/lists to space-separated string
+                    node_data[key] = ' '.join(map(str, value))
+                elif hasattr(value, 'item'):  # numpy scalar
+                    node_data[key] = value.item()
+                elif isinstance(value, np.ndarray):
+                    node_data[key] = value.tolist()
+        
+        for u, v in G_copy.edges():
+            edge_data = G_copy.edges[u, v]
+            for key, value in list(edge_data.items()):
+                if hasattr(value, 'item'):  # numpy scalar
+                    edge_data[key] = value.item()
+                elif isinstance(value, np.ndarray):
+                    edge_data[key] = value.tolist()
+        
         if format == 'gml':
-            nx.write_gml(G, filepath)
+            nx.write_gml(G_copy, filepath)
         elif format == 'graphml':
-            nx.write_graphml(G, filepath)
+            nx.write_graphml(G_copy, filepath)
         elif format == 'gexf':
-            nx.write_gexf(G, filepath)
+            nx.write_gexf(G_copy, filepath)
         else:
             raise ValueError(f"Unknown format: {format}")
     
@@ -176,6 +199,13 @@ class GraphConstructor:
             G = nx.read_gexf(filepath)
         else:
             raise ValueError(f"Unknown format: {format}")
+        
+        # Convert string positions back to tuples if they exist
+        for node in G.nodes():
+            node_data = G.nodes[node]
+            if 'pos' in node_data and isinstance(node_data['pos'], str):
+                # Convert space-separated string back to tuple
+                node_data['pos'] = tuple(map(float, node_data['pos'].split()))
         
         self.graph = G
         return G

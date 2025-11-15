@@ -250,6 +250,24 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 ```
 
+### Issue: NetworkXError when saving graphs
+
+**Error Message:**
+```
+NetworkXError: ... (error when writing GML file)
+```
+
+**Solution:**
+This is now automatically fixed. The graph construction module converts numpy types and tuples to Python native types before saving to GML format.
+
+**If you still encounter issues:**
+- The fix is in `graph_construction.py` version f2f30bf or later
+- Upgrade networkx: `pip install --upgrade networkx`
+- Try alternative format: Use GraphML instead of GML
+  ```python
+  constructor.save_graph(graph, 'output.graphml', format='graphml')
+  ```
+
 ### Issue: "Could not load TIFF image"
 
 **Solution:**
