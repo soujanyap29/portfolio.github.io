@@ -289,7 +289,22 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                // Check if response is ok and has JSON content
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text || `HTTP error! status: ${response.status}`);
+                    });
+                }
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    return response.text().then(text => {
+                        throw new Error('Server returned non-JSON response: ' + text.substring(0, 100));
+                    });
+                }
+            })
             .then(data => {
                 if (data.success) {
                     uploadedFilePath = data.filepath;
@@ -300,7 +315,7 @@
                 }
             })
             .catch(error => {
-                showError('Upload error: ' + error);
+                showError('Upload error: ' + error.message);
             });
         }
         
@@ -318,7 +333,22 @@
                 },
                 body: JSON.stringify({filepath: uploadedFilePath})
             })
-            .then(response => response.json())
+            .then(response => {
+                // Check if response is ok and has JSON content
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text || `HTTP error! status: ${response.status}`);
+                    });
+                }
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    return response.text().then(text => {
+                        throw new Error('Server returned non-JSON response: ' + text.substring(0, 100));
+                    });
+                }
+            })
             .then(data => {
                 document.getElementById('loading').style.display = 'none';
                 
@@ -330,7 +360,7 @@
             })
             .catch(error => {
                 document.getElementById('loading').style.display = 'none';
-                showError('Processing error: ' + error);
+                showError('Processing error: ' + error.message);
             });
         });
         

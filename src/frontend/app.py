@@ -213,6 +213,27 @@ def get_metrics():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# Global error handlers
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    """Handle file too large error"""
+    return jsonify({'error': 'File too large. Maximum size is 100MB.'}), 413
+
+@app.errorhandler(500)
+def internal_error(error):
+    """Handle internal server errors"""
+    return jsonify({'error': 'Internal server error occurred.'}), 500
+
+@app.errorhandler(404)
+def not_found(error):
+    """Handle not found errors"""
+    return jsonify({'error': 'Resource not found.'}), 404
+
+@app.errorhandler(Exception)
+def handle_exception(error):
+    """Handle all other exceptions"""
+    return jsonify({'error': str(error)}), 500
+
 if __name__ == '__main__':
     # Load model on startup
     load_model()
