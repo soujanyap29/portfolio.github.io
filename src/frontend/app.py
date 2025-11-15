@@ -218,4 +218,8 @@ if __name__ == '__main__':
     load_model()
     
     # Run app
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Note: Set debug=False for production deployment
+    # Use environment variable for debug mode control
+    import os
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
