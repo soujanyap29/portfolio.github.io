@@ -63,6 +63,12 @@ class CellposeSegmenter:
         self.model = models.CellposeModel(model_type=model_type, gpu=gpu)
         self.diameter = None  # Auto-detect
         
+        # Ensure model runs in float32 to avoid BFloat16 compatibility issues with PyTorch 2.6+
+        if gpu and hasattr(self.model, 'net') and self.model.net is not None:
+            import torch
+            if hasattr(self.model.net, 'float'):
+                self.model.net = self.model.net.float()
+        
     def segment(self, img: np.ndarray, channels: List[int] = [0, 0]) -> Tuple[np.ndarray, Dict]:
         """
         Segment image using Cellpose
@@ -86,6 +92,10 @@ class CellposeSegmenter:
                 img_2d = np.max(img, axis=0)  # Z-projection
         else:
             img_2d = img
+        
+        # Ensure image is float32 to avoid dtype compatibility issues
+        if img_2d.dtype != np.float32:
+            img_2d = img_2d.astype(np.float32)
             
         # Run segmentation
         masks, flows, styles, diams = self.model.eval(
