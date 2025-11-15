@@ -10,8 +10,8 @@ tifffile>=2021.7.2
 imageio>=2.9.0
 
 # Deep learning and segmentation
-torch>=1.9.0
-torchvision>=0.10.0
+torch>=2.6.0  # Updated for security patches
+torchvision>=0.17.0  # Compatible with torch 2.6.0
 cellpose>=2.0.0
 
 # Graph neural networks
@@ -27,7 +27,7 @@ seaborn>=0.11.0
 plotly>=5.0.0
 
 # Web framework
-flask>=2.0.0
+flask>=2.3.2  # Updated for security patch
 flask-cors>=3.0.0
 
 # Jupyter
@@ -36,6 +36,6 @@ ipykernel>=6.0.0
 ipywidgets>=7.6.0
 
 # Additional utilities
-Pillow>=8.3.0
+Pillow>=10.2.0  # Updated for security patches
 tqdm>=4.62.0
 pyyaml>=5.4.0
