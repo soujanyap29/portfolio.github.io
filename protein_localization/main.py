@@ -127,12 +127,14 @@ def process_directory(input_dir: str, output_dir: str, max_files: int = None):
     print(f"{'='*60}")
 
 
-def launch_interface(model_path: str = None):
+def launch_interface(model_path: str = None, output_dir: str = None):
     """Launch web interface"""
     from interface.app import launch_interface as launch
+    output = output_dir or config.OUTPUT_DIR
     print("\n🚀 Launching web interface...")
-    print("   Open browser to: http://localhost:7860")
-    launch(model_path=model_path, share=False)
+    print(f"   Server: http://localhost:7860")
+    print(f"   Output directory: {output}")
+    launch(model_path=model_path, output_dir=output, share=False)
 
 
 def main():
@@ -190,7 +192,7 @@ def main():
             sys.exit(1)
     
     elif args.command == 'interface':
-        launch_interface(model_path=args.model)
+        launch_interface(model_path=args.model, output_dir=args.output)
     
     elif args.command == 'notebook':
         print("\n📓 Starting Jupyter Lab...")
