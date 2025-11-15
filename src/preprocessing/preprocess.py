@@ -59,7 +59,8 @@ class CellposeSegmenter:
     """Segment neuronal structures using Cellpose"""
     
     def __init__(self, model_type: str = 'cyto2', gpu: bool = True):
-        self.model = models.Cellpose(model_type=model_type, gpu=gpu)
+        # Use CellposeModel for Cellpose 2.0+ compatibility
+        self.model = models.CellposeModel(model_type=model_type, gpu=gpu)
         self.diameter = None  # Auto-detect
         
     def segment(self, img: np.ndarray, channels: List[int] = [0, 0]) -> Tuple[np.ndarray, Dict]:
