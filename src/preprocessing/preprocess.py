@@ -59,15 +59,29 @@ class CellposeSegmenter:
     """Segment neuronal structures using Cellpose"""
     
     def __init__(self, model_type: str = 'cyto2', gpu: bool = True):
+        import torch
+        
         # Use CellposeModel for Cellpose 2.0+ compatibility
         self.model = models.CellposeModel(model_type=model_type, gpu=gpu)
         self.diameter = None  # Auto-detect
         
         # Ensure model runs in float32 to avoid BFloat16 compatibility issues with PyTorch 2.6+
-        if gpu and hasattr(self.model, 'net') and self.model.net is not None:
-            import torch
-            if hasattr(self.model.net, 'float'):
+        # This is critical for PyTorch 2.6+ where some operations don't support BFloat16
+        if hasattr(self.model, 'net') and self.model.net is not None:
+            try:
+                # Convert entire model to float32
                 self.model.net = self.model.net.float()
+                
+                # Also ensure all parameters are float32
+                for param in self.model.net.parameters():
+                    param.data = param.data.float()
+                
+                # Ensure buffers are also float32
+                for buffer in self.model.net.buffers():
+                    buffer.data = buffer.data.float()
+                    
+            except Exception as e:
+                print(f"Warning: Could not convert model to float32: {e}")
         
     def segment(self, img: np.ndarray, channels: List[int] = [0, 0]) -> Tuple[np.ndarray, Dict]:
         """
