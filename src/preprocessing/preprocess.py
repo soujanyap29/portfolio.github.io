@@ -121,18 +121,22 @@ class CellposeSegmenter:
         
         # Run segmentation with explicit float32 context to avoid BFloat16 issues
         import torch
-        with torch.autocast('cuda', enabled=False) if torch.cuda.is_available() else torch.no_grad():
-            masks, flows, styles, diams = self.model.eval(
-                img_2d,
-                diameter=self.diameter,
-                channels=channels,
-                flow_threshold=0.4,
-                cellprob_threshold=0.0
-            )
+        
+        # Disable autocast for both CPU and CUDA to prevent BFloat16 conversion
+        device_type = 'cuda' if torch.cuda.is_available() else 'cpu'
+        with torch.autocast(device_type=device_type, enabled=False):
+            with torch.no_grad():
+                masks, flows, styles, diams = self.model.eval(
+                    img_2d,
+                    diameter=self.diameter,
+                    channels=channels,
+                    flow_threshold=0.4,
+                    cellprob_threshold=0.0
+                )
         
         metadata = {
             'diameters': diams,
-            'num_cells': masks.max(),
+            'num_cells': int(masks.max()),
             'image_shape': img_2d.shape
         }
         
