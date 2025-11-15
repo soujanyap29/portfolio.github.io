@@ -53,6 +53,7 @@ class ProteinLocalizationPipeline:
         
         self.graphs = []
         self.features_list = []
+        self.synthetic_labels = []  # For synthetic data generation
         
     def load_and_preprocess(self):
         """Load TIFF files and preprocess them"""
@@ -93,26 +94,47 @@ class ProteinLocalizationPipeline:
         return all_features
     
     def _create_synthetic_data(self):
-        """Create synthetic data for demonstration"""
-        print("\nGenerating synthetic data for demonstration...")
+        """Create synthetic data for demonstration with realistic class patterns"""
+        print("\nGenerating synthetic data with realistic class patterns...")
         
         all_features = []
+        self.synthetic_labels = []  # Store class labels for synthetic data
         np.random.seed(42)
         
-        for i in range(10):
+        # Define 5 protein localization classes with characteristic features
+        class_templates = {
+            0: {'name': 'Nucleus', 'area_mean': 800, 'intensity_mean': 0.7, 'eccentricity_mean': 0.3},
+            1: {'name': 'Mitochondria', 'area_mean': 200, 'intensity_mean': 0.5, 'eccentricity_mean': 0.7},
+            2: {'name': 'ER', 'area_mean': 500, 'intensity_mean': 0.4, 'eccentricity_mean': 0.8},
+            3: {'name': 'Golgi', 'area_mean': 300, 'intensity_mean': 0.6, 'eccentricity_mean': 0.5},
+            4: {'name': 'Cytoplasm', 'area_mean': 1000, 'intensity_mean': 0.3, 'eccentricity_mean': 0.2}
+        }
+        
+        for i in range(50):  # Increase to 50 samples for better training
+            # Assign class based on patterns
+            class_idx = i % 5  # Distribute evenly across classes
+            template = class_templates[class_idx]
+            self.synthetic_labels.append(class_idx)
+            
+            # Generate regions with features correlated to class
             num_regions = np.random.randint(3, 8)
             features = []
             
             for j in range(num_regions):
+                # Add noise to template features
+                area = max(50, int(np.random.normal(template['area_mean'], 100)))
+                intensity = np.clip(np.random.normal(template['intensity_mean'], 0.15), 0.1, 1.0)
+                eccentricity = np.clip(np.random.normal(template['eccentricity_mean'], 0.15), 0, 1.0)
+                
                 feature = {
                     'label': j + 1,
-                    'area': np.random.randint(100, 500),
+                    'area': area,
                     'centroid': (np.random.uniform(0, 100), 
                                np.random.uniform(0, 100)),
-                    'mean_intensity': np.random.uniform(0.3, 0.9),
-                    'max_intensity': np.random.uniform(0.8, 1.0),
-                    'min_intensity': np.random.uniform(0.1, 0.3),
-                    'eccentricity': np.random.uniform(0, 1),
+                    'mean_intensity': intensity,
+                    'max_intensity': min(1.0, intensity + np.random.uniform(0.1, 0.2)),
+                    'min_intensity': max(0.0, intensity - np.random.uniform(0.1, 0.2)),
+                    'eccentricity': eccentricity,
                     'solidity': np.random.uniform(0.7, 1.0),
                     'bbox': (0, 0, 50, 50)
                 }
@@ -121,7 +143,8 @@ class ProteinLocalizationPipeline:
             all_features.append(features)
         
         self.features_list = all_features
-        print(f"Created {len(all_features)} synthetic samples")
+        print(f"Created {len(all_features)} synthetic samples with feature-class correlations")
+        print(f"Class distribution: {[self.synthetic_labels.count(i) for i in range(5)]}")
         return all_features
     
     def construct_graphs(self):
@@ -178,15 +201,39 @@ class ProteinLocalizationPipeline:
             else:
                 edge_index = torch.tensor([[], []], dtype=torch.long)
             
-            # Create data object
+            # Create data object with proper labels
             x = torch.tensor(feature_matrix, dtype=torch.float)
-            y = torch.tensor([i % len(class_names)], dtype=torch.long)
+            
+            # Use synthetic labels if available, otherwise use cyclic pattern
+            if hasattr(self, 'synthetic_labels') and i < len(self.synthetic_labels):
+                y = torch.tensor([self.synthetic_labels[i]], dtype=torch.long)
+            else:
+                # For real data without labels, use features to create pseudo-labels
+                # This uses a simple heuristic: large area + high intensity -> nucleus (0)
+                # small area + high eccentricity -> mitochondria (1), etc.
+                mean_area = feature_matrix[:, 0].mean() if len(feature_matrix) > 0 else 0
+                mean_intensity = feature_matrix[:, 1].mean() if len(feature_matrix) > 0 else 0
+                mean_eccentricity = feature_matrix[:, 2].mean() if len(feature_matrix) > 0 else 0
+                
+                # Simple classification rule
+                if mean_area > 600:
+                    label = 0 if mean_intensity > 0.5 else 4  # Nucleus or Cytoplasm
+                elif mean_eccentricity > 0.6:
+                    label = 1 if mean_area < 300 else 2  # Mitochondria or ER
+                else:
+                    label = 3  # Golgi
+                
+                y = torch.tensor([label], dtype=torch.long)
             
             data = Data(x=x, edge_index=edge_index, y=y)
             data_list.append(data)
         
         print(f"Prepared {len(data_list)} graph samples")
         print(f"Number of classes: {len(class_names)}")
+        if hasattr(self, 'synthetic_labels'):
+            print(f"Using synthetic labels with feature-class correlations")
+        else:
+            print(f"Using feature-based pseudo-labels for unsupervised data")
         
         return data_list, class_names
     
