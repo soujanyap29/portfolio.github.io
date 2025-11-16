@@ -10,7 +10,7 @@ from pathlib import Path
 # Add current directory to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from preprocessing.segmentation import DirectoryHandler, TIFFLoader, CellposeSegmenter
+from preprocessing.segmentation import DirectoryHandler, TIFFLoader, CellposeSegmenter, BatchProcessor
 from preprocessing.feature_extraction import FeatureExtractor, FeatureStorage
 from graph_construction.graph_builder import GraphConstructor, GraphStorage
 from visualization.plotters import SegmentationVisualizer
@@ -35,7 +35,12 @@ def process_single_file(input_file: str, output_dir: str):
     
     # Segment
     print("\n2. Segmenting image...")
-    segmenter = CellposeSegmenter(model_type=config.CELLPOSE_MODEL)
+    segmenter = CellposeSegmenter(
+        model_type=config.CELLPOSE_MODEL,
+        diameter=config.CELLPOSE_DIAMETER,
+        fast_mode=config.CELLPOSE_FAST_MODE,
+        use_gpu=config.CELLPOSE_USE_GPU
+    )
     masks, seg_info = segmenter.segment_image(image)
     if masks is None:
         print("❌ Segmentation failed")
@@ -93,8 +98,8 @@ def process_single_file(input_file: str, output_dir: str):
     print(f"   Visualizations: {viz_dir}/")
 
 
-def process_directory(input_dir: str, output_dir: str, max_files: int = None):
-    """Process all TIFF files in directory"""
+def process_directory(input_dir: str, output_dir: str, max_files: int = None, fast_mode: bool = True):
+    """Process all TIFF files in directory using optimized batch processing"""
     print(f"\n{'='*60}")
     print(f"Processing directory: {input_dir}")
     print(f"{'='*60}\n")
@@ -111,19 +116,103 @@ def process_directory(input_dir: str, output_dir: str, max_files: int = None):
     if max_files:
         tiff_files = tiff_files[:max_files]
     
-    print(f"Found {len(tiff_files)} files to process\n")
+    print(f"Found {len(tiff_files)} files to process")
+    print(f"Fast mode: {'ENABLED' if fast_mode else 'DISABLED'}\n")
     
-    # Process each file
-    for i, tiff_file in enumerate(tiff_files, 1):
-        print(f"\n[{i}/{len(tiff_files)}] Processing file...")
+    # Use batch processor for efficiency
+    print("Initializing batch processor...")
+    batch_processor = BatchProcessor(
+        model_type=config.CELLPOSE_MODEL,
+        fast_mode=fast_mode,
+        use_gpu=config.CELLPOSE_USE_GPU,
+        n_workers=config.CELLPOSE_BATCH_SIZE
+    )
+    
+    print("Processing all files (this may take a while)...")
+    batch_results = batch_processor.process_files(tiff_files)
+    
+    print(f"\n✓ Segmentation complete:")
+    print(f"  Successful: {batch_results['success_count']}")
+    print(f"  Failed: {batch_results['fail_count']}")
+    
+    if batch_results['success_count'] == 0:
+        print("❌ No files processed successfully")
+        return
+    
+    # Extract features and build graphs
+    print("\nExtracting features and building graphs...")
+    feature_extractor = FeatureExtractor()
+    feature_storage = FeatureStorage(output_dir)
+    graph_constructor = GraphConstructor(
+        proximity_threshold=config.PROXIMITY_THRESHOLD,
+        max_edges_per_node=config.MAX_EDGES_PER_NODE
+    )
+    graph_storage = GraphStorage(output_dir)
+    
+    from tqdm import tqdm
+    success_count = 0
+    
+    for image, masks, filename, info in tqdm(
+        zip(batch_results['images'], batch_results['masks'], 
+            batch_results['filenames'], batch_results['info']),
+        total=batch_results['success_count'],
+        desc='Features & Graphs'
+    ):
         try:
-            process_single_file(tiff_file, output_dir)
+            # Extract features
+            features = feature_extractor.extract_all_features(image, masks)
+            if features.empty:
+                continue
+            
+            # Save features
+            feature_storage.save_features(features, filename)
+            
+            # Build and save graph
+            graph = graph_constructor.construct_graph(features, masks)
+            graph_storage.save_graph(graph, filename)
+            
+            success_count += 1
         except Exception as e:
-            print(f"❌ Error: {e}")
-            continue
+            print(f"\n❌ Error with {filename}: {e}")
     
+    print(f"\n✅ Complete! Processed {success_count}/{len(tiff_files)} files")
+    print(f"   Output: {output_dir}")
+    
+    # Create sample visualizations
+    print("\nCreating sample visualizations (first 5 files)...")
+    viz_dir = os.path.join(output_dir, "visualizations")
+    os.makedirs(viz_dir, exist_ok=True)
+    
+    seg_viz = SegmentationVisualizer(output_dir=viz_dir)
+    graph_viz = GraphVisualizer(output_dir=viz_dir)
+    
+    for i in range(min(5, batch_results['success_count'])):
+        try:
+            filename = batch_results['filenames'][i]
+            image = batch_results['images'][i]
+            masks = batch_results['masks'][i]
+            
+            # Rebuild graph for visualization
+            features = feature_extractor.extract_all_features(image, masks)
+            graph = graph_constructor.construct_graph(features, masks)
+            
+            seg_viz.plot_segmentation_overlay(
+                image, masks,
+                title=f"Segmentation: {filename}",
+                filename=f"{filename}_segmentation.png"
+            )
+            
+            graph_viz.plot_graph(
+                graph,
+                title=f"Graph: {filename}",
+                filename=f"{filename}_graph.png"
+            )
+        except:
+            pass
+    
+    print(f"✓ Visualizations saved to {viz_dir}")
     print(f"\n{'='*60}")
-    print(f"✅ Completed processing {len(tiff_files)} files")
+    print(f"✅ Pipeline complete!")
     print(f"{'='*60}")
 
 
@@ -169,6 +258,12 @@ def main():
     )
     
     parser.add_argument(
+        '--no-fast-mode',
+        action='store_true',
+        help='Disable fast processing mode (slower but more accurate)'
+    )
+    
+    parser.add_argument(
         '--model',
         type=str,
         help='Path to trained model'
@@ -186,7 +281,8 @@ def main():
         if input_path.is_file():
             process_single_file(str(input_path), args.output)
         elif input_path.is_dir():
-            process_directory(str(input_path), args.output, args.max_files)
+            fast_mode = not args.no_fast_mode
+            process_directory(str(input_path), args.output, args.max_files, fast_mode)
         else:
             print(f"❌ Error: {input_path} not found")
             sys.exit(1)

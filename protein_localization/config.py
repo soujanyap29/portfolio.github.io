@@ -14,8 +14,11 @@ TIFF_EXTENSIONS = ['.tif', '.tiff', '.TIF', '.TIFF']
 
 # Segmentation parameters
 CELLPOSE_MODEL = 'cyto2'  # or 'nuclei', 'cyto', etc.
-CELLPOSE_DIAMETER = None  # Auto-detect
+CELLPOSE_DIAMETER = 30  # Fixed diameter for speed (None for auto-detect, slower)
 CELLPOSE_CHANNELS = [0, 0]  # grayscale
+CELLPOSE_FAST_MODE = True  # Use fast processing mode (recommended for large datasets)
+CELLPOSE_USE_GPU = True  # Use GPU acceleration
+CELLPOSE_BATCH_SIZE = None  # Number of parallel workers (None for sequential GPU processing)
 
 # Feature extraction parameters
 SPATIAL_FEATURES = ['centroid_x', 'centroid_y', 'centroid_z', 'pairwise_distance']

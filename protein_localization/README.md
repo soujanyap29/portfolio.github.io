@@ -54,30 +54,55 @@ pip install -r requirements.txt
 
 ## 📊 Usage
 
-### 1. Command Line Pipeline
+### ⚡ Performance Optimization (NEW!)
 
-Process TIFF images from directory:
+For processing large datasets (100+ files), use the optimized **BatchProcessor**:
 
 ```python
-from preprocessing.segmentation import DirectoryHandler, TIFFLoader, CellposeSegmenter
-from preprocessing.feature_extraction import FeatureExtractor
-from graph_construction.graph_builder import GraphConstructor
+from preprocessing.segmentation import BatchProcessor
 
-# Scan directory
-handler = DirectoryHandler("/mnt/d/5TH_SEM/CELLULAR/input")
-tiff_files = handler.scan_directory()
+# Optimized processing - 10-50x faster!
+batch_processor = BatchProcessor(
+    model_type='cyto2',
+    fast_mode=True,      # CRITICAL: Enable fast mode
+    use_gpu=True,        # Use GPU acceleration
+    n_workers=None       # Sequential GPU mode (fastest)
+)
 
-# Load and segment
-loader = TIFFLoader()
-segmenter = CellposeSegmenter()
-image = loader.load_tiff(tiff_files[0])
+# Process all files efficiently
+results = batch_processor.process_files(tiff_files)
+# Returns: images, masks, info, filenames, success/fail counts
+```
+
+**Expected speedup:** 10-50x faster than standard mode
+**Processing time for 380 files:** ~6-32 hours (vs 266 hours before)
+
+See [PERFORMANCE_OPTIMIZATION.md](PERFORMANCE_OPTIMIZATION.md) for details.
+
+### 1. Command Line Pipeline
+
+**Fast batch processing (recommended):**
+```bash
+# Process entire directory with fast mode (default)
+python main.py process --input /mnt/d/5TH_SEM/CELLULAR/input --output ./output
+
+# Process with standard mode (slower, more accurate)
+python main.py process --input /mnt/d/5TH_SEM/CELLULAR/input --output ./output --no-fast-mode
+
+# Process limited number of files
+python main.py process --input /mnt/d/5TH_SEM/CELLULAR/input --output ./output --max-files 50
+```
+
+**Single file processing:**
+```python
+from preprocessing.segmentation import CellposeSegmenter
+
+# Fast mode for single file
+segmenter = CellposeSegmenter(fast_mode=True, use_gpu=True)
 masks, info = segmenter.segment_image(image)
+```
 
-# Extract features
-extractor = FeatureExtractor()
-features = extractor.extract_all_features(image, masks)
-
-# Build graph
+### 2. Jupyter Notebook (Complete Pipeline)
 constructor = GraphConstructor()
 graph = constructor.construct_graph(features, masks)
 ```
