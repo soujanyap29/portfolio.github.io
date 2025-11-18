@@ -1,90 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soujanya Patil Portfolio</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protein Sub-Cellular Localization</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Main Wrapper -->
-  <div class="wrapper">
-    <!-- Header -->
-    <header class="header">
-      <h1>👩‍💻 Soujanya Patil</h1>
-      <p class="sub-heading">Building tools, exploring AR/VR, and solving real-world problems.</p>
-    </header>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🧬 Protein Sub-Cellular Localization</h1>
+            <p class="subtitle">AI-Powered Classification of Protein Locations in Neurons</p>
+        </header>
 
-    <!-- Highlights Section -->
-    <section class="highlights">
-      <h2>✨ Highlights</h2>
-      <div class="highlight-card">
-        <p>🌟 Fun Fact: When I’m not coding, you’ll find me exploring AR/VR or contributing to open-source projects!</p>
-        <p>🎯 Goal: Build tools that inspire collaboration, simplify processes, and solve real problems.</p>
-      </div>
-    </section>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <h2>📤 Upload TIFF Image</h2>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" accept=".tif,.tiff" hidden>
+                    <div class="upload-icon">📁</div>
+                    <p>Drag & Drop your TIFF file here</p>
+                    <p class="or-text">or</p>
+                    <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                        Browse Files
+                    </button>
+                </div>
+                <div id="fileInfo" class="file-info"></div>
+            </section>
 
-    <!-- Projects Section -->
-    <section class="projects">
-      <h2>🛠️ Projects</h2>
-      <article class="project">
-        <h3>🏥 CareCompanion</h3>
-        <p>Revolutionizing medical record management and nurse hiring for hospitals.</p>
-        <ul>
-          <li>🔹 Features: Secure records, advanced matching, intuitive dashboards.</li>
-          <li>🔹 Tech Stack:</li>
-          <ul>
-            <li>Hash Maps: Quick data retrieval.</li>
-            <li>Priority Queues: Optimized nurse-patient matching.</li>
-            <li>Linked Lists: Flexible scheduling.</li>
-            <li>Trees: Secure hierarchical access.</li>
-            <li>Graphs: Relationship mapping for recommendations.</li>
-          </ul>
-        </ul>
-      </article>
-    </section>
+            <!-- Processing Section -->
+            <section class="processing-section" id="processingSection" style="display: none;">
+                <h2>⚙️ Processing</h2>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Initializing...</p>
+                </div>
+            </section>
 
-    <!-- Skills Section -->
-    <section class="skills">
-      <h2>🚀 Skills</h2>
-      <ul>
-        <li>💻 Programming: Java, Python, JavaScript</li>
-        <li>🛠️ Core Expertise: Data Structures & Algorithms, Problem-Solving, System Design</li>
-        <li>🌐 Development: Web Development (React.js, Node.js), API Development</li>
-        <li>🌀 Interests: Cloud Computing, Open-Source Contributions, UI/UX Design</li>
-      </ul>
-    </section>
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <h2>🎯 Classification Results</h2>
+                
+                <div class="result-card">
+                    <div class="prediction-box">
+                        <h3>Predicted Localization</h3>
+                        <div class="prediction-badge" id="predictionBadge">
+                            <span id="predictionLabel">Nucleus</span>
+                        </div>
+                        <div class="confidence">
+                            <span>Confidence: </span>
+                            <span id="confidenceValue">95.3%</span>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Contact Section -->
-    <section class="contact">
-      <h2>🌐 Find Me Online</h2>
-      <p>
-        <a href="https://github.com/soujanyap29">GitHub</a> | 
-        <a href="https://www.linkedin.com/in/soujanya-patil-056a93306?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">LinkedIn</a>
-      </p>
-    </section>
+                <div class="visualization-grid">
+                    <div class="viz-card">
+                        <h3>🖼️ Original Image</h3>
+                        <div class="image-placeholder" id="originalImage">
+                            <canvas id="originalCanvas"></canvas>
+                        </div>
+                    </div>
 
-    <!-- Footer Section -->
-    <footer class="footer">
-      <h3>Portfolio Topic</h3>
-      <dl>
-        <dt>Course Name</dt>
-        <dd>Design Analysis and Algorithms</dd>
-        <dt>Course Code</dt>
-        <dd>Course Code Placeholder</dd>
-        <dt>Name</dt>
-        <dd>Soujanya Patil</dd>
-        <dt>SRN</dt>
-        <dd>02FE23BCS198</dd>
-        <dt>Course Instructor</dt>
-        <dd>Mr. Shankar Biradar</dd>
-        <dt>University</dt>
-        <dd>KLE Dr MS Sheshgiri College of Engineering and Technology</dd>
-        <dt>Portfolio Topic/Domain</dt>
-        <dd>Medtech</dd>
-      </dl>
-      <p>© 2025 Soujanya Patil | All Rights Reserved</p>
-    </footer>
-  </div>
+                    <div class="viz-card">
+                        <h3>🔍 Segmented Regions</h3>
+                        <div class="image-placeholder" id="segmentedImage">
+                            <canvas id="segmentedCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="viz-card">
+                        <h3>📊 Graph Representation</h3>
+                        <div class="graph-placeholder" id="graphView">
+                            <svg id="graphSvg" width="400" height="300"></svg>
+                        </div>
+                    </div>
+
+                    <div class="viz-card">
+                        <h3>📈 Feature Distribution</h3>
+                        <div class="chart-placeholder" id="featureChart">
+                            <canvas id="featureCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Results -->
+                <div class="detailed-results">
+                    <h3>📋 Detailed Analysis</h3>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Number of Regions:</span>
+                            <span class="detail-value" id="numRegions">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Average Region Area:</span>
+                            <span class="detail-value" id="avgArea">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Mean Intensity:</span>
+                            <span class="detail-value" id="meanIntensity">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Graph Nodes:</span>
+                            <span class="detail-value" id="graphNodes">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Graph Edges:</span>
+                            <span class="detail-value" id="graphEdges">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Processing Time:</span>
+                            <span class="detail-value" id="processingTime">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Classification Probabilities -->
+                <div class="probabilities-section">
+                    <h3>📊 Classification Probabilities</h3>
+                    <div id="probabilitiesBars"></div>
+                </div>
+
+                <!-- Actions -->
+                <div class="action-buttons">
+                    <button class="btn-secondary" onclick="downloadResults()">
+                        💾 Download Results
+                    </button>
+                    <button class="btn-secondary" onclick="resetApp()">
+                        🔄 Process Another Image
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Info Section -->
+        <section class="info-section">
+            <h2>ℹ️ About This Tool</h2>
+            <div class="info-content">
+                <p>
+                    This tool uses advanced Graph Convolutional Neural Networks (GCNs) to classify 
+                    protein sub-cellular localization in neurons from 4D TIFF microscopy images.
+                </p>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">🔬</span>
+                        <div>
+                            <strong>Cellpose Segmentation</strong>
+                            <p>Advanced cell segmentation to identify individual structures</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🕸️</span>
+                        <div>
+                            <strong>Graph Construction</strong>
+                            <p>Convert segmented regions into graph representations</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🧠</span>
+                        <div>
+                            <strong>Graph CNN</strong>
+                            <p>Deep learning model for accurate classification</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📊</span>
+                        <div>
+                            <strong>Visualization</strong>
+                            <p>Interactive visualizations of results and predictions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Developed as part of cellular biology research project</p>
+            <p>© 2025 Protein Localization Pipeline</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
