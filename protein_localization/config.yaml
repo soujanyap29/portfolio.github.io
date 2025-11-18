@@ -1,0 +1,43 @@
+# Protein Sub-Cellular Localization Configuration
+
+# Data paths
+data:
+  input_dir: "/mnt/d/5TH_SEM/CELLULAR/input"
+  output_dir: "/mnt/d/5TH_SEM/CELLULAR/output"
+  
+# Segmentation settings
+segmentation:
+  model_type: "cyto"  # Options: cyto, nuclei, cyto2
+  diameter: 30  # Cell diameter in pixels (0 for auto-detection)
+  channels: [0, 0]  # [cytoplasm, nucleus] channels
+  flow_threshold: 0.4
+  cellprob_threshold: 0.0
+  
+# Graph construction
+graph:
+  proximity_threshold: 50  # Maximum distance for edge creation
+  min_node_size: 10  # Minimum region size to be considered a node
+  edge_features: ["distance", "intensity_similarity"]
+  
+# Model training
+training:
+  model_type: "graph_cnn"  # Options: graph_cnn, vgg16, hybrid
+  batch_size: 16
+  epochs: 100
+  learning_rate: 0.001
+  validation_split: 0.2
+  test_split: 0.1
+  
+# Visualization
+visualization:
+  dpi: 300
+  figure_size: [10, 8]
+  colormap: "viridis"
+  save_formats: ["png", "pdf"]
+  
+# Frontend
+frontend:
+  host: "0.0.0.0"
+  port: 5000
+  max_upload_size_mb: 500
+  allowed_extensions: [".tif", ".tiff"]
