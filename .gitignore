@@ -1,0 +1,89 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.log
+
+# Output directories (keep structure, ignore content)
+output/results/segmented/*
+output/results/predictions/*
+output/results/reports/*
+output/results/graphs/*
+!output/results/segmented/.gitkeep
+!output/results/predictions/.gitkeep
+!output/results/reports/.gitkeep
+!output/results/graphs/.gitkeep
+
+# Model weights
+*.pth
+*.pt
+*.h5
+*.pkl
+*.pickle
+
+# Large data files
+*.tif
+*.tiff
+*.npy
+*.npz
+*.hdf5
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Upload directory
+uploads/
+/tmp/
+
+# Node modules (if using any JS tools)
+node_modules/
+
+# Environment variables
+.env
+.env.local
