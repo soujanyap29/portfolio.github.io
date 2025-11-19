@@ -64,11 +64,18 @@ class TIFFLoader:
         if image is None:
             return None
         
+        # Validate size parameter
+        if not size or len(size) != 2 or size[0] <= 0 or size[1] <= 0:
+            raise ValueError(f"Invalid size parameter: {size}. Size must be a tuple of two positive integers (width, height).")
+        
         # Handle multi-channel images
-        if len(image.shape) == 2:
-            image = cv2.resize(image, size, interpolation=cv2.INTER_LINEAR)
-        else:
-            image = cv2.resize(image, size, interpolation=cv2.INTER_LINEAR)
+        try:
+            if len(image.shape) == 2:
+                image = cv2.resize(image, size, interpolation=cv2.INTER_LINEAR)
+            else:
+                image = cv2.resize(image, size, interpolation=cv2.INTER_LINEAR)
+        except cv2.error as e:
+            raise ValueError(f"OpenCV resize error with size {size} and image shape {image.shape}: {str(e)}")
         
         return image
     
