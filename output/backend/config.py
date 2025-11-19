@@ -35,7 +35,11 @@ PROTEIN_CLASSES = [
 ]
 
 # Segmentation Configuration
-SEGMENTATION_METHOD = "SLIC"  # Options: "UNET", "SLIC", "WATERSHED"
+SEGMENTATION_METHOD = "CELLPOSE"  # Options: "CELLPOSE", "UNET", "SLIC", "WATERSHED"
+USE_CELLPOSE_PREPROCESSING = True  # Use Cellpose's advanced normalization and preprocessing
+CELLPOSE_DIAMETER = 30.0  # Estimated cell/nucleus diameter in pixels (None for auto-detect)
+CELLPOSE_FLOW_THRESHOLD = 0.4  # Flow threshold (higher = more selective)
+CELLPOSE_CELLPROB_THRESHOLD = 0.0  # Cell probability threshold
 SLIC_N_SEGMENTS = 100
 SLIC_COMPACTNESS = 10
 

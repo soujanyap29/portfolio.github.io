@@ -18,3 +18,4 @@ torch-geometric==2.4.0
 networkx==3.2.1
 reportlab==4.0.7
 fpdf2==2.7.6
+cellpose==2.2.3

@@ -14,9 +14,15 @@ A complete scientific system for analyzing neuronal TIFF microscopy images and c
 - **Model Fusion**: Late fusion and weighted score combination for improved accuracy
 
 ### Segmentation
+- **Cellpose Neural Network**: State-of-the-art deep learning segmentation for cells and nuclei
 - SLIC Superpixel Segmentation
 - U-Net Deep Learning Segmentation
 - Watershed Segmentation
+
+### Preprocessing
+- **Cellpose-based normalization**: Advanced percentile-based normalization robust to outliers
+- Intelligent resizing preserving image quality
+- Fallback to traditional OpenCV methods when needed
 
 ### Evaluation Metrics
 - Accuracy, Precision, Recall, F1-Score, Specificity

@@ -1,32 +1,47 @@
 """
-Segmentation module supporting U-Net, SLIC, and Watershed methods
+Segmentation module supporting U-Net, SLIC, Watershed, and Cellpose methods
 """
 import numpy as np
 import cv2
 from skimage.segmentation import slic, watershed
 from skimage.feature import peak_local_max
 from scipy import ndimage as ndi
-from typing import Tuple
+from typing import Tuple, Optional
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
+try:
+    from cellpose import models
+    CELLPOSE_AVAILABLE = True
+except ImportError:
+    CELLPOSE_AVAILABLE = False
+    print("Warning: Cellpose not available. Install with: pip install cellpose")
+
 
 class SegmentationModule:
-    """Handles different segmentation methods"""
+    """Handles different segmentation methods including Cellpose"""
     
-    def __init__(self, method: str = "SLIC"):
+    def __init__(self, method: str = "CELLPOSE"):
         """
         Initialize segmentation module
         
         Args:
-            method: Segmentation method ('UNET', 'SLIC', or 'WATERSHED')
+            method: Segmentation method ('CELLPOSE', 'UNET', 'SLIC', or 'WATERSHED')
         """
         self.method = method.upper()
         self.unet_model = None
+        self.cellpose_model = None
         
         if self.method == "UNET":
             self.unet_model = self._build_unet()
+        elif self.method == "CELLPOSE":
+            if CELLPOSE_AVAILABLE:
+                # Initialize Cellpose with cyto2 model (general purpose for cells and nuclei)
+                self.cellpose_model = models.Cellpose(gpu=False, model_type='cyto2')
+            else:
+                print("Warning: Cellpose not available. Falling back to SLIC segmentation.")
+                self.method = "SLIC"
     
     def segment(self, image: np.ndarray, **kwargs) -> np.ndarray:
         """
@@ -39,7 +54,9 @@ class SegmentationModule:
         Returns:
             Segmented image mask
         """
-        if self.method == "UNET":
+        if self.method == "CELLPOSE":
+            return self._segment_cellpose(image, **kwargs)
+        elif self.method == "UNET":
             return self._segment_unet(image)
         elif self.method == "SLIC":
             return self._segment_slic(image, **kwargs)
@@ -47,6 +64,63 @@ class SegmentationModule:
             return self._segment_watershed(image)
         else:
             raise ValueError(f"Unknown segmentation method: {self.method}")
+    
+    def _segment_cellpose(self, image: np.ndarray, diameter: Optional[float] = 30.0, 
+                         flow_threshold: float = 0.4, cellprob_threshold: float = 0.0) -> np.ndarray:
+        """
+        Segment using Cellpose neural network
+        
+        Args:
+            image: Input image (2D grayscale or 3D RGB)
+            diameter: Estimated cell/nucleus diameter in pixels (None for auto-detect)
+            flow_threshold: Flow threshold (higher = more selective, default 0.4)
+            cellprob_threshold: Cell probability threshold (default 0.0)
+            
+        Returns:
+            Segmentation mask with labeled regions
+        """
+        if self.cellpose_model is None:
+            raise ValueError("Cellpose model not initialized")
+        
+        # Ensure image is in correct format
+        if len(image.shape) == 2:
+            # Grayscale image
+            img_for_cellpose = image
+            channels = [[0, 0]]  # Grayscale
+        elif len(image.shape) == 3:
+            if image.shape[2] == 1:
+                # Single channel
+                img_for_cellpose = image[:, :, 0]
+                channels = [[0, 0]]  # Grayscale
+            elif image.shape[2] >= 3:
+                # RGB or more channels
+                img_for_cellpose = image
+                channels = [[2, 1]]  # RGB (cytoplasm in green channel, nucleus in red)
+            else:
+                # Unexpected format, convert to grayscale
+                img_for_cellpose = np.mean(image, axis=-1)
+                channels = [[0, 0]]
+        else:
+            raise ValueError(f"Unexpected image shape: {image.shape}")
+        
+        # Normalize image to [0, 1] if needed
+        if img_for_cellpose.max() > 1.0:
+            img_for_cellpose = img_for_cellpose / 255.0
+        
+        # Run Cellpose segmentation
+        try:
+            masks, flows, styles, diams = self.cellpose_model.eval(
+                img_for_cellpose,
+                diameter=diameter,
+                channels=channels,
+                flow_threshold=flow_threshold,
+                cellprob_threshold=cellprob_threshold
+            )
+            return masks
+        except Exception as e:
+            print(f"Cellpose segmentation error: {e}")
+            print("Falling back to SLIC segmentation")
+            return self._segment_slic(image)
     
     def _build_unet(self, input_shape: Tuple[int, int, int] = (224, 224, 3)) -> keras.Model:
         """
