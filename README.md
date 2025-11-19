@@ -63,6 +63,34 @@ OUTPUT_PATH = "/mnt/d/5TH_SEM/CELLULAR/output"
 
 ---
 
+## 📓 Jupyter Notebook Demo
+
+A comprehensive Jupyter notebook demonstrating the complete pipeline is available at:
+```
+output/final_pipeline.ipynb
+```
+
+The notebook includes:
+- Step-by-step pipeline walkthrough
+- Synthetic image generation for testing
+- CNN and GNN classification demo
+- Model fusion comparison
+- Scientific visualization examples
+- Evaluation metrics computation
+- Batch processing instructions
+
+**To run the notebook:**
+```bash
+jupyter notebook output/final_pipeline.ipynb
+```
+
+Or copy to your desired location:
+```bash
+cp output/final_pipeline.ipynb /mnt/d/5TH_SEM/CELLULAR/output/
+```
+
+---
+
 ## 🚀 Usage
 
 ### Web Interface (Streamlit)
