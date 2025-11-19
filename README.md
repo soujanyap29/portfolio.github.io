@@ -71,13 +71,12 @@ output/final_pipeline.ipynb
 ```
 
 The notebook includes:
-- Step-by-step pipeline walkthrough
-- Synthetic image generation for testing
-- CNN and GNN classification demo
-- Model fusion comparison
+- **Batch processing** of all TIFF files in input directory
+- **Model training & evaluation** with train-test splits (optional)
+- Complete pipeline walkthrough (segmentation → CNN → GNN → fusion)
 - Scientific visualization examples
-- Evaluation metrics computation
-- Batch processing instructions
+- Comprehensive evaluation metrics
+- Results summary and statistics
 
 **To run the notebook:**
 ```bash
@@ -92,6 +91,48 @@ cp output/final_pipeline.ipynb /mnt/d/5TH_SEM/CELLULAR/output/
 ---
 
 ## 🚀 Usage
+
+### Model Training (New!)
+
+Train models from scratch with your labeled dataset:
+
+```bash
+cd output
+python train_models.py --data_dir /path/to/labeled/data --epochs 50
+```
+
+**Dataset structure:**
+```
+labeled_data/
+  ├── Nucleus/
+  │   ├── image1.tif
+  │   ├── image2.tif
+  ├── Cytoplasm/
+  │   ├── image3.tif
+  │   ├── image4.tif
+  └── ...
+```
+
+**Training features:**
+- Reproducible train-validation-test splits (configurable ratios)
+- Trains VGG16, ResNet50, and EfficientNet models
+- Computes all metrics: Accuracy, Precision, Recall, F1-Score, Specificity
+- Generates confusion matrices and probability plots
+- Creates training history visualizations
+- Produces model comparison charts
+- Saves trained models and detailed results JSON
+
+**Training options:**
+```bash
+# Train specific models
+python train_models.py --data_dir /path/to/data --models vgg16 resnet50
+
+# Custom split ratios (80% train, 15% val, 5% test)
+python train_models.py --data_dir /path/to/data --test_size 0.05 --val_size 0.15
+
+# Adjust hyperparameters
+python train_models.py --data_dir /path/to/data --epochs 100 --batch_size 16
+```
 
 ### Web Interface (Streamlit)
 
