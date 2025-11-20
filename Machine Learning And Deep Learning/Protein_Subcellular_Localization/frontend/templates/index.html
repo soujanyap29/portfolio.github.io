@@ -274,6 +274,30 @@
         let uploadedFiles = [];
         let results = [];
         
+        // Check server health on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/health');
+                const health = await response.json();
+                console.log('Server health check:', health);
+                
+                if (health.status === 'healthy') {
+                    console.log('✅ Backend server is running');
+                    if (!health.upload_folder_exists) {
+                        console.warn('⚠️ Upload folder does not exist:', health.upload_folder);
+                    }
+                    if (!health.output_folder_exists) {
+                        console.warn('⚠️ Output folder does not exist:', health.output_folder);
+                    }
+                } else {
+                    console.error('❌ Backend server health check failed');
+                }
+            } catch (error) {
+                console.error('❌ Cannot connect to backend server:', error);
+                alert('WARNING: Backend server is not responding!\n\nPlease make sure the Flask server is running:\ncd frontend && python app.py');
+            }
+        });
+        
         // File upload handling
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');

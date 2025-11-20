@@ -38,6 +38,18 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint to verify server is running."""
+    return jsonify({
+        'status': 'healthy',
+        'upload_folder': app.config['UPLOAD_FOLDER'],
+        'output_folder': app.config['OUTPUT_FOLDER'],
+        'upload_folder_exists': os.path.exists(app.config['UPLOAD_FOLDER']),
+        'output_folder_exists': os.path.exists(app.config['OUTPUT_FOLDER'])
+    })
+
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     """Handle file upload."""
@@ -70,14 +82,16 @@ def process_image():
     filename = data.get('filename')
     
     if not filename:
-        return jsonify({'error': 'No filename provided'}), 400
+        return jsonify({'success': False, 'error': 'No filename provided'}), 400
     
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     
     if not os.path.exists(filepath):
-        return jsonify({'error': 'File not found'}), 404
+        return jsonify({'success': False, 'error': 'File not found'}), 404
     
     try:
+        print(f"[INFO] Starting processing for: {filename}")
+        
         # Import processing modules
         from utils.image_preprocessing import TIFFLoader
         from segmentation.cellpose_segmentation import CellposeSegmenter
@@ -87,28 +101,42 @@ def process_image():
         from utils.model_fusion import ModelFusion
         from utils.visualization import Visualizer
         
+        print(f"[INFO] Modules imported successfully")
+        
         # Initialize components
         loader = TIFFLoader(target_size=(224, 224))
         segmenter = CellposeSegmenter()
         visualizer = Visualizer(output_dir=app.config['OUTPUT_FOLDER'] + '/graphs')
         
+        print(f"[INFO] Components initialized")
+        
         # Load and preprocess image
+        print(f"[INFO] Loading image: {filepath}")
         original, processed = loader.preprocess(filepath)
+        print(f"[INFO] Image loaded. Original shape: {original.shape}, Processed shape: {processed.shape}")
         
         # Segment
+        print(f"[INFO] Starting segmentation...")
         masks, seg_info = segmenter.segment(original)
+        print(f"[INFO] Segmentation complete. Found {seg_info['n_cells']} regions")
+        
         seg_path = os.path.join(app.config['OUTPUT_FOLDER'], 'segmented', f"{Path(filename).stem}_segment.png")
         os.makedirs(os.path.dirname(seg_path), exist_ok=True)
         segmenter.visualize_segmentation(original, masks, save_path=seg_path)
+        print(f"[INFO] Segmentation saved to: {seg_path}")
         
         # Generate superpixels and graph
+        print(f"[INFO] Generating superpixels...")
         sp_gen = SuperpixelGenerator(method='slic', n_segments=100)
         segments = sp_gen.generate(original)
         features = sp_gen.extract_features(original, segments)
+        print(f"[INFO] Superpixels generated. Features shape: {features.shape}")
         
+        print(f"[INFO] Building graph...")
         constructor = GraphConstructor()
         graph = constructor.build_adjacency_graph(segments)
         edge_index, node_features = constructor.to_pytorch_geometric(graph, features)
+        print(f"[INFO] Graph built. Nodes: {graph.number_of_nodes()}, Edges: {graph.number_of_edges()}")
         
         # Mock predictions (in real implementation, load trained models)
         import numpy as np
@@ -116,12 +144,15 @@ def process_image():
         gnn_probs = np.random.dirichlet(np.ones(5))
         
         # Fusion
+        print(f"[INFO] Fusing predictions...")
         fusion = ModelFusion(method='weighted_average')
         fused_class, fused_probs = fusion.fuse(cnn_probs, gnn_probs)
+        print(f"[INFO] Fusion complete. Predicted class: {fused_class}")
         
         class_names = ['Soma', 'Dendrites', 'Axon', 'Synapses', 'Nucleus']
         
         # Create visualizations
+        print(f"[INFO] Creating visualizations...")
         vis_dir = os.path.join(app.config['OUTPUT_FOLDER'], 'graphs')
         os.makedirs(vis_dir, exist_ok=True)
         
@@ -142,6 +173,7 @@ def process_image():
             f"{Path(filename).stem}_fused_probs.png",
             "Fused Predictions"
         )
+        print(f"[INFO] Visualizations saved")
         
         # Prepare response
         result = {
@@ -183,13 +215,18 @@ def process_image():
         with open(json_path, 'w') as f:
             json.dump(result, f, indent=2)
         
+        print(f"[INFO] Processing complete for: {filename}")
         return jsonify(result)
         
     except Exception as e:
         import traceback
+        error_trace = traceback.format_exc()
+        print(f"[ERROR] Processing failed for {filename}:")
+        print(error_trace)
         return jsonify({
+            'success': False,
             'error': str(e),
-            'traceback': traceback.format_exc()
+            'traceback': error_trace
         }), 500
 
 
