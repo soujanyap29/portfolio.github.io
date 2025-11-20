@@ -331,6 +331,8 @@
             
             for (const file of uploadedFiles) {
                 try {
+                    console.log(`Processing file: ${file.name}`);
+                    
                     // Upload file
                     const formData = new FormData();
                     formData.append('file', file);
@@ -340,24 +342,56 @@
                         body: formData
                     });
                     
+                    if (!uploadRes.ok) {
+                        const error = await uploadRes.json();
+                        console.error('Upload failed:', error);
+                        alert(`Upload failed for ${file.name}: ${error.error || 'Unknown error'}`);
+                        continue;
+                    }
+                    
                     const uploadData = await uploadRes.json();
+                    console.log('Upload successful:', uploadData);
+                    
+                    if (!uploadData.success || !uploadData.filename) {
+                        console.error('Upload response missing required fields:', uploadData);
+                        alert(`Upload failed for ${file.name}: Invalid response`);
+                        continue;
+                    }
                     
                     // Process file
+                    console.log(`Processing: ${uploadData.filename}`);
                     const processRes = await fetch('/process', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({filename: uploadData.filename})
                     });
                     
+                    if (!processRes.ok) {
+                        const error = await processRes.json();
+                        console.error('Processing failed:', error);
+                        alert(`Processing failed for ${file.name}: ${error.error || 'Unknown error'}`);
+                        continue;
+                    }
+                    
                     const result = await processRes.json();
-                    results.push(result);
+                    console.log('Processing successful:', result);
+                    
+                    if (result.success) {
+                        results.push(result);
+                        console.log(`Added result for ${file.name}. Total results: ${results.length}`);
+                    } else if (result.error) {
+                        console.error('Processing returned error:', result.error);
+                        alert(`Processing error for ${file.name}: ${result.error}`);
+                    }
                     
                 } catch (error) {
-                    console.error('Error processing file:', error);
+                    console.error(`Error processing file ${file.name}:`, error);
+                    alert(`Error processing ${file.name}: ${error.message}`);
                 }
             }
             
             document.getElementById('loadingSection').style.display = 'none';
+            console.log(`Final results count: ${results.length}`);
             displayResults();
         }
         
@@ -378,34 +412,47 @@
             
             // Display results
             let html = '';
-            results.forEach(result => {
-                if (result.success) {
-                    html += `
-                        <div class="result-card">
-                            <h3>${result.filename}</h3>
-                            
-                            <h4 style="margin-top: 15px;">🔬 Segmentation</h4>
-                            <img src="${result.segmentation.image_path}" class="result-image" alt="Segmentation">
-                            <p>Detected Regions: ${result.segmentation.n_regions}</p>
-                            
-                            <h4 style="margin-top: 15px;">🤖 Predictions</h4>
-                            
-                            <div style="margin: 10px 0;">
-                                <strong>CNN:</strong>
-                                <span class="prediction-badge">${result.predictions.cnn.class_name}</span>
-                                <img src="${result.predictions.cnn.plot_path}" class="result-image" alt="CNN Predictions">
+            
+            if (results.length === 0) {
+                html = `
+                    <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 10px;">
+                        <p style="font-size: 1.2em; color: #6c757d;">No results to display yet.</p>
+                        <p style="margin-top: 10px; color: #6c757d;">Upload and process TIFF images to see results here.</p>
+                    </div>
+                `;
+            } else {
+                results.forEach(result => {
+                    if (result.success) {
+                        html += `
+                            <div class="result-card">
+                                <h3>${result.filename}</h3>
+                                
+                                <h4 style="margin-top: 15px;">🔬 Segmentation</h4>
+                                <img src="${result.segmentation.image_path}" class="result-image" alt="Segmentation" 
+                                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'%3E%3Crect fill=\'%23f0f0f0\' width=\'400\' height=\'300\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-family=\'Arial\' font-size=\'16\'%3EImage not available%3C/text%3E%3C/svg%3E';">
+                                <p>Detected Regions: ${result.segmentation.n_regions}</p>
+                                
+                                <h4 style="margin-top: 15px;">🤖 Predictions</h4>
+                                
+                                <div style="margin: 10px 0;">
+                                    <strong>CNN:</strong>
+                                    <span class="prediction-badge">${result.predictions.cnn.class_name}</span>
+                                    <img src="${result.predictions.cnn.plot_path}" class="result-image" alt="CNN Predictions"
+                                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'%3E%3Crect fill=\'%23f0f0f0\' width=\'400\' height=\'300\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-family=\'Arial\' font-size=\'16\'%3EImage not available%3C/text%3E%3C/svg%3E';">
                             </div>
                             
                             <div style="margin: 10px 0;">
                                 <strong>GNN:</strong>
                                 <span class="prediction-badge">${result.predictions.gnn.class_name}</span>
-                                <img src="${result.predictions.gnn.plot_path}" class="result-image" alt="GNN Predictions">
+                                <img src="${result.predictions.gnn.plot_path}" class="result-image" alt="GNN Predictions"
+                                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'%3E%3Crect fill=\'%23f0f0f0\' width=\'400\' height=\'300\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-family=\'Arial\' font-size=\'16\'%3EImage not available%3C/text%3E%3C/svg%3E';">
                             </div>
                             
                             <div style="margin: 10px 0;">
                                 <strong>Fused Model:</strong>
                                 <span class="prediction-badge">${result.predictions.fused.class_name}</span>
-                                <img src="${result.predictions.fused.plot_path}" class="result-image" alt="Fused Predictions">
+                                <img src="${result.predictions.fused.plot_path}" class="result-image" alt="Fused Predictions"
+                                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'%3E%3Crect fill=\'%23f0f0f0\' width=\'400\' height=\'300\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-family=\'Arial\' font-size=\'16\'%3EImage not available%3C/text%3E%3C/svg%3E';">
                             </div>
                             
                             <h4 style="margin-top: 15px;">📊 Graph Information</h4>
@@ -421,8 +468,9 @@
                             </table>
                         </div>
                     `;
-                }
-            });
+                    }
+                });
+            }
             
             resultsGrid.innerHTML = html;
         }
