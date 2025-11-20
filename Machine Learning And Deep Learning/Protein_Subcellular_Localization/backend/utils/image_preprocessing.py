@@ -5,7 +5,8 @@ Image preprocessing utilities for TIFF microscopy images.
 import numpy as np
 import tifffile
 from PIL import Image
-import cv2
+from skimage import transform, util
+from scipy import ndimage
 from pathlib import Path
 from typing import Tuple, List, Optional
 import logging
@@ -28,17 +29,33 @@ class TIFFLoader:
     
     def load_tiff(self, filepath: str) -> np.ndarray:
         """
-        Load a TIFF image file.
+        Load a TIFF image file and handle multi-dimensional stacks.
         
         Args:
             filepath: Path to TIFF file
             
         Returns:
-            Loaded image as numpy array
+            Loaded image as numpy array (2D or 3D)
         """
         try:
             image = tifffile.imread(filepath)
             logger.info(f"Loaded TIFF image: {filepath}, shape: {image.shape}")
+            
+            # Handle multi-dimensional TIFF stacks
+            # Common formats: (z, channels, height, width) or (z, height, width) or (height, width, channels)
+            if len(image.shape) == 4:
+                # Take maximum projection along z-axis and first channel
+                # Shape: (z, channels, height, width) -> (height, width)
+                image = np.max(image[:, 0, :, :], axis=0)
+                logger.info(f"Converted 4D stack to 2D using max projection: {image.shape}")
+            elif len(image.shape) == 3:
+                # If it's a stack, take max projection
+                if image.shape[0] < image.shape[1] and image.shape[0] < image.shape[2]:
+                    # Likely (z, height, width) format
+                    image = np.max(image, axis=0)
+                    logger.info(f"Converted 3D stack to 2D using max projection: {image.shape}")
+                # Otherwise assume it's (height, width, channels) - keep as is
+            
             return image
         except Exception as e:
             logger.error(f"Error loading TIFF file {filepath}: {e}")
@@ -66,22 +83,39 @@ class TIFFLoader:
     
     def resize_image(self, image: np.ndarray) -> np.ndarray:
         """
-        Resize image to target size.
+        Resize image to target size using scikit-image.
         
         Args:
-            image: Input image
+            image: Input image (2D or 3D)
             
         Returns:
             Resized image
         """
+        # Ensure we have a valid 2D or 3D image
         if len(image.shape) == 2:
-            # Grayscale image
-            resized = cv2.resize(image, self.target_size, interpolation=cv2.INTER_AREA)
+            # Grayscale image - add channel dimension for consistent processing
+            resized = transform.resize(
+                image, 
+                self.target_size, 
+                mode='reflect',
+                anti_aliasing=True,
+                preserve_range=True
+            )
+        elif len(image.shape) == 3:
+            # Multi-channel image or RGB
+            # Resize spatial dimensions while preserving channels
+            target_shape = (self.target_size[0], self.target_size[1], image.shape[2])
+            resized = transform.resize(
+                image,
+                target_shape,
+                mode='reflect',
+                anti_aliasing=True,
+                preserve_range=True
+            )
         else:
-            # Multi-channel image
-            resized = cv2.resize(image, self.target_size, interpolation=cv2.INTER_AREA)
+            raise ValueError(f"Unexpected image shape: {image.shape}. Expected 2D or 3D array.")
         
-        return resized
+        return resized.astype(image.dtype)
     
     def preprocess(self, filepath: str, normalize: bool = True) -> Tuple[np.ndarray, np.ndarray]:
         """
@@ -155,12 +189,9 @@ class ImageAugmentor:
     
     @staticmethod
     def random_rotation(image: np.ndarray, max_angle: int = 15) -> np.ndarray:
-        """Random rotation."""
+        """Random rotation using scipy."""
         angle = np.random.uniform(-max_angle, max_angle)
-        h, w = image.shape[:2]
-        center = (w // 2, h // 2)
-        M = cv2.getRotationMatrix2D(center, angle, 1.0)
-        rotated = cv2.warpAffine(image, M, (w, h), borderMode=cv2.BORDER_REFLECT)
+        rotated = ndimage.rotate(image, angle, reshape=False, mode='reflect')
         return rotated
     
     @staticmethod
@@ -190,12 +221,16 @@ def create_test_image(output_path: str, size: Tuple[int, int] = (512, 512)):
     # Create a synthetic microscopy-like image
     image = np.random.randint(0, 65535, size=size, dtype=np.uint16)
     
-    # Add some structure (simulating cells)
+    # Add some structure (simulating cells) using skimage
+    from skimage.draw import disk
     for _ in range(10):
-        x = np.random.randint(50, size[0] - 50)
-        y = np.random.randint(50, size[1] - 50)
+        center_x = np.random.randint(50, size[0] - 50)
+        center_y = np.random.randint(50, size[1] - 50)
         radius = np.random.randint(20, 40)
-        cv2.circle(image, (x, y), radius, 50000, -1)
+        
+        # Draw circle using disk function
+        rr, cc = disk((center_x, center_y), radius, shape=image.shape)
+        image[rr, cc] = 50000
     
     # Save as TIFF
     tifffile.imwrite(output_path, image)
