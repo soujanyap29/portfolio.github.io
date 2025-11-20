@@ -1,0 +1,75 @@
+# Configuration for Protein Sub-Cellular Localization Project
+
+# Paths
+paths:
+  input_dir: "/mnt/d/5TH_SEM/CELLULAR/input"
+  output_dir: "/mnt/d/5TH_SEM/CELLULAR/output"
+  models_dir: "./backend/models/saved"
+  graphs_dir: "/mnt/d/5TH_SEM/CELLULAR/output/graphs"
+
+# Image Processing
+image_processing:
+  target_size: [224, 224]
+  normalize: true
+  augmentation: false
+
+# Cellpose Segmentation
+segmentation:
+  model_type: "cyto"  # or "nuclei"
+  diameter: 30
+  channels: [0, 0]  # grayscale
+  flow_threshold: 0.4
+  cellprob_threshold: 0.0
+
+# CNN Model (VGG16)
+cnn:
+  model_name: "VGG16"
+  pretrained: true
+  freeze_layers: 15
+  num_classes: 5  # Adjust based on your localization classes
+  learning_rate: 0.0001
+  batch_size: 32
+  epochs: 50
+
+# Superpixels
+superpixels:
+  method: "slic"  # Simple Linear Iterative Clustering
+  n_segments: 100
+  compactness: 10
+
+# GNN Model
+gnn:
+  model_type: "GCN"  # Options: GCN, GraphSAGE, GAT
+  hidden_channels: 64
+  num_layers: 3
+  dropout: 0.5
+  learning_rate: 0.001
+  epochs: 100
+
+# Model Fusion
+fusion:
+  method: "weighted_average"  # Options: weighted_average, voting, stacking
+  cnn_weight: 0.6
+  gnn_weight: 0.4
+
+# Classes
+classes:
+  - "Soma"
+  - "Dendrites"
+  - "Axon"
+  - "Synapses"
+  - "Nucleus"
+
+# Visualization
+visualization:
+  dpi: 300
+  figure_size: [10, 8]
+  font_size: 12
+  color_map: "viridis"
+
+# Report Generation
+report:
+  format: "PDF"
+  include_metrics: true
+  include_visualizations: true
+  ieee_format: true
