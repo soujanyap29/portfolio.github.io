@@ -107,7 +107,7 @@ def main():
     # Sidebar
     with st.sidebar:
         st.image("https://via.placeholder.com/300x100/1f77b4/ffffff?text=Protein+Pipeline", 
-                use_column_width=True)
+                use_container_width=True)
         
         st.markdown("### Pipeline Settings")
         
@@ -119,6 +119,17 @@ def main():
         st.markdown("### Graph Construction")
         distance_threshold = st.slider("Distance Threshold", 10, 200, 50)
         k_neighbors = st.slider("K Neighbors", 2, 10, 5)
+        
+        st.markdown("---")
+        st.markdown("### Performance")
+        st.info("""
+        ⏱️ **Processing Time:**
+        - Small images (<512x512): ~30-60s
+        - Medium images (512-1024): ~1-3 min
+        - Large images (>1024): ~3-5 min
+        
+        💡 GPU acceleration can speed up segmentation by 5-10x
+        """)
         
         st.markdown("---")
         st.markdown("### About")
@@ -232,8 +243,8 @@ def run_pipeline(uploaded_file, use_gpu, cell_diameter, distance_threshold, k_ne
             st.success(f"Built graph: {stats['n_nodes']} nodes, {stats['n_edges']} edges")
             
             # Step 4: Visualize
-            status_text.text("Generating visualizations...")
-            progress_bar.progress(80)
+            status_text.text("Generating visualizations (1/4): Segmentation overlay...")
+            progress_bar.progress(75)
             
             # Create persistent temp directory for visualizations
             if 'viz_dir' not in st.session_state:
@@ -242,10 +253,19 @@ def run_pipeline(uploaded_file, use_gpu, cell_diameter, distance_threshold, k_ne
             viz_dir = st.session_state['viz_dir']
             visualizer = Visualizer(output_dir=viz_dir)
             
-            # Save visualizations
+            # Save visualizations with progress updates
             visualizer.plot_segmentation_overlay(image, masks, save_name="segmentation")
+            
+            status_text.text("Generating visualizations (2/4): Compartment masks...")
+            progress_bar.progress(82)
             visualizer.plot_compartment_masks(masks, save_name="compartments")
+            
+            status_text.text("Generating visualizations (3/4): Feature distributions...")
+            progress_bar.progress(89)
             visualizer.plot_feature_distributions(features, save_name="features")
+            
+            status_text.text("Generating visualizations (4/4): Graph visualization...")
+            progress_bar.progress(96)
             visualizer.plot_graph(G, save_name="graph")
             
             # Store results in session state
@@ -377,7 +397,7 @@ def visualizations_tab():
     with st.expander("🔬 Segmentation Overlay", expanded=True):
         seg_path = output_dir / "segmentation.png"
         if seg_path.exists():
-            st.image(str(seg_path), caption="Segmentation Overlay", use_column_width=True)
+            st.image(str(seg_path), caption="Segmentation Overlay", use_container_width=True)
         else:
             st.warning("Segmentation visualization not found")
     
@@ -385,7 +405,7 @@ def visualizations_tab():
     with st.expander("🎨 Compartment Masks"):
         comp_path = output_dir / "compartments.png"
         if comp_path.exists():
-            st.image(str(comp_path), caption="Compartment Masks", use_column_width=True)
+            st.image(str(comp_path), caption="Compartment Masks", use_container_width=True)
         else:
             st.warning("Compartment masks not found")
     
@@ -393,7 +413,7 @@ def visualizations_tab():
     with st.expander("📊 Feature Distributions"):
         feat_path = output_dir / "features.png"
         if feat_path.exists():
-            st.image(str(feat_path), caption="Feature Distributions", use_column_width=True)
+            st.image(str(feat_path), caption="Feature Distributions", use_container_width=True)
         else:
             st.warning("Feature distributions not found")
     
@@ -401,7 +421,7 @@ def visualizations_tab():
     with st.expander("🕸️ Graph Visualization"):
         graph_path = output_dir / "graph.png"
         if graph_path.exists():
-            st.image(str(graph_path), caption="Graph Visualization", use_column_width=True)
+            st.image(str(graph_path), caption="Graph Visualization", use_container_width=True)
         else:
             st.warning("Graph visualization not found")
     

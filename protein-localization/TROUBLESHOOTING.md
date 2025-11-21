@@ -173,7 +173,41 @@ pkill -f streamlit
 streamlit run frontend/streamlit_app.py
 ```
 
-### 10. Out of Memory Error
+### 10. Slow Processing Time
+
+**Problem**: Pipeline takes a long time to process images.
+
+**Solution**:
+
+Processing time depends on image size and hardware:
+- Small images (<512x512): 30-60 seconds
+- Medium images (512-1024): 1-3 minutes
+- Large images (>1024): 3-5 minutes
+
+**To speed up processing:**
+
+```bash
+# 1. Enable GPU acceleration (5-10x faster for segmentation)
+# In Streamlit: Check "Use GPU Acceleration" in sidebar
+# In CLI: python scripts/pipeline.py --gpu
+
+# 2. Reduce image size before processing
+# Resize large images to reasonable dimensions
+
+# 3. Use smaller cell diameter for faster segmentation
+# In Streamlit: Reduce "Expected Cell Diameter" slider value
+
+# 4. Process in batches for multiple files
+python scripts/pipeline.py --max-files 10
+```
+
+**What takes the most time:**
+- Cellpose segmentation: 40-60% of time
+- Feature extraction: 15-20%
+- Graph construction: 10-15%
+- Visualization generation: 10-15%
+
+### 11. Out of Memory Error
 
 **Problem**: System runs out of memory processing large images.
 
@@ -186,7 +220,7 @@ python scripts/pipeline.py --max-files 5
 # Resize images before processing
 ```
 
-### 11. Test Structure Fails
+### 12. Test Structure Fails
 
 **Problem**: test_structure.py reports errors.
 
