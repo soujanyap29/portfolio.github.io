@@ -10,15 +10,52 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 import json
+import os
 
-# Add scripts directory to path
-scripts_dir = Path(__file__).parent.parent / "scripts"
-sys.path.insert(0, str(scripts_dir))
+# Add scripts directory to path - try multiple approaches for robustness
+try:
+    # Method 1: Resolve from __file__
+    scripts_dir = Path(__file__).resolve().parent.parent / "scripts"
+    if not scripts_dir.exists():
+        raise FileNotFoundError(f"Scripts directory not found at {scripts_dir}")
+except:
+    # Method 2: Resolve from current working directory
+    scripts_dir = Path.cwd() / "scripts"
+    if not scripts_dir.exists():
+        # Method 3: Go up from current directory
+        scripts_dir = Path.cwd().parent / "scripts"
+        if not scripts_dir.exists():
+            st.error(f"Cannot find scripts directory. Please ensure you're running from the protein-localization directory.")
+            st.stop()
 
-from tiff_loader import load_tiff_from_path
-from preprocessing import ImagePreprocessor
-from graph_construction import GraphConstructor
-from visualization import Visualizer
+# Add to path if not already there
+scripts_dir_str = str(scripts_dir)
+if scripts_dir_str not in sys.path:
+    sys.path.insert(0, scripts_dir_str)
+
+# Try to import modules with better error handling
+try:
+    from tiff_loader import load_tiff_from_path
+    from preprocessing import ImagePreprocessor
+    from graph_construction import GraphConstructor
+    from visualization import Visualizer
+except ImportError as e:
+    st.error(f"""
+    **Import Error**: {str(e)}
+    
+    Please ensure:
+    1. You are running the app from the correct directory
+    2. All dependencies are installed: `pip install -r requirements.txt`
+    3. The scripts directory exists at: `{scripts_dir}`
+    
+    **To fix:**
+    ```bash
+    cd protein-localization
+    pip install -r requirements.txt
+    streamlit run frontend/streamlit_app.py
+    ```
+    """)
+    st.stop()
 
 
 # Page configuration

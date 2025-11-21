@@ -24,16 +24,22 @@ source venv/bin/activate
 ### 3. Verify Installation
 
 ```bash
-# Run structure tests
+# Run structure tests (from protein-localization directory)
 cd scripts
 python test_structure.py
+cd ..
 ```
 
 ## Quick Usage
 
 ### Option 1: Web Interface (Easiest)
 
+**IMPORTANT**: Always run from the `protein-localization` directory:
+
 ```bash
+# Ensure you're in the protein-localization directory
+cd protein-localization
+
 # Start Streamlit app
 streamlit run frontend/streamlit_app.py
 ```

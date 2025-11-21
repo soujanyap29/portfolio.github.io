@@ -1,0 +1,242 @@
+# Troubleshooting Guide
+
+## Common Issues and Solutions
+
+### 1. ModuleNotFoundError: No module named 'tiff_loader'
+
+**Problem**: The Streamlit app cannot find the pipeline modules.
+
+**Solution**:
+
+1. **Ensure you're in the correct directory**:
+   ```bash
+   # Navigate to the protein-localization directory
+   cd protein-localization
+   
+   # Verify you're in the right place
+   ls -la
+   # You should see: scripts/, frontend/, docs/, etc.
+   ```
+
+2. **Run from the protein-localization directory**:
+   ```bash
+   # Always run from here:
+   streamlit run frontend/streamlit_app.py
+   
+   # NOT from the frontend directory
+   ```
+
+3. **Check the directory structure**:
+   ```bash
+   tree -L 2 -I '__pycache__|*.pyc|venv'
+   ```
+   
+   Expected structure:
+   ```
+   protein-localization/
+   ├── scripts/
+   │   ├── tiff_loader.py
+   │   ├── preprocessing.py
+   │   └── ...
+   ├── frontend/
+   │   └── streamlit_app.py
+   └── ...
+   ```
+
+4. **Verify dependencies are installed**:
+   ```bash
+   pip list | grep -E "numpy|pandas|streamlit|tifffile"
+   ```
+
+### 2. Dependencies Not Installed
+
+**Problem**: Missing Python packages.
+
+**Solution**:
+```bash
+# Install all dependencies
+pip install -r requirements.txt
+
+# Or install individually
+pip install numpy pandas tifffile scikit-image opencv-python
+pip install torch torchvision networkx matplotlib seaborn streamlit
+```
+
+### 3. Permission Denied on setup.sh
+
+**Problem**: Cannot execute setup script.
+
+**Solution**:
+```bash
+chmod +x setup.sh
+bash setup.sh
+```
+
+### 4. CUDA/GPU Issues
+
+**Problem**: GPU not detected or CUDA errors.
+
+**Solution**:
+```bash
+# Run in CPU mode
+python scripts/pipeline.py --input /path/to/tiffs --output /path/to/output
+# (GPU flag is disabled by default)
+
+# Check CUDA availability
+python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
+```
+
+### 5. Cellpose Not Found
+
+**Problem**: Cellpose segmentation not available.
+
+**Solution**:
+```bash
+# Install Cellpose
+pip install cellpose
+
+# The pipeline will use fallback segmentation if Cellpose is not available
+```
+
+### 6. Cannot Write to Output Directory
+
+**Problem**: Permission denied when writing outputs.
+
+**Solution**:
+```bash
+# Create output directory with proper permissions
+mkdir -p /mnt/d/5TH_SEM/CELLULAR/output
+chmod 755 /mnt/d/5TH_SEM/CELLULAR/output
+
+# Or use a different output directory
+python scripts/pipeline.py --output ./my_output
+```
+
+### 7. Import Error in Jupyter Notebook
+
+**Problem**: Cannot import modules in Jupyter.
+
+**Solution**:
+
+In the first cell of the notebook, add:
+```python
+import sys
+from pathlib import Path
+
+# Add scripts directory to path
+scripts_dir = Path.cwd().parent / 'scripts' if 'protein-localization' not in str(Path.cwd()) else Path.cwd() / 'scripts'
+sys.path.insert(0, str(scripts_dir))
+```
+
+Or run Jupyter from the protein-localization directory:
+```bash
+cd protein-localization
+jupyter lab
+```
+
+### 8. Port Already in Use (Streamlit)
+
+**Problem**: Streamlit port 8501 already in use.
+
+**Solution**:
+```bash
+# Use a different port
+streamlit run frontend/streamlit_app.py --server.port 8502
+
+# Or kill existing Streamlit process
+pkill -f streamlit
+streamlit run frontend/streamlit_app.py
+```
+
+### 9. Out of Memory Error
+
+**Problem**: System runs out of memory processing large images.
+
+**Solution**:
+```bash
+# Process fewer files at a time
+python scripts/pipeline.py --max-files 5
+
+# Or use smaller images
+# Resize images before processing
+```
+
+### 10. Test Structure Fails
+
+**Problem**: test_structure.py reports errors.
+
+**Solution**:
+```bash
+# Check which tests are failing
+cd scripts
+python test_structure.py
+
+# Install missing dependencies
+pip install -r ../requirements.txt
+
+# Verify Python version
+python --version  # Should be 3.8+
+```
+
+## Getting Help
+
+If you encounter issues not covered here:
+
+1. **Check the documentation**:
+   - README.md
+   - docs/QUICKSTART.md
+   - docs/PROJECT_OVERVIEW.md
+
+2. **Run the test suite**:
+   ```bash
+   cd scripts
+   python test_structure.py
+   ```
+
+3. **Check Python and dependency versions**:
+   ```bash
+   python --version
+   pip list
+   ```
+
+4. **Enable debug mode** (for Streamlit):
+   ```bash
+   streamlit run frontend/streamlit_app.py --logger.level=debug
+   ```
+
+5. **Check the GitHub repository**:
+   - Issues: https://github.com/soujanyap29/portfolio.github.io/issues
+   - Documentation: https://github.com/soujanyap29/portfolio.github.io/tree/main/protein-localization
+
+## Quick Checklist
+
+Before running the pipeline, verify:
+
+- [ ] Python 3.8+ is installed
+- [ ] In the protein-localization directory
+- [ ] Virtual environment activated (`source venv/bin/activate`)
+- [ ] Dependencies installed (`pip install -r requirements.txt`)
+- [ ] Directory structure is intact (scripts/, frontend/, docs/)
+- [ ] Input directory exists (or will upload files via web interface)
+- [ ] Output directory is writable
+
+## Command Reference
+
+```bash
+# Setup
+cd protein-localization
+bash setup.sh
+source venv/bin/activate
+
+# Web Interface
+streamlit run frontend/streamlit_app.py
+
+# Command Line
+python scripts/pipeline.py --input /path/to/tiffs --output /path/to/output
+
+# Jupyter
+jupyter lab final_pipeline.ipynb
+
+# Testing
+cd scripts && python test_structure.py
+```
