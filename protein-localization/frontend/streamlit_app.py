@@ -176,11 +176,13 @@ def upload_and_process_tab(use_gpu, cell_diameter, distance_threshold, k_neighbo
 def run_pipeline(uploaded_file, use_gpu, cell_diameter, distance_threshold, k_neighbors):
     """Run the complete pipeline on uploaded file."""
     
-    with st.spinner("Processing image..."):
-        try:
+    tmp_path = None
+    
+    try:
+        with st.spinner("Processing image..."):
             # Save uploaded file temporarily
             with tempfile.NamedTemporaryFile(delete=False, suffix='.tif') as tmp_file:
-                tmp_file.write(uploaded_file.read())
+                tmp_file.write(uploaded_file.getvalue())  # Use getvalue() instead of read()
                 tmp_path = tmp_file.name
             
             # Create progress tracker
@@ -233,23 +235,29 @@ def run_pipeline(uploaded_file, use_gpu, cell_diameter, distance_threshold, k_ne
             status_text.text("Generating visualizations...")
             progress_bar.progress(80)
             
-            with tempfile.TemporaryDirectory() as tmpdir:
-                visualizer = Visualizer(output_dir=tmpdir)
-                
-                # Save visualizations
-                visualizer.plot_segmentation_overlay(image, masks, save_name="segmentation")
-                visualizer.plot_compartment_masks(masks, save_name="compartments")
-                visualizer.plot_feature_distributions(features, save_name="features")
-                visualizer.plot_graph(G, save_name="graph")
-                
-                # Store results in session state
-                st.session_state['results'] = {
-                    'metadata': metadata,
-                    'info': info,
-                    'stats': stats,
-                    'features': features,
-                    'output_dir': tmpdir
-                }
+            # Create persistent temp directory for visualizations
+            if 'viz_dir' not in st.session_state:
+                st.session_state['viz_dir'] = tempfile.mkdtemp()
+            
+            viz_dir = st.session_state['viz_dir']
+            visualizer = Visualizer(output_dir=viz_dir)
+            
+            # Save visualizations
+            visualizer.plot_segmentation_overlay(image, masks, save_name="segmentation")
+            visualizer.plot_compartment_masks(masks, save_name="compartments")
+            visualizer.plot_feature_distributions(features, save_name="features")
+            visualizer.plot_graph(G, save_name="graph")
+            
+            # Store results in session state
+            st.session_state['results'] = {
+                'metadata': metadata,
+                'info': info,
+                'stats': stats,
+                'features': features,
+                'output_dir': viz_dir,
+                'image': image,
+                'masks': masks
+            }
             
             progress_bar.progress(100)
             status_text.text("✅ Processing complete!")
@@ -268,10 +276,18 @@ def run_pipeline(uploaded_file, use_gpu, cell_diameter, distance_threshold, k_ne
             with col4:
                 st.metric("Graph Edges", stats['n_edges'])
             
-        except Exception as e:
-            st.error(f"Error processing image: {e}")
-            import traceback
-            st.code(traceback.format_exc())
+    except Exception as e:
+        st.error(f"Error processing image: {e}")
+        import traceback
+        st.code(traceback.format_exc())
+    
+    finally:
+        # Clean up temporary TIFF file
+        if tmp_path and os.path.exists(tmp_path):
+            try:
+                os.unlink(tmp_path)
+            except:
+                pass
 
 
 def results_tab():
@@ -352,22 +368,45 @@ def visualizations_tab():
         st.info("👈 Upload and process a TIFF file to see visualizations here")
         return
     
-    st.markdown("### Available Visualizations")
-    st.info("Note: In this demo, visualizations are saved to the output directory. "
-            "In a full deployment, they would be displayed here directly.")
+    results = st.session_state['results']
+    output_dir = Path(results['output_dir'])
     
-    # Placeholder for actual visualizations
-    viz_types = [
-        "🔬 Segmentation Overlay",
-        "🎨 Compartment Masks",
-        "📊 Feature Distributions",
-        "🕸️ Graph Visualization",
-        "📈 Intensity Heatmaps"
-    ]
+    st.markdown("### Generated Visualizations")
     
-    for viz_type in viz_types:
-        with st.expander(viz_type):
-            st.info(f"{viz_type} generated and saved to output directory")
+    # Display segmentation overlay
+    with st.expander("🔬 Segmentation Overlay", expanded=True):
+        seg_path = output_dir / "segmentation.png"
+        if seg_path.exists():
+            st.image(str(seg_path), caption="Segmentation Overlay", use_column_width=True)
+        else:
+            st.warning("Segmentation visualization not found")
+    
+    # Display compartment masks
+    with st.expander("🎨 Compartment Masks"):
+        comp_path = output_dir / "compartments.png"
+        if comp_path.exists():
+            st.image(str(comp_path), caption="Compartment Masks", use_column_width=True)
+        else:
+            st.warning("Compartment masks not found")
+    
+    # Display feature distributions
+    with st.expander("📊 Feature Distributions"):
+        feat_path = output_dir / "features.png"
+        if feat_path.exists():
+            st.image(str(feat_path), caption="Feature Distributions", use_column_width=True)
+        else:
+            st.warning("Feature distributions not found")
+    
+    # Display graph visualization
+    with st.expander("🕸️ Graph Visualization"):
+        graph_path = output_dir / "graph.png"
+        if graph_path.exists():
+            st.image(str(graph_path), caption="Graph Visualization", use_column_width=True)
+        else:
+            st.warning("Graph visualization not found")
+    
+    st.markdown("---")
+    st.info("💡 All visualizations are publication-ready at 300 DPI")
 
 
 def help_tab():
