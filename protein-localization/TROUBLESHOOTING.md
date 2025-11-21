@@ -86,7 +86,32 @@ python scripts/pipeline.py --input /path/to/tiffs --output /path/to/output
 python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
 ```
 
-### 5. Cellpose Not Found
+### 5. Cellpose API Error
+
+**Problem**: `AttributeError: module 'cellpose.models' has no attribute 'Cellpose'`
+
+**Solution**:
+
+This is due to Cellpose API changes between versions. The pipeline now handles multiple Cellpose versions automatically.
+
+If you still encounter issues:
+
+```bash
+# Check Cellpose version
+pip show cellpose
+
+# For Cellpose v2.0+
+pip install cellpose>=2.0
+
+# Or for compatibility with older versions
+pip install cellpose==1.0.2
+
+# The pipeline will automatically detect and use the correct API
+```
+
+The system will fall back to classical segmentation methods if Cellpose fails.
+
+### 6. Cellpose Not Found
 
 **Problem**: Cellpose segmentation not available.
 
@@ -98,7 +123,7 @@ pip install cellpose
 # The pipeline will use fallback segmentation if Cellpose is not available
 ```
 
-### 6. Cannot Write to Output Directory
+### 7. Cannot Write to Output Directory
 
 **Problem**: Permission denied when writing outputs.
 
@@ -112,7 +137,7 @@ chmod 755 /mnt/d/5TH_SEM/CELLULAR/output
 python scripts/pipeline.py --output ./my_output
 ```
 
-### 7. Import Error in Jupyter Notebook
+### 8. Import Error in Jupyter Notebook
 
 **Problem**: Cannot import modules in Jupyter.
 
@@ -134,7 +159,7 @@ cd protein-localization
 jupyter lab
 ```
 
-### 8. Port Already in Use (Streamlit)
+### 9. Port Already in Use (Streamlit)
 
 **Problem**: Streamlit port 8501 already in use.
 
@@ -148,7 +173,7 @@ pkill -f streamlit
 streamlit run frontend/streamlit_app.py
 ```
 
-### 9. Out of Memory Error
+### 10. Out of Memory Error
 
 **Problem**: System runs out of memory processing large images.
 
@@ -161,7 +186,7 @@ python scripts/pipeline.py --max-files 5
 # Resize images before processing
 ```
 
-### 10. Test Structure Fails
+### 11. Test Structure Fails
 
 **Problem**: test_structure.py reports errors.
 

@@ -38,10 +38,24 @@ class ImagePreprocessor:
         """
         try:
             from cellpose import models
-            self.model = models.Cellpose(gpu=self.use_gpu, model_type=model_type)
-            print(f"Loaded Cellpose model: {model_type}")
+            # Try newer Cellpose API first (v2.0+)
+            try:
+                self.model = models.CellposeModel(gpu=self.use_gpu, model_type=model_type)
+                print(f"Loaded Cellpose model: {model_type} (v2.0+ API)")
+            except (AttributeError, TypeError):
+                # Fall back to older API
+                try:
+                    self.model = models.Cellpose(gpu=self.use_gpu, model_type=model_type)
+                    print(f"Loaded Cellpose model: {model_type} (legacy API)")
+                except AttributeError:
+                    # Try direct model instantiation
+                    self.model = models.Cellpose(model_type=model_type, gpu=self.use_gpu)
+                    print(f"Loaded Cellpose model: {model_type} (direct API)")
         except ImportError:
             print("Warning: Cellpose not available. Using fallback segmentation.")
+            self.model = None
+        except Exception as e:
+            print(f"Warning: Could not load Cellpose ({e}). Using fallback segmentation.")
             self.model = None
     
     def segment_image(self, image: np.ndarray, diameter: float = 30.0,
