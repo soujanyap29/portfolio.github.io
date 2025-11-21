@@ -55,18 +55,44 @@ class Visualizer:
         Plot original image with segmentation overlay.
         
         Args:
-            image: Original image
+            image: Original image (can be 2D, 3D, or multi-channel)
             masks: Segmentation masks
             title: Plot title
             save_name: Base name for saved file
         """
         fig, axes = plt.subplots(1, 3, figsize=(15, 5))
         
-        # Prepare 2D image
-        if image.ndim > 2:
-            img_2d = np.max(image, axis=0) if image.shape[0] < 10 else np.max(image, axis=0)
-        else:
+        # Prepare 2D image for visualization
+        if image.ndim == 2:
+            # Already 2D
             img_2d = image
+        elif image.ndim == 3:
+            # Could be (C, H, W) for multi-channel or (Z, H, W) for z-stack
+            if image.shape[0] <= 4:
+                # Likely multi-channel (C, H, W) - take max projection or first channel
+                if image.shape[0] == 1:
+                    img_2d = image[0]
+                else:
+                    # For multi-channel, create composite by averaging or taking first channel
+                    img_2d = np.mean(image, axis=0)
+            else:
+                # Likely z-stack (Z, H, W) - take max projection
+                img_2d = np.max(image, axis=0)
+        elif image.ndim == 4:
+            # (C, Z, H, W) or (Z, C, H, W) - take max projection
+            if image.shape[0] <= 4:
+                # Likely (C, Z, H, W)
+                img_2d = np.max(np.mean(image, axis=0), axis=0)
+            else:
+                # Likely (Z, C, H, W)
+                img_2d = np.max(np.mean(image, axis=1), axis=0)
+        else:
+            # Fallback: flatten to 2D
+            img_2d = image.reshape(image.shape[-2], image.shape[-1])
+        
+        # Ensure img_2d is actually 2D
+        if img_2d.ndim != 2:
+            img_2d = img_2d.squeeze()
         
         # Original image
         axes[0].imshow(img_2d, cmap='gray')

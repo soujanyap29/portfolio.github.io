@@ -111,7 +111,26 @@ pip install cellpose==1.0.2
 
 The system will fall back to classical segmentation methods if Cellpose fails.
 
-### 6. Cellpose Not Found
+### 6. Invalid Image Shape Error
+
+**Problem**: `TypeError: Invalid shape (C, H, W) for image data` during visualization
+
+**Solution**:
+
+This occurs when processing multi-channel TIFF images. The pipeline now automatically handles:
+- 2D images (H, W)
+- Multi-channel images (C, H, W) where C ≤ 4
+- Z-stack images (Z, H, W)
+- 4D images (C, Z, H, W) or (Z, C, H, W)
+
+The visualization automatically creates composite images by:
+- Averaging channels for multi-channel data
+- Max projection for z-stacks
+- Proper dimension handling for all formats
+
+If you still see this error, ensure your TIFF file is properly formatted.
+
+### 7. Cellpose Not Found
 
 **Problem**: Cellpose segmentation not available.
 
@@ -123,7 +142,7 @@ pip install cellpose
 # The pipeline will use fallback segmentation if Cellpose is not available
 ```
 
-### 7. Cannot Write to Output Directory
+### 8. Cannot Write to Output Directory
 
 **Problem**: Permission denied when writing outputs.
 
@@ -137,7 +156,7 @@ chmod 755 /mnt/d/5TH_SEM/CELLULAR/output
 python scripts/pipeline.py --output ./my_output
 ```
 
-### 8. Import Error in Jupyter Notebook
+### 9. Import Error in Jupyter Notebook
 
 **Problem**: Cannot import modules in Jupyter.
 
@@ -159,7 +178,7 @@ cd protein-localization
 jupyter lab
 ```
 
-### 9. Port Already in Use (Streamlit)
+### 10. Port Already in Use (Streamlit)
 
 **Problem**: Streamlit port 8501 already in use.
 
@@ -173,7 +192,7 @@ pkill -f streamlit
 streamlit run frontend/streamlit_app.py
 ```
 
-### 10. Slow Processing Time
+### 11. Slow Processing Time
 
 **Problem**: Pipeline takes a long time to process images.
 
@@ -207,7 +226,7 @@ python scripts/pipeline.py --max-files 10
 - Graph construction: 10-15%
 - Visualization generation: 10-15%
 
-### 11. Out of Memory Error
+### 12. Out of Memory Error
 
 **Problem**: System runs out of memory processing large images.
 
@@ -220,7 +239,7 @@ python scripts/pipeline.py --max-files 5
 # Resize images before processing
 ```
 
-### 12. Test Structure Fails
+### 13. Test Structure Fails
 
 **Problem**: test_structure.py reports errors.
 
