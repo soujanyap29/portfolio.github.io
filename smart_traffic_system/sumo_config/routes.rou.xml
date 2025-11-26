@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Sample Route Definitions for Smart Traffic Management System
+  
+  This is a template route file. For actual simulation, you should:
+  1. Generate routes from your specific network using randomTrips.py
+  2. Use the map_converter.py script to generate routes
+  
+  This template shows the structure and available options.
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    
+    <!-- Include vehicle types -->
+    <include href="vehicles.vtype.xml"/>
+    
+    <!-- ============================================ -->
+    <!-- ROUTE DEFINITIONS                            -->
+    <!-- These should be updated based on your network -->
+    <!-- ============================================ -->
+    
+    <!-- 
+    Example route definitions (uncomment and modify for your network):
+    
+    <route id="route_main_ns" edges="edge1 edge2 edge3 edge4"/>
+    <route id="route_main_sn" edges="edge4 edge3 edge2 edge1"/>
+    <route id="route_east_west" edges="edge_e1 edge_e2 edge_e3"/>
+    <route id="route_west_east" edges="edge_e3 edge_e2 edge_e1"/>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- VEHICLE FLOWS                                -->
+    <!-- Defines continuous vehicle insertion         -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example flow definitions (uncomment and modify for your network):
+    
+    <flow id="flow_cars_ns" type="car" route="route_main_ns" 
+          begin="0" end="3600" probability="0.3"/>
+    
+    <flow id="flow_cars_sn" type="car" route="route_main_sn" 
+          begin="0" end="3600" probability="0.3"/>
+    
+    <flow id="flow_buses" type="bus" route="route_main_ns" 
+          begin="0" end="3600" probability="0.05"/>
+    
+    <flow id="flow_trucks" type="truck" route="route_main_sn" 
+          begin="0" end="3600" probability="0.03"/>
+    
+    <flow id="flow_motorcycles" type="motorcycle" route="route_east_west" 
+          begin="0" end="3600" probability="0.2"/>
+    
+    <flow id="flow_autos" type="auto" route="route_main_ns" 
+          begin="0" end="3600" probability="0.1"/>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- INDIVIDUAL VEHICLES                          -->
+    <!-- Specific vehicle definitions                 -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example individual vehicle definitions:
+    
+    <vehicle id="car_1" type="car" depart="0">
+        <route edges="edge1 edge2 edge3"/>
+    </vehicle>
+    
+    <vehicle id="bus_1" type="bus" depart="100">
+        <route edges="edge1 edge2 edge3 edge4"/>
+    </vehicle>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- EMERGENCY VEHICLES                           -->
+    <!-- Periodic emergency vehicle insertion         -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example emergency vehicle definitions:
+    
+    <vehicle id="ambulance_1" type="ambulance" depart="300">
+        <route edges="edge_e1 edge2 edge3 edge4"/>
+    </vehicle>
+    
+    <vehicle id="police_1" type="police" depart="600">
+        <route edges="edge1 edge_e2 edge3"/>
+    </vehicle>
+    
+    <vehicle id="firetruck_1" type="firetruck" depart="900">
+        <route edges="edge4 edge3 edge2 edge1"/>
+    </vehicle>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- CALIBRATOR FLOWS                             -->
+    <!-- For realistic traffic patterns               -->
+    <!-- ============================================ -->
+    
+    <!--
+    Calibrator example for time-varying demand:
+    
+    <calibrator id="calibrator_main" edge="edge1" pos="0">
+        <flow begin="0" end="600" vehsPerHour="500" type="car"/>
+        <flow begin="600" end="1200" vehsPerHour="800" type="car"/>
+        <flow begin="1200" end="1800" vehsPerHour="600" type="car"/>
+    </calibrator>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- INSTRUCTIONS FOR GENERATING ROUTES           -->
+    <!-- ============================================ -->
+    
+    <!--
+    To generate routes for your specific network:
+    
+    1. Using randomTrips.py (recommended):
+       python $SUMO_HOME/tools/randomTrips.py \
+           -n your_network.net.xml \
+           -o trips.xml \
+           -e 3600 \
+           -p 2.0 \
+           --random
+       
+       Then convert trips to routes:
+       duarouter -n your_network.net.xml -t trips.xml -o routes.rou.xml
+    
+    2. Using the map_converter.py script:
+       python scripts/map_converter.py \
+           --input maps/your_map.osm \
+           --output sumo_config/ \
+           --vehicles 500 \
+           --duration 3600
+    
+    3. Manual route definition:
+       Define routes based on specific edges in your network.
+       Use SUMO-GUI to identify edge IDs.
+    -->
+    
+</routes>

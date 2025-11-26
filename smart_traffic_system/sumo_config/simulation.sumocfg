@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  SUMO Configuration File for Smart Traffic Management System
+  
+  This is the main configuration file that ties all other files together.
+  
+  IMPORTANT: Before running, you need to:
+  1. Generate or provide a network file (network.net.xml)
+  2. Generate routes (routes.rou.xml) for your specific network
+  
+  Use map_converter.py to convert OSM data:
+    python scripts/map_converter.py --input maps/your_map.osm --output sumo_config/
+-->
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+               xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <!-- ============================================ -->
+    <!-- INPUT FILES                                  -->
+    <!-- ============================================ -->
+    <input>
+        <!-- Network file (road topology) -->
+        <!-- NOTE: Replace 'network.net.xml' with your actual network file -->
+        <net-file value="network.net.xml"/>
+        
+        <!-- Route file (vehicle routes and flows) -->
+        <route-files value="routes.rou.xml"/>
+        
+        <!-- Additional files (vehicle types, detectors, etc.) -->
+        <additional-files value="vehicles.vtype.xml,additional.add.xml"/>
+    </input>
+
+    <!-- ============================================ -->
+    <!-- TIME SETTINGS                                -->
+    <!-- ============================================ -->
+    <time>
+        <!-- Simulation start time (seconds) -->
+        <begin value="0"/>
+        
+        <!-- Simulation end time (seconds) -->
+        <!-- 3600 = 1 hour, adjust as needed -->
+        <end value="3600"/>
+        
+        <!-- Simulation step length (seconds) -->
+        <!-- 0.1 gives good accuracy for TraCI control -->
+        <step-length value="0.1"/>
+    </time>
+
+    <!-- ============================================ -->
+    <!-- PROCESSING OPTIONS                           -->
+    <!-- ============================================ -->
+    <processing>
+        <!-- Collision handling -->
+        <collision.action value="warn"/>
+        <collision.check-junctions value="true"/>
+        <collision.mingap-factor value="0"/>
+        
+        <!-- Teleporting (remove stuck vehicles) -->
+        <!-- 300 seconds = 5 minutes waiting before teleport -->
+        <time-to-teleport value="300"/>
+        <time-to-teleport.highways value="0"/>
+        
+        <!-- Departure constraints -->
+        <max-depart-delay value="60"/>
+        
+        <!-- Lane changing -->
+        <lanechange.duration value="3"/>
+        <lanechange.overtake-right value="false"/>
+        
+        <!-- Traffic light handling -->
+        <tls.all-off value="false"/>
+    </processing>
+
+    <!-- ============================================ -->
+    <!-- ROUTING OPTIONS                              -->
+    <!-- ============================================ -->
+    <routing>
+        <!-- Enable automatic rerouting -->
+        <device.rerouting.probability value="0.3"/>
+        
+        <!-- Rerouting frequency (seconds) -->
+        <device.rerouting.period value="60"/>
+        
+        <!-- Adaptation steps for travel time updates -->
+        <device.rerouting.adaptation-steps value="18"/>
+        
+        <!-- Pre-insertion rerouting -->
+        <device.rerouting.pre-period value="60"/>
+    </routing>
+
+    <!-- ============================================ -->
+    <!-- OUTPUT FILES                                 -->
+    <!-- ============================================ -->
+    <output>
+        <!-- Summary statistics -->
+        <summary-output value="summary.xml"/>
+        
+        <!-- Trip information (one entry per completed trip) -->
+        <tripinfo-output value="tripinfo.xml"/>
+        
+        <!-- Overall statistics -->
+        <statistic-output value="statistics.xml"/>
+        
+        <!-- Optional: Full trajectory output (WARNING: large files) -->
+        <!-- <fcd-output value="fcd.xml"/> -->
+        
+        <!-- Optional: Queue output -->
+        <!-- <queue-output value="queue.xml"/> -->
+        
+        <!-- Optional: Emission output -->
+        <!-- <emission-output value="emissions.xml"/> -->
+    </output>
+
+    <!-- ============================================ -->
+    <!-- GUI SETTINGS                                 -->
+    <!-- (Only applies when using sumo-gui)           -->
+    <!-- ============================================ -->
+    <gui_only>
+        <!-- Start simulation immediately when GUI opens -->
+        <start value="true"/>
+        
+        <!-- Close SUMO when simulation ends -->
+        <quit-on-end value="true"/>
+        
+        <!-- GUI settings file (optional) -->
+        <!-- <gui-settings-file value="gui-settings.xml"/> -->
+        
+        <!-- Window settings -->
+        <window-size value="1200,800"/>
+        <window-pos value="50,50"/>
+    </gui_only>
+
+    <!-- ============================================ -->
+    <!-- RANDOM NUMBER GENERATOR                      -->
+    <!-- ============================================ -->
+    <random_number>
+        <!-- Seed for reproducible results -->
+        <!-- Use 0 for truly random behavior -->
+        <seed value="42"/>
+    </random_number>
+
+    <!-- ============================================ -->
+    <!-- REPORTING / LOGGING                          -->
+    <!-- ============================================ -->
+    <report>
+        <!-- Verbosity level -->
+        <verbose value="false"/>
+        
+        <!-- Suppress warnings (not recommended for debugging) -->
+        <no-warnings value="false"/>
+        
+        <!-- Log file -->
+        <log value="simulation.log"/>
+        
+        <!-- Print summary at end -->
+        <duration-log.statistics value="true"/>
+    </report>
+
+    <!-- ============================================ -->
+    <!-- TRACI SETTINGS                               -->
+    <!-- (For programmatic control via Python)        -->
+    <!-- ============================================ -->
+    <traci_server>
+        <!-- Remote port for TraCI connection -->
+        <!-- Set to 0 for automatic port selection -->
+        <!-- <remote-port value="8813"/> -->
+    </traci_server>
+
+</configuration>

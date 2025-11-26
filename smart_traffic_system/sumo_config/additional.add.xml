@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Additional Configuration for Smart Traffic Management System
+  
+  This file contains:
+  - Detector definitions
+  - Rerouter definitions
+  - Variable speed signs
+  - Parking areas
+  - POIs and polygons
+-->
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    
+    <!-- ============================================ -->
+    <!-- INDUCTION LOOP DETECTORS                     -->
+    <!-- For measuring traffic flow and occupancy     -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example induction loop detectors (update edge/lane IDs for your network):
+    
+    <inductionLoop id="det_north_in" lane="edge_north_0" pos="10" freq="60" 
+                   file="detector_output.xml"/>
+    <inductionLoop id="det_south_in" lane="edge_south_0" pos="10" freq="60" 
+                   file="detector_output.xml"/>
+    <inductionLoop id="det_east_in" lane="edge_east_0" pos="10" freq="60" 
+                   file="detector_output.xml"/>
+    <inductionLoop id="det_west_in" lane="edge_west_0" pos="10" freq="60" 
+                   file="detector_output.xml"/>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- LANE AREA DETECTORS (E2)                     -->
+    <!-- For queue detection and signal control       -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example lane area detectors:
+    
+    <laneAreaDetector id="e2det_north" lane="edge_north_0" pos="0" 
+                      length="100" freq="60" file="e2_output.xml"/>
+    <laneAreaDetector id="e2det_south" lane="edge_south_0" pos="0" 
+                      length="100" freq="60" file="e2_output.xml"/>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- MULTI-ENTRY-EXIT DETECTORS (E3)              -->
+    <!-- For measuring area-wide traffic metrics      -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example multi-entry-exit detector:
+    
+    <entryExitDetector id="e3det_junction" freq="60" file="e3_output.xml">
+        <detEntry lane="edge_north_0" pos="10"/>
+        <detEntry lane="edge_south_0" pos="10"/>
+        <detEntry lane="edge_east_0" pos="10"/>
+        <detEntry lane="edge_west_0" pos="10"/>
+        <detExit lane="edge_north_out_0" pos="10"/>
+        <detExit lane="edge_south_out_0" pos="10"/>
+        <detExit lane="edge_east_out_0" pos="10"/>
+        <detExit lane="edge_west_out_0" pos="10"/>
+    </entryExitDetector>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- EDGE DATA COLLECTION                         -->
+    <!-- For collecting aggregate edge statistics     -->
+    <!-- ============================================ -->
+    
+    <!--
+    <edgeData id="edge_dump" file="edgedata.xml" freq="300" 
+              excludeEmpty="true" withInternal="false"/>
+    
+    <laneData id="lane_dump" file="lanedata.xml" freq="300" 
+              excludeEmpty="true"/>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- REROUTERS                                    -->
+    <!-- For dynamic routing and incident management  -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example rerouter for closing a road:
+    
+    <rerouter id="rerouter_incident" edges="edge_blocked">
+        <interval begin="1000" end="2000">
+            <closingReroute id="edge_blocked"/>
+            <destProbReroute id="edge_alternative" probability="1.0"/>
+        </interval>
+    </rerouter>
+    -->
+    
+    <!--
+    Example rerouter for parking guidance:
+    
+    <rerouter id="rerouter_parking" edges="edge_to_parking">
+        <interval begin="0" end="3600">
+            <parkingAreaReroute id="parking_lot_1"/>
+            <parkingAreaReroute id="parking_lot_2"/>
+        </interval>
+    </rerouter>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- VARIABLE SPEED SIGNS                         -->
+    <!-- For V2I speed advisory implementation        -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example variable speed sign:
+    
+    <variableSpeedSign id="vss_approach" lanes="edge_main_0 edge_main_1">
+        <step time="0" speed="13.89"/>
+        <step time="1800" speed="11.11"/>
+        <step time="3000" speed="13.89"/>
+    </variableSpeedSign>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- PARKING AREAS                                -->
+    <!-- For parking simulation                       -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example parking area:
+    
+    <parkingArea id="parking_lot_1" lane="edge_parking_0" startPos="10" 
+                 endPos="50" roadsideCapacity="20" width="5"/>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- BUS STOPS                                    -->
+    <!-- For public transport simulation              -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example bus stop:
+    
+    <busStop id="bus_stop_main" lane="edge_main_0" startPos="20" 
+             endPos="35" friendlyPos="true"/>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- TRAFFIC LIGHT PROGRAMS                       -->
+    <!-- Custom signal timing programs                -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example fixed-time traffic light program:
+    
+    <tlLogic id="junction_main" type="static" programID="fixed_30s">
+        <phase duration="30" state="GGGGrrrrGGGGrrrr"/>
+        <phase duration="3"  state="yyyyrrrryyyyrrrr"/>
+        <phase duration="30" state="rrrrGGGGrrrrGGGG"/>
+        <phase duration="3"  state="rrrryyyyrrrryyyy"/>
+    </tlLogic>
+    -->
+    
+    <!--
+    Example actuated traffic light program:
+    
+    <tlLogic id="junction_main" type="actuated" programID="actuated">
+        <phase duration="30" minDur="10" maxDur="50" state="GGGGrrrrGGGGrrrr"/>
+        <phase duration="3"  state="yyyyrrrryyyyrrrr"/>
+        <phase duration="30" minDur="10" maxDur="50" state="rrrrGGGGrrrrGGGG"/>
+        <phase duration="3"  state="rrrryyyyrrrryyyy"/>
+    </tlLogic>
+    -->
+    
+    <!-- ============================================ -->
+    <!-- POIs AND POLYGONS                            -->
+    <!-- For visualization and reference              -->
+    <!-- ============================================ -->
+    
+    <!--
+    Example Point of Interest:
+    
+    <poi id="hospital" type="emergency_service" color="255,0,0" 
+         layer="10" x="100" y="200"/>
+    
+    <poi id="school" type="education" color="0,255,0" 
+         layer="10" x="300" y="400"/>
+    -->
+    
+    <!--
+    Example polygon (building):
+    
+    <poly id="building_1" type="building" color="128,128,128" fill="true" layer="5">
+        100,100 120,100 120,130 100,130
+    </poly>
+    -->
+    
+</additional>

@@ -1,0 +1,90 @@
+# Smart Traffic Management System - Git Ignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# SUMO output files
+*.xml.gz
+fcd.xml
+queue.xml
+tripinfo.xml
+summary.xml
+statistics.xml
+simulation.log
+*.taz.xml
+
+# Large simulation outputs
+data/simulation_logs/**/*.xml
+results/graphs/*.png
+results/tables/*.csv
+!results/README.md
+
+# Map files (user-provided)
+maps/*.osm
+maps/*.osm.pbf
+
+# Generated network files
+sumo_config/*.net.xml
+sumo_config/trips.xml
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Test coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
