@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Edge definitions for 4-Lane Road Network
+  
+  Each edge has 2 lanes (representing one direction of a 4-lane road)
+  Total: 4 lanes per approach (2 in each direction)
+-->
+<edges xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/edges_file.xsd">
+    
+    <!-- North-South corridor -->
+    <!-- North inbound to center (2 lanes) -->
+    <edge id="north_to_center" from="north_in" to="center" numLanes="2" speed="13.89"/>
+    <edge id="north_entry" from="north_out" to="north_in" numLanes="2" speed="13.89"/>
+    
+    <!-- Center to North outbound (2 lanes) -->
+    <edge id="center_to_north" from="center" to="north_in" numLanes="2" speed="13.89"/>
+    <edge id="north_exit" from="north_in" to="north_out" numLanes="2" speed="13.89"/>
+    
+    <!-- South inbound to center (2 lanes) -->
+    <edge id="south_to_center" from="south_in" to="center" numLanes="2" speed="13.89"/>
+    <edge id="south_entry" from="south_out" to="south_in" numLanes="2" speed="13.89"/>
+    
+    <!-- Center to South outbound (2 lanes) -->
+    <edge id="center_to_south" from="center" to="south_in" numLanes="2" speed="13.89"/>
+    <edge id="south_exit" from="south_in" to="south_out" numLanes="2" speed="13.89"/>
+    
+    <!-- East-West corridor -->
+    <!-- East inbound to center (2 lanes) -->
+    <edge id="east_to_center" from="east_in" to="center" numLanes="2" speed="13.89"/>
+    <edge id="east_entry" from="east_out" to="east_in" numLanes="2" speed="13.89"/>
+    
+    <!-- Center to East outbound (2 lanes) -->
+    <edge id="center_to_east" from="center" to="east_in" numLanes="2" speed="13.89"/>
+    <edge id="east_exit" from="east_in" to="east_out" numLanes="2" speed="13.89"/>
+    
+    <!-- West inbound to center (2 lanes) -->
+    <edge id="west_to_center" from="west_in" to="center" numLanes="2" speed="13.89"/>
+    <edge id="west_entry" from="west_out" to="west_in" numLanes="2" speed="13.89"/>
+    
+    <!-- Center to West outbound (2 lanes) -->
+    <edge id="center_to_west" from="center" to="west_in" numLanes="2" speed="13.89"/>
+    <edge id="west_exit" from="west_in" to="west_out" numLanes="2" speed="13.89"/>
+    
+</edges>
