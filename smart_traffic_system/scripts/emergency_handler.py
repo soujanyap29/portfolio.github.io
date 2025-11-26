@@ -320,14 +320,35 @@ class EmergencyHandler:
     
     def _is_vehicle_ahead(self, em_state: EmergencyVehicleState,
                            other_state: Dict) -> bool:
-        """Check if another vehicle is ahead of emergency vehicle."""
-        # Simplified check based on position
+        """
+        Check if another vehicle is ahead of emergency vehicle.
+        
+        Uses heading direction to determine if the vehicle is in the
+        path of the emergency vehicle.
+        """
+        import math
+        
         em_pos = em_state.position
         other_pos = other_state.get('position', (0, 0))
+        em_heading = math.radians(em_state.vehicle_id if hasattr(em_state, 'heading') else 0)
         
-        # Check if on same lane/road
-        # For simplicity, consider all vehicles within range as needing to yield
-        return True
+        # Calculate relative position
+        dx = other_pos[0] - em_pos[0]
+        dy = other_pos[1] - em_pos[1]
+        
+        # Calculate angle to other vehicle
+        angle_to_other = math.atan2(dx, dy)
+        
+        # Calculate angle difference (within 60 degrees of heading)
+        angle_diff = abs(angle_to_other - em_heading)
+        if angle_diff > math.pi:
+            angle_diff = 2 * math.pi - angle_diff
+        
+        # Check if other vehicle is within 60 degrees of heading direction
+        # and in front (positive projection along heading)
+        forward_projection = dx * math.sin(em_heading) + dy * math.cos(em_heading)
+        
+        return forward_projection > 0 and angle_diff < math.pi / 3
     
     def _request_yield(self, vehicle_id: str, emergency_id: str) -> None:
         """Request a vehicle to yield to emergency vehicle."""

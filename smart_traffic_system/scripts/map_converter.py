@@ -25,6 +25,23 @@ logging.basicConfig(
 )
 logger = logging.getLogger('MapConverter')
 
+# Highway types to keep in the network conversion
+HIGHWAY_TYPES = [
+    'highway.motorway',
+    'highway.motorway_link',
+    'highway.trunk',
+    'highway.trunk_link',
+    'highway.primary',
+    'highway.primary_link',
+    'highway.secondary',
+    'highway.secondary_link',
+    'highway.tertiary',
+    'highway.tertiary_link',
+    'highway.residential',
+    'highway.living_street',
+    'highway.unclassified'
+]
+
 
 class MapConverter:
     """
@@ -108,7 +125,7 @@ class MapConverter:
             '--tls.default-type', 'actuated',
             '--output.street-names',
             '--output.original-names',
-            '--keep-edges.by-type', 'highway.motorway,highway.motorway_link,highway.trunk,highway.trunk_link,highway.primary,highway.primary_link,highway.secondary,highway.secondary_link,highway.tertiary,highway.tertiary_link,highway.residential,highway.living_street,highway.unclassified',
+            '--keep-edges.by-type', ','.join(HIGHWAY_TYPES),
         ]
         
         if add_traffic_lights:

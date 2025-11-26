@@ -193,10 +193,13 @@ class MetricsCollector:
         trip = self.trip_metrics[vehicle_id]
         trip.waiting_time = state.get('waiting_time', trip.waiting_time)
         
-        # Update stops count
-        if state.get('speed', 0) < 0.1:
-            # Simplified: increment stops when stopped
-            pass
+        # Update stops count based on speed transitions
+        current_speed = state.get('speed', 0)
+        if hasattr(trip, '_last_speed'):
+            # Count as stop if vehicle was moving and now stopped
+            if trip._last_speed > 1.0 and current_speed < 0.1:
+                trip.stops += 1
+        trip._last_speed = current_speed
     
     def _check_completed_trips(self, active_vehicles: set,
                                 sim_time: float) -> None:

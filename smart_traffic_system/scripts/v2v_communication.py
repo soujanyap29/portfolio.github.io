@@ -20,6 +20,9 @@ import time
 
 logger = logging.getLogger('V2VCommunication')
 
+# Signal masks for lane change detection
+LANE_CHANGE_SIGNAL_MASK = 0x3  # Bitmask for left/right turn signals
+
 
 @dataclass
 class V2VMessage:
@@ -172,7 +175,7 @@ class V2VCommunication:
                 'lane_id': lane_id,
                 'vehicle_type': state.get('type', 'car'),
                 'braking': acceleration < -2.0,
-                'lane_change_intent': state.get('signals', 0) & 0x3 != 0
+                'lane_change_intent': state.get('signals', 0) & LANE_CHANGE_SIGNAL_MASK != 0
             }
         )
     
