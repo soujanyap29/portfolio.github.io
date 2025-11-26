@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Vehicle Type Definitions for Smart Traffic Management System
+  
+  This file defines various vehicle types with realistic parameters:
+  - Standard vehicles (cars, buses, trucks, motorcycles)
+  - Emergency vehicles (ambulance, police, fire truck)
+  - Special vehicles (auto-rickshaw)
+  
+  Parameters:
+  - accel: maximum acceleration (m/s²)
+  - decel: maximum deceleration (m/s²)
+  - sigma: driver imperfection (0-1)
+  - length: vehicle length (m)
+  - minGap: minimum gap to leading vehicle (m)
+  - maxSpeed: maximum speed (m/s)
+  - speedFactor: speed limit multiplier
+  - speedDev: speed deviation
+  - guiShape: visual representation in SUMO-GUI
+  - vClass: vehicle class for routing/access
+-->
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    
+    <!-- ============================================ -->
+    <!-- Standard Passenger Vehicles                  -->
+    <!-- ============================================ -->
+    
+    <!-- Standard Car -->
+    <vType id="car" 
+           accel="2.6" 
+           decel="4.5" 
+           sigma="0.5" 
+           length="4.5" 
+           minGap="2.5" 
+           maxSpeed="13.89"
+           speedFactor="1.0" 
+           speedDev="0.1"
+           color="1,1,0"
+           guiShape="passenger"
+           emissionClass="HBEFA3/PC_G_EU4"
+           laneChangeModel="LC2013"
+           lcStrategic="1.0"
+           lcCooperative="1.0"
+           lcSpeedGain="1.0"/>
+    
+    <!-- Compact Car -->
+    <vType id="compact_car" 
+           accel="2.8" 
+           decel="4.8" 
+           sigma="0.5" 
+           length="3.8" 
+           minGap="2.0" 
+           maxSpeed="14.0"
+           speedFactor="1.0" 
+           speedDev="0.1"
+           color="0.2,0.6,0.8"
+           guiShape="passenger/hatchback"
+           emissionClass="HBEFA3/PC_G_EU4"/>
+    
+    <!-- SUV -->
+    <vType id="suv" 
+           accel="2.4" 
+           decel="4.2" 
+           sigma="0.5" 
+           length="5.0" 
+           minGap="2.8" 
+           maxSpeed="13.5"
+           speedFactor="0.95" 
+           speedDev="0.1"
+           color="0.5,0.5,0.5"
+           guiShape="passenger/sedan"
+           emissionClass="HBEFA3/PC_G_EU4"/>
+    
+    <!-- ============================================ -->
+    <!-- Public Transport                             -->
+    <!-- ============================================ -->
+    
+    <!-- City Bus -->
+    <vType id="bus" 
+           accel="1.2" 
+           decel="3.0" 
+           sigma="0.4" 
+           length="12.0" 
+           minGap="3.0" 
+           maxSpeed="11.11"
+           speedFactor="0.9"
+           speedDev="0.05"
+           color="0,0,1"
+           guiShape="bus"
+           vClass="bus"
+           emissionClass="HBEFA3/Bus"
+           personCapacity="50"
+           laneChangeModel="LC2013"
+           lcStrategic="1.5"
+           lcCooperative="0.5"/>
+    
+    <!-- Mini Bus -->
+    <vType id="minibus" 
+           accel="1.5" 
+           decel="3.5" 
+           sigma="0.5" 
+           length="7.0" 
+           minGap="2.5" 
+           maxSpeed="12.5"
+           speedFactor="0.95"
+           color="0,0.5,0.8"
+           guiShape="bus"
+           vClass="bus"
+           personCapacity="20"/>
+    
+    <!-- ============================================ -->
+    <!-- Heavy Vehicles                               -->
+    <!-- ============================================ -->
+    
+    <!-- Truck -->
+    <vType id="truck" 
+           accel="1.0" 
+           decel="2.5" 
+           sigma="0.4" 
+           length="15.0" 
+           minGap="3.5" 
+           maxSpeed="9.72"
+           speedFactor="0.8"
+           speedDev="0.05"
+           color="0.5,0.5,0.5"
+           guiShape="truck"
+           vClass="truck"
+           emissionClass="HBEFA3/HDV"
+           laneChangeModel="LC2013"
+           lcStrategic="2.0"
+           lcCooperative="0.3"/>
+    
+    <!-- Delivery Van -->
+    <vType id="delivery" 
+           accel="1.8" 
+           decel="3.5" 
+           sigma="0.5" 
+           length="6.0" 
+           minGap="2.5" 
+           maxSpeed="11.11"
+           speedFactor="0.9"
+           color="0.8,0.6,0.2"
+           guiShape="delivery"
+           vClass="delivery"/>
+    
+    <!-- ============================================ -->
+    <!-- Two-Wheelers                                 -->
+    <!-- ============================================ -->
+    
+    <!-- Motorcycle -->
+    <vType id="motorcycle" 
+           accel="3.0" 
+           decel="5.0" 
+           sigma="0.6" 
+           length="2.0" 
+           width="0.8"
+           minGap="1.5" 
+           maxSpeed="16.67"
+           speedFactor="1.1"
+           speedDev="0.15"
+           color="1,0,0"
+           guiShape="motorcycle"
+           vClass="motorcycle"
+           emissionClass="HBEFA3/PC_G_EU4"
+           laneChangeModel="LC2013"
+           lcStrategic="0.5"
+           lcSpeedGain="1.5"/>
+    
+    <!-- Bicycle -->
+    <vType id="bicycle" 
+           accel="1.2" 
+           decel="3.0" 
+           sigma="0.7" 
+           length="1.8" 
+           width="0.6"
+           minGap="1.0" 
+           maxSpeed="6.0"
+           speedFactor="1.0"
+           color="0,1,0"
+           guiShape="bicycle"
+           vClass="bicycle"/>
+    
+    <!-- ============================================ -->
+    <!-- Emergency Vehicles                           -->
+    <!-- ============================================ -->
+    
+    <!-- Ambulance -->
+    <vType id="ambulance" 
+           accel="3.5" 
+           decel="5.0" 
+           sigma="0.3" 
+           length="6.0" 
+           minGap="2.0" 
+           maxSpeed="19.44"
+           speedFactor="1.3"
+           speedDev="0.05"
+           color="1,1,1"
+           guiShape="emergency"
+           vClass="emergency"
+           emissionClass="HBEFA3/PC_G_EU4"
+           laneChangeModel="LC2013"
+           lcStrategic="0.0"
+           lcCooperative="0.0"
+           lcSpeedGain="2.0"
+           jmIgnoreKeepClearTime="1"/>
+    
+    <!-- Police Car -->
+    <vType id="police" 
+           accel="3.5" 
+           decel="5.0" 
+           sigma="0.3" 
+           length="5.0" 
+           minGap="2.0" 
+           maxSpeed="19.44"
+           speedFactor="1.3"
+           speedDev="0.05"
+           color="0,0,0.8"
+           guiShape="emergency"
+           vClass="emergency"
+           laneChangeModel="LC2013"
+           lcStrategic="0.0"
+           lcCooperative="0.0"
+           lcSpeedGain="2.0"
+           jmIgnoreKeepClearTime="1"/>
+    
+    <!-- Fire Truck -->
+    <vType id="firetruck" 
+           accel="2.5" 
+           decel="4.0" 
+           sigma="0.3" 
+           length="10.0" 
+           minGap="3.0" 
+           maxSpeed="16.67"
+           speedFactor="1.2"
+           speedDev="0.05"
+           color="1,0,0"
+           guiShape="firebrigade"
+           vClass="emergency"
+           laneChangeModel="LC2013"
+           lcStrategic="0.0"
+           lcCooperative="0.0"
+           lcSpeedGain="2.0"
+           jmIgnoreKeepClearTime="1"/>
+    
+    <!-- ============================================ -->
+    <!-- Special Vehicles (India-specific)            -->
+    <!-- ============================================ -->
+    
+    <!-- Auto-rickshaw -->
+    <vType id="auto" 
+           accel="2.0" 
+           decel="3.5" 
+           sigma="0.6" 
+           length="3.0" 
+           width="1.5"
+           minGap="2.0" 
+           maxSpeed="11.11"
+           speedFactor="0.85"
+           speedDev="0.15"
+           color="0,1,0"
+           guiShape="passenger/van"
+           emissionClass="HBEFA3/PC_G_EU4"
+           laneChangeModel="LC2013"
+           lcStrategic="0.8"
+           lcSpeedGain="1.2"/>
+    
+    <!-- Tempo (small goods carrier) -->
+    <vType id="tempo" 
+           accel="1.5" 
+           decel="3.0" 
+           sigma="0.5" 
+           length="4.5" 
+           minGap="2.5" 
+           maxSpeed="10.0"
+           speedFactor="0.8"
+           color="0.8,0.4,0"
+           guiShape="delivery"
+           vClass="delivery"/>
+    
+</additional>

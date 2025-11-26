@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Sample 4-Lane Road Network for Smart Traffic Management System
+  
+  This network represents a simple 4-lane road intersection scenario
+  suitable for testing V2V, V2I, and SIoT communication features.
+  
+  Network Layout:
+  
+            North (4 lanes)
+              │ │ │ │
+              ▼ ▲ ▼ ▲
+      ────────┼─┼─┼─┼────────  West/East (4 lanes)
+              │ │ │ │
+              ▼ ▲ ▼ ▲
+            South (4 lanes)
+  
+  Each approach has 4 lanes:
+  - 2 lanes inbound (toward intersection)
+  - 2 lanes outbound (away from intersection)
+-->
+<nodes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/nodes_file.xsd">
+    
+    <!-- Central intersection -->
+    <node id="center" x="500" y="500" type="traffic_light"/>
+    
+    <!-- North approach -->
+    <node id="north_in" x="500" y="800" type="priority"/>
+    <node id="north_out" x="500" y="1000" type="priority"/>
+    
+    <!-- South approach -->
+    <node id="south_in" x="500" y="200" type="priority"/>
+    <node id="south_out" x="500" y="0" type="priority"/>
+    
+    <!-- East approach -->
+    <node id="east_in" x="800" y="500" type="priority"/>
+    <node id="east_out" x="1000" y="500" type="priority"/>
+    
+    <!-- West approach -->
+    <node id="west_in" x="200" y="500" type="priority"/>
+    <node id="west_out" x="0" y="500" type="priority"/>
+    
+</nodes>

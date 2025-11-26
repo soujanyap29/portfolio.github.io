@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Routes and Vehicle Flows for 4-Lane Road Scenario
+  
+  Traffic pattern:
+  - Main flow: North-South corridor (higher volume)
+  - Cross flow: East-West corridor
+  - Emergency vehicles: Periodic ambulance and police
+  - Mixed vehicle types: cars, buses, trucks, motorcycles
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    
+    <!-- Include vehicle type definitions -->
+    <include href="vehicles.vtype.xml"/>
+    
+    <!-- ============================================ -->
+    <!-- ROUTE DEFINITIONS                            -->
+    <!-- ============================================ -->
+    
+    <!-- North-South Routes -->
+    <route id="route_ns" edges="north_entry north_to_center center_to_south south_exit"/>
+    <route id="route_sn" edges="south_entry south_to_center center_to_north north_exit"/>
+    
+    <!-- East-West Routes -->
+    <route id="route_ew" edges="east_entry east_to_center center_to_west west_exit"/>
+    <route id="route_we" edges="west_entry west_to_center center_to_east east_exit"/>
+    
+    <!-- Turn Routes -->
+    <route id="route_n_to_e" edges="north_entry north_to_center center_to_east east_exit"/>
+    <route id="route_n_to_w" edges="north_entry north_to_center center_to_west west_exit"/>
+    <route id="route_s_to_e" edges="south_entry south_to_center center_to_east east_exit"/>
+    <route id="route_s_to_w" edges="south_entry south_to_center center_to_west west_exit"/>
+    <route id="route_e_to_n" edges="east_entry east_to_center center_to_north north_exit"/>
+    <route id="route_e_to_s" edges="east_entry east_to_center center_to_south south_exit"/>
+    <route id="route_w_to_n" edges="west_entry west_to_center center_to_north north_exit"/>
+    <route id="route_w_to_s" edges="west_entry west_to_center center_to_south south_exit"/>
+    
+    <!-- ============================================ -->
+    <!-- VEHICLE FLOWS - Main Traffic                 -->
+    <!-- ============================================ -->
+    
+    <!-- North-South Corridor (High Volume) -->
+    <flow id="flow_ns_cars" type="car" route="route_ns" 
+          begin="0" end="3600" probability="0.25" departLane="best"/>
+    <flow id="flow_sn_cars" type="car" route="route_sn" 
+          begin="0" end="3600" probability="0.25" departLane="best"/>
+    
+    <!-- East-West Corridor (Medium Volume) -->
+    <flow id="flow_ew_cars" type="car" route="route_ew" 
+          begin="0" end="3600" probability="0.15" departLane="best"/>
+    <flow id="flow_we_cars" type="car" route="route_we" 
+          begin="0" end="3600" probability="0.15" departLane="best"/>
+    
+    <!-- ============================================ -->
+    <!-- VEHICLE FLOWS - Buses                        -->
+    <!-- ============================================ -->
+    
+    <flow id="flow_ns_bus" type="bus" route="route_ns" 
+          begin="0" end="3600" probability="0.02" departLane="0"/>
+    <flow id="flow_sn_bus" type="bus" route="route_sn" 
+          begin="0" end="3600" probability="0.02" departLane="0"/>
+    
+    <!-- ============================================ -->
+    <!-- VEHICLE FLOWS - Trucks                       -->
+    <!-- ============================================ -->
+    
+    <flow id="flow_ns_truck" type="truck" route="route_ns" 
+          begin="0" end="3600" probability="0.03" departLane="0"/>
+    <flow id="flow_ew_truck" type="truck" route="route_ew" 
+          begin="0" end="3600" probability="0.02" departLane="0"/>
+    
+    <!-- ============================================ -->
+    <!-- VEHICLE FLOWS - Motorcycles                  -->
+    <!-- ============================================ -->
+    
+    <flow id="flow_ns_moto" type="motorcycle" route="route_ns" 
+          begin="0" end="3600" probability="0.10" departLane="best"/>
+    <flow id="flow_sn_moto" type="motorcycle" route="route_sn" 
+          begin="0" end="3600" probability="0.10" departLane="best"/>
+    <flow id="flow_ew_moto" type="motorcycle" route="route_ew" 
+          begin="0" end="3600" probability="0.08" departLane="best"/>
+    <flow id="flow_we_moto" type="motorcycle" route="route_we" 
+          begin="0" end="3600" probability="0.08" departLane="best"/>
+    
+    <!-- ============================================ -->
+    <!-- VEHICLE FLOWS - Turning Traffic              -->
+    <!-- ============================================ -->
+    
+    <flow id="flow_n_to_e" type="car" route="route_n_to_e" 
+          begin="0" end="3600" probability="0.05" departLane="1"/>
+    <flow id="flow_n_to_w" type="car" route="route_n_to_w" 
+          begin="0" end="3600" probability="0.05" departLane="0"/>
+    <flow id="flow_s_to_e" type="car" route="route_s_to_e" 
+          begin="0" end="3600" probability="0.05" departLane="1"/>
+    <flow id="flow_s_to_w" type="car" route="route_s_to_w" 
+          begin="0" end="3600" probability="0.05" departLane="0"/>
+    
+    <!-- ============================================ -->
+    <!-- EMERGENCY VEHICLES                           -->
+    <!-- ============================================ -->
+    
+    <!-- Ambulance every 10 minutes -->
+    <vehicle id="ambulance_1" type="ambulance" route="route_ns" depart="300" departLane="best"/>
+    <vehicle id="ambulance_2" type="ambulance" route="route_ew" depart="900" departLane="best"/>
+    <vehicle id="ambulance_3" type="ambulance" route="route_sn" depart="1500" departLane="best"/>
+    <vehicle id="ambulance_4" type="ambulance" route="route_we" depart="2100" departLane="best"/>
+    <vehicle id="ambulance_5" type="ambulance" route="route_ns" depart="2700" departLane="best"/>
+    <vehicle id="ambulance_6" type="ambulance" route="route_ew" depart="3300" departLane="best"/>
+    
+    <!-- Police every 15 minutes -->
+    <vehicle id="police_1" type="police" route="route_sn" depart="450" departLane="best"/>
+    <vehicle id="police_2" type="police" route="route_we" depart="1350" departLane="best"/>
+    <vehicle id="police_3" type="police" route="route_ns" depart="2250" departLane="best"/>
+    <vehicle id="police_4" type="police" route="route_ew" depart="3150" departLane="best"/>
+    
+    <!-- Fire truck every 20 minutes -->
+    <vehicle id="firetruck_1" type="firetruck" route="route_ew" depart="600" departLane="best"/>
+    <vehicle id="firetruck_2" type="firetruck" route="route_ns" depart="1800" departLane="best"/>
+    <vehicle id="firetruck_3" type="firetruck" route="route_sn" depart="3000" departLane="best"/>
+    
+</routes>
