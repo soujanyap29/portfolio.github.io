@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements - Smart Community Portal</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1>🏘️ Smart Community</h1>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="amenities.html" class="nav-link">Amenities</a>
+            <a href="resources.html" class="nav-link">Resources</a>
+            <a href="complaints.html" class="nav-link">Complaints</a>
+            <a href="announcements.html" class="nav-link active">Announcements</a>
+        </div>
+        <div class="nav-right">
+            <div class="notification-bell" id="notificationBell">
+                🔔
+                <span class="notification-count" id="notificationCount">0</span>
+            </div>
+            <div class="user-menu">
+                <span id="userName">User</span>
+                <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2>Community Announcements</h2>
+            <p>Stay updated with the latest community news</p>
+        </div>
+
+        <div class="section-actions" id="adminActions" style="display: none;">
+            <button class="btn btn-primary" id="newAnnouncementBtn">+ New Announcement</button>
+        </div>
+
+        <div class="filter-bar">
+            <select id="categoryFilter">
+                <option value="">All Categories</option>
+                <option value="maintenance">Maintenance</option>
+                <option value="event">Events</option>
+                <option value="policy">Policy</option>
+                <option value="emergency">Emergency</option>
+                <option value="general">General</option>
+            </select>
+        </div>
+
+        <div class="announcements-container" id="announcementsList">
+            <p class="loading">Loading announcements...</p>
+        </div>
+    </main>
+
+    <div class="modal" id="announcementModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="announcementModalTitle">New Announcement</h3>
+                <button class="close-btn" id="closeAnnouncementModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="announcementForm">
+                    <input type="hidden" id="announcementId">
+                    <div class="form-group">
+                        <label for="announcementTitle">Title</label>
+                        <input type="text" id="announcementTitle" required placeholder="Announcement title">
+                    </div>
+                    <div class="form-group">
+                        <label for="announcementContent">Content</label>
+                        <textarea id="announcementContent" required rows="5" placeholder="Announcement content..."></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="announcementCategory">Category</label>
+                            <select id="announcementCategory" required>
+                                <option value="general">General</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="event">Event</option>
+                                <option value="policy">Policy</option>
+                                <option value="emergency">Emergency</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="announcementPriority">Priority</label>
+                            <select id="announcementPriority" required>
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="announcementExpiry">Expiry Date (Optional)</label>
+                        <input type="date" id="announcementExpiry">
+                    </div>
+                    <div id="announcementError" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary">Post Announcement</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/announcements.js"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - Smart Community Portal</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1>🏘️ Smart Community</h1>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="amenities.html" class="nav-link">Amenities</a>
+            <a href="resources.html" class="nav-link active">Resources</a>
+            <a href="complaints.html" class="nav-link">Complaints</a>
+            <a href="announcements.html" class="nav-link">Announcements</a>
+        </div>
+        <div class="nav-right">
+            <div class="notification-bell" id="notificationBell">
+                🔔
+                <span class="notification-count" id="notificationCount">0</span>
+            </div>
+            <div class="user-menu">
+                <span id="userName">User</span>
+                <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2>Community Resources</h2>
+            <p>Share and borrow resources with your neighbors</p>
+        </div>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" data-tab="browse">Browse Resources</button>
+            <button class="tab-btn" data-tab="myresources">My Resources</button>
+            <button class="tab-btn" data-tab="requests">Borrow Requests</button>
+        </div>
+
+        <div id="browseTab" class="tab-content active">
+            <div class="filter-bar">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="tools">Tools</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="sports">Sports</option>
+                    <option value="books">Books</option>
+                    <option value="household">Household</option>
+                    <option value="other">Other</option>
+                </select>
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="available">Available</option>
+                    <option value="borrowed">Borrowed</option>
+                </select>
+            </div>
+            <div class="resources-grid" id="resourcesList">
+                <p class="loading">Loading resources...</p>
+            </div>
+        </div>
+
+        <div id="myresourcesTab" class="tab-content">
+            <div class="section-actions">
+                <button class="btn btn-primary" id="addResourceBtn">+ Add Resource</button>
+            </div>
+            <div class="resources-grid" id="myResourcesList">
+                <p class="loading">Loading your resources...</p>
+            </div>
+        </div>
+
+        <div id="requestsTab" class="tab-content">
+            <div class="tabs-inner">
+                <button class="tab-btn-inner active" data-subtab="received">Received Requests</button>
+                <button class="tab-btn-inner" data-subtab="sent">Sent Requests</button>
+            </div>
+            <div id="receivedRequests" class="subtab-content active">
+                <div class="requests-list" id="receivedRequestsList">
+                    <p class="loading">Loading requests...</p>
+                </div>
+            </div>
+            <div id="sentRequests" class="subtab-content">
+                <div class="requests-list" id="sentRequestsList">
+                    <p class="loading">Loading requests...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="resourceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="resourceModalTitle">Add Resource</h3>
+                <button class="close-btn" id="closeResourceModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="resourceForm">
+                    <input type="hidden" id="resourceId">
+                    <div class="form-group">
+                        <label for="resourceName">Resource Name</label>
+                        <input type="text" id="resourceName" required placeholder="e.g., Power Drill">
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceDescription">Description</label>
+                        <textarea id="resourceDescription" required rows="3" placeholder="Describe your resource..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceCategory">Category</label>
+                        <select id="resourceCategory" required>
+                            <option value="tools">Tools</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="sports">Sports</option>
+                            <option value="books">Books</option>
+                            <option value="household">Household</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceImage">Image URL (Optional)</label>
+                        <input type="url" id="resourceImage" placeholder="https://example.com/image.jpg">
+                    </div>
+                    <div id="resourceError" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary">Save Resource</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="borrowModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Request to Borrow</h3>
+                <button class="close-btn" id="closeBorrowModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="resource-info" id="borrowResourceInfo"></div>
+                <form id="borrowForm">
+                    <input type="hidden" id="borrowResourceId">
+                    <div class="form-group">
+                        <label for="borrowMessage">Message to Owner</label>
+                        <textarea id="borrowMessage" rows="3" placeholder="Explain why you need this item..."></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="borrowDate">Borrow Date</label>
+                            <input type="date" id="borrowDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="returnDate">Return Date</label>
+                            <input type="date" id="returnDate" required>
+                        </div>
+                    </div>
+                    <div id="borrowError" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary">Send Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/resources.js"></script>
+</body>
+</html>

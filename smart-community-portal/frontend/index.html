@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Community Portal</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="logo">
+                <h1>🏘️ Smart Community</h1>
+                <p>Resource Sharing Portal</p>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="register">Register</button>
+            </div>
+
+            <form id="loginForm" class="auth-form active">
+                <h2>Welcome Back</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <div id="loginError" class="error-message"></div>
+            </form>
+
+            <form id="registerForm" class="auth-form">
+                <h2>Create Account</h2>
+                <div class="form-group">
+                    <label for="regName">Full Name</label>
+                    <input type="text" id="regName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="regPhone">Phone Number</label>
+                    <input type="tel" id="regPhone" required placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <label for="regFlat">Flat/Apartment Number</label>
+                    <input type="text" id="regFlat" required placeholder="e.g., A-101">
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" required placeholder="Min 6 characters">
+                </div>
+                <div class="form-group">
+                    <label for="regConfirmPassword">Confirm Password</label>
+                    <input type="password" id="regConfirmPassword" required placeholder="Confirm your password">
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+                <div id="registerError" class="error-message"></div>
+                <div id="registerSuccess" class="success-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

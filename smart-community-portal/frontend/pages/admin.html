@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Smart Community Portal</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1>🏘️ Smart Community</h1>
+            <span class="admin-badge">Admin</span>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="amenities.html" class="nav-link">Amenities</a>
+            <a href="resources.html" class="nav-link">Resources</a>
+            <a href="complaints.html" class="nav-link">Complaints</a>
+            <a href="announcements.html" class="nav-link">Announcements</a>
+            <a href="admin.html" class="nav-link active">Admin</a>
+        </div>
+        <div class="nav-right">
+            <div class="notification-bell" id="notificationBell">
+                🔔
+                <span class="notification-count" id="notificationCount">0</span>
+            </div>
+            <div class="user-menu">
+                <span id="userName">Admin</span>
+                <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2>Administration Panel</h2>
+            <p>Manage community operations</p>
+        </div>
+
+        <div class="admin-stats-grid" id="adminStatsGrid">
+            <div class="admin-stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-details">
+                    <h3 id="statTotalUsers">0</h3>
+                    <p>Total Users</p>
+                    <small><span id="statResidents">0</span> Residents, <span id="statAdmins">0</span> Admins</small>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-details">
+                    <h3 id="statTotalBookings">0</h3>
+                    <p>Total Bookings</p>
+                    <small><span id="statConfirmedBookings">0</span> Confirmed</small>
+                </div>
+            </div>
+            <div class="admin-stat-card warning">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-details">
+                    <h3 id="statPendingComplaints">0</h3>
+                    <p>Pending Complaints</p>
+                    <small><span id="statInProgressComplaints">0</span> In Progress</small>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-details">
+                    <h3 id="statTotalResources">0</h3>
+                    <p>Shared Resources</p>
+                    <small><span id="statAvailableResources">0</span> Available, <span id="statBorrowedResources">0</span> Borrowed</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-tabs">
+            <button class="admin-tab-btn active" data-tab="users">Users</button>
+            <button class="admin-tab-btn" data-tab="amenities">Amenities</button>
+            <button class="admin-tab-btn" data-tab="allcomplaints">All Complaints</button>
+        </div>
+
+        <div id="usersTab" class="admin-tab-content active">
+            <div class="section-header">
+                <h3>User Management</h3>
+            </div>
+            <div class="users-table-container">
+                <table class="data-table" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Flat</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr><td colspan="6" class="loading">Loading users...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="amenitiesTab" class="admin-tab-content">
+            <div class="section-header">
+                <h3>Amenity Management</h3>
+                <button class="btn btn-primary" id="addAmenityBtn">+ Add Amenity</button>
+            </div>
+            <div class="amenities-admin-grid" id="amenitiesAdminList">
+                <p class="loading">Loading amenities...</p>
+            </div>
+        </div>
+
+        <div id="allcomplaintsTab" class="admin-tab-content">
+            <div class="section-header">
+                <h3>All Complaints</h3>
+            </div>
+            <div class="filter-bar">
+                <select id="adminComplaintStatus">
+                    <option value="">All Status</option>
+                    <option value="submitted">Submitted</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                </select>
+            </div>
+            <div class="complaints-admin-container" id="allComplaintsList">
+                <p class="loading">Loading complaints...</p>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="amenityModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="amenityModalTitle">Add Amenity</h3>
+                <button class="close-btn" id="closeAmenityModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="amenityForm">
+                    <input type="hidden" id="amenityId">
+                    <div class="form-group">
+                        <label for="amenityName">Name</label>
+                        <input type="text" id="amenityName" required placeholder="e.g., Gym, Clubhouse">
+                    </div>
+                    <div class="form-group">
+                        <label for="amenityDescription">Description</label>
+                        <textarea id="amenityDescription" required rows="3" placeholder="Describe the amenity..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="amenityLocation">Location</label>
+                        <input type="text" id="amenityLocation" placeholder="e.g., Ground Floor, Block A">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="amenityStartTime">Opening Time</label>
+                            <input type="time" id="amenityStartTime" value="06:00">
+                        </div>
+                        <div class="form-group">
+                            <label for="amenityEndTime">Closing Time</label>
+                            <input type="time" id="amenityEndTime" value="22:00">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="amenityCapacity">Capacity</label>
+                        <input type="number" id="amenityCapacity" min="1" value="1">
+                    </div>
+                    <div id="amenityError" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary">Save Amenity</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="updateComplaintModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Complaint Status</h3>
+                <button class="close-btn" id="closeUpdateComplaintModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="complaintDetails"></div>
+                <form id="updateComplaintForm">
+                    <input type="hidden" id="updateComplaintId">
+                    <div class="form-group">
+                        <label for="updateComplaintStatus">Status</label>
+                        <select id="updateComplaintStatus" required>
+                            <option value="in_progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminNotes">Admin Notes</label>
+                        <textarea id="adminNotes" rows="3" placeholder="Add notes about the resolution..."></textarea>
+                    </div>
+                    <div id="updateComplaintError" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>
