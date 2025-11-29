@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amenities & Bookings - Smart Community Portal</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1>🏘️ Smart Community</h1>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="amenities.html" class="nav-link active">Amenities</a>
+            <a href="resources.html" class="nav-link">Resources</a>
+            <a href="complaints.html" class="nav-link">Complaints</a>
+            <a href="announcements.html" class="nav-link">Announcements</a>
+        </div>
+        <div class="nav-right">
+            <div class="notification-bell" id="notificationBell">
+                🔔
+                <span class="notification-count" id="notificationCount">0</span>
+            </div>
+            <div class="user-menu">
+                <span id="userName">User</span>
+                <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2>Amenities & Bookings</h2>
+            <p>Book community amenities and manage your reservations</p>
+        </div>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" data-tab="amenities">Available Amenities</button>
+            <button class="tab-btn" data-tab="mybookings">My Bookings</button>
+        </div>
+
+        <div id="amenitiesTab" class="tab-content active">
+            <div class="amenities-grid" id="amenitiesList">
+                <p class="loading">Loading amenities...</p>
+            </div>
+        </div>
+
+        <div id="mybookingsTab" class="tab-content">
+            <div class="bookings-filter">
+                <select id="bookingStatusFilter">
+                    <option value="">All Bookings</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+            <div class="bookings-table" id="myBookingsList">
+                <p class="loading">Loading bookings...</p>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Book Amenity</h3>
+                <button class="close-btn" id="closeBookingModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="amenity-info" id="selectedAmenityInfo"></div>
+                <form id="bookingForm">
+                    <input type="hidden" id="bookingAmenityId">
+                    <div class="form-group">
+                        <label for="bookingDate">Date</label>
+                        <input type="date" id="bookingDate" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bookingStartTime">Start Time</label>
+                            <input type="time" id="bookingStartTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingEndTime">End Time</label>
+                            <input type="time" id="bookingEndTime" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingNotes">Notes (Optional)</label>
+                        <textarea id="bookingNotes" rows="3" placeholder="Any special requirements..."></textarea>
+                    </div>
+                    <div id="existingBookings" class="existing-bookings"></div>
+                    <div id="bookingError" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/amenities.js"></script>
+</body>
+</html>

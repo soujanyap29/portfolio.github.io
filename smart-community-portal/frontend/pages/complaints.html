@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaints - Smart Community Portal</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1>🏘️ Smart Community</h1>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="amenities.html" class="nav-link">Amenities</a>
+            <a href="resources.html" class="nav-link">Resources</a>
+            <a href="complaints.html" class="nav-link active">Complaints</a>
+            <a href="announcements.html" class="nav-link">Announcements</a>
+        </div>
+        <div class="nav-right">
+            <div class="notification-bell" id="notificationBell">
+                🔔
+                <span class="notification-count" id="notificationCount">0</span>
+            </div>
+            <div class="user-menu">
+                <span id="userName">User</span>
+                <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2>Complaints Management</h2>
+            <p>Submit and track your complaints</p>
+        </div>
+
+        <div class="section-actions">
+            <button class="btn btn-primary" id="newComplaintBtn">+ New Complaint</button>
+        </div>
+
+        <div class="filter-bar">
+            <select id="complaintStatusFilter">
+                <option value="">All Status</option>
+                <option value="submitted">Submitted</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+            </select>
+            <select id="complaintCategoryFilter">
+                <option value="">All Categories</option>
+                <option value="maintenance">Maintenance</option>
+                <option value="security">Security</option>
+                <option value="facilities">Facilities</option>
+                <option value="noise">Noise</option>
+                <option value="parking">Parking</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div class="complaints-container" id="complaintsList">
+            <p class="loading">Loading complaints...</p>
+        </div>
+    </main>
+
+    <div class="modal" id="complaintModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="complaintModalTitle">New Complaint</h3>
+                <button class="close-btn" id="closeComplaintModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="complaintForm">
+                    <input type="hidden" id="complaintId">
+                    <div class="form-group">
+                        <label for="complaintTitle">Title</label>
+                        <input type="text" id="complaintTitle" required placeholder="Brief description of the issue">
+                    </div>
+                    <div class="form-group">
+                        <label for="complaintDescription">Description</label>
+                        <textarea id="complaintDescription" required rows="4" placeholder="Provide detailed information about the complaint..."></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="complaintCategory">Category</label>
+                            <select id="complaintCategory" required>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="security">Security</option>
+                                <option value="facilities">Facilities</option>
+                                <option value="noise">Noise</option>
+                                <option value="parking">Parking</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="complaintPriority">Priority</label>
+                            <select id="complaintPriority" required>
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="complaintImage">Image URL (Optional)</label>
+                        <input type="url" id="complaintImage" placeholder="https://example.com/evidence.jpg">
+                    </div>
+                    <div id="complaintError" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary">Submit Complaint</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="viewComplaintModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Complaint Details</h3>
+                <button class="close-btn" id="closeViewComplaintModal">&times;</button>
+            </div>
+            <div class="modal-body" id="viewComplaintContent">
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/complaints.js"></script>
+</body>
+</html>
