@@ -162,7 +162,20 @@ class DatabaseManager:
     Handles CRUD operations and queries
     """
     
-    def __init__(self, connection_string: str = "sqlite:///traffic_simulation.db"):
+    def __init__(self, connection_string: str = None):
+        """
+        Initialize database manager with secure connection string
+        
+        Args:
+            connection_string: Database URL. If None, uses secure default location.
+        """
+        if connection_string is None:
+            import os
+            # Use a secure default location in the project directory
+            db_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'traffic_simulation.db')
+            os.makedirs(os.path.dirname(db_path), exist_ok=True)
+            connection_string = f"sqlite:///{db_path}"
+        
         self.engine = create_engine(connection_string, echo=False)
         Base.metadata.create_all(self.engine)
         self.SessionLocal = sessionmaker(bind=self.engine)
@@ -420,6 +433,15 @@ class ETLPipeline:
         }
     
     def load_to_cache(self, transformed_data: Dict, cache_key: str) -> None:
-        """Load transformed data to cache for quick access"""
-        # In production, would use Redis or similar
+        """
+        Load transformed data to cache for quick access
+        
+        Note: This is a placeholder for production cache integration.
+        In a production system, this would integrate with Redis, Memcached,
+        or another caching solution for improved performance.
+        
+        For now, data is simply returned without caching.
+        """
+        # TODO: Implement actual caching when deploying to production
+        # Example: redis_client.set(cache_key, json.dumps(transformed_data))
         pass

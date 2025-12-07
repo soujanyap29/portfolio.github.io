@@ -236,18 +236,24 @@ class CommunicationChannel:
     def receive_messages(self, agent_id: str) -> List[Message]:
         """
         Receive messages for a specific agent
-        Simulates network latency
+        Note: In production, this should use async operations instead of blocking sleep
         """
-        import time
-        time.sleep(self.latency_ms / 1000.0)  # Convert ms to seconds
+        # Network latency is simulated at transmission time, not reception
+        # to avoid blocking in real-time simulation
         
-        # Filter messages for this agent (simplified)
+        # Filter messages intended for this agent
         received = []
+        remaining = []
         for msg in self._message_queue:
             if msg.state == MessageState.TRANSMITTED:
+                # In a full implementation, would check receiver_id
+                # For now, mark as received for processing
                 msg.state = MessageState.RECEIVED
                 received.append(msg)
+            else:
+                remaining.append(msg)
         
+        self._message_queue = remaining
         return received
     
     def _log_transmission(self, message: Message, receivers: List[str], success: bool) -> None:

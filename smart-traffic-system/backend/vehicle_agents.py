@@ -19,15 +19,10 @@ class VehicleType(Enum):
     BUS = "bus"
     TRUCK = "truck"
     MOTORCYCLE = "motorcycle"
-    E_BIKE = "e_bike"
     AUTO_RICKSHAW = "auto_rickshaw"
-    E_RICKSHAW = "e_rickshaw"
     BICYCLE = "bicycle"
-    VAN = "van"
     TRAM = "tram"
     PEDESTRIAN = "pedestrian"
-    ANIMAL = "animal"
-    WHEELCHAIR = "wheelchair"
 
 
 @dataclass

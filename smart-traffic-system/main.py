@@ -17,18 +17,23 @@ sys.path.append(str(Path(__file__).parent / 'simulation'))
 
 from vehicle_agents import create_vehicle, VehicleType, VEHICLE_CONFIGS
 from communication import V2XCommunicationManager, MessageType
-# from schema import DatabaseManager, ETLPipeline  # Optional: requires sqlalchemy
+
+# Database integration is optional and requires sqlalchemy
+# Uncomment the following lines to enable database features:
+# from schema import DatabaseManager, ETLPipeline
 
 
 class TrafficSimulationSystem:
     """
     Main system controller integrating all components
     Maps to: Operating Systems - System-level orchestration
+    
+    Note: Database integration is currently optional. To enable full database
+    features, install sqlalchemy and uncomment database imports above.
     """
     
     def __init__(self, config_file: str = None):
         self.config = self._load_config(config_file)
-        # self.db_manager = DatabaseManager()  # Optional database integration
         self.comm_manager = V2XCommunicationManager()
         self.vehicles: Dict[str, object] = {}
         self.simulation_id: str = f"sim_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
