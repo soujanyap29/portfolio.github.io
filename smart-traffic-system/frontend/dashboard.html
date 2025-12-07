@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Traffic Management System - Live Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #667eea;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .metric-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .metric-value {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .map-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            height: 500px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .map {
+            width: 100%;
+            height: 100%;
+            background: #e9ecef;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vehicle-legend {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .vehicle-legend h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .control-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: #5568d3;
+        }
+
+        .control-btn:active {
+            transform: scale(0.98);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-running {
+            background: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        .status-stopped {
+            background: #dc3545;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚦 Smart Traffic Management System</h1>
+        <p style="text-align: center; margin-top: 10px; color: #666;">
+            Real-time Multi-Agent Traffic Simulation with V2V/V2I Communication
+        </p>
+    </div>
+
+    <div class="container">
+        <!-- Controls -->
+        <div class="controls">
+            <h2 style="color: #667eea; margin-bottom: 15px;">
+                <span class="status-indicator status-stopped" id="statusIndicator"></span>
+                Simulation Controls
+            </h2>
+            <button class="control-btn" onclick="startSimulation()">▶️ Start Simulation</button>
+            <button class="control-btn" onclick="pauseSimulation()">⏸️ Pause</button>
+            <button class="control-btn" onclick="stopSimulation()">⏹️ Stop</button>
+            <button class="control-btn" onclick="resetSimulation()">🔄 Reset</button>
+            <button class="control-btn" onclick="exportData()">💾 Export Data</button>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="grid">
+            <div class="card">
+                <h2>📊 Simulation Metrics</h2>
+                <div class="metric">
+                    <span class="metric-label">Simulation Time:</span>
+                    <span class="metric-value" id="simTime">00:00:00</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Active Vehicles:</span>
+                    <span class="metric-value" id="activeVehicles">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Total Distance:</span>
+                    <span class="metric-value" id="totalDistance">0 km</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Avg Speed:</span>
+                    <span class="metric-value" id="avgSpeed">0 km/h</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📡 V2V/V2I Communication</h2>
+                <div class="metric">
+                    <span class="metric-label">Messages Sent:</span>
+                    <span class="metric-value" id="messagesSent">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Success Rate:</span>
+                    <span class="metric-value" id="successRate">0%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Avg Latency:</span>
+                    <span class="metric-value" id="avgLatency">0 ms</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Trust Score:</span>
+                    <span class="metric-value" id="trustScore">0.5</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>⚠️ Events & Alerts</h2>
+                <div class="metric">
+                    <span class="metric-label">Collisions:</span>
+                    <span class="metric-value" id="collisions">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Emergency Vehicles:</span>
+                    <span class="metric-value" id="emergencyVehicles">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Traffic Jams:</span>
+                    <span class="metric-value" id="trafficJams">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Route Changes:</span>
+                    <span class="metric-value" id="routeChanges">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Visualization -->
+        <div class="map-container">
+            <h2 style="color: #667eea; margin-bottom: 15px;">🗺️ Real-Time Traffic Map</h2>
+            <div class="map" id="trafficMap">
+                <div style="text-align: center; padding-top: 200px; color: #999;">
+                    <p style="font-size: 1.2em;">Map visualization will appear here</p>
+                    <p>Connect to SUMO simulation to see live traffic</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Legend -->
+        <div class="vehicle-legend">
+            <h3>🚗 Vehicle Types Legend</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FF0000;"></div>
+                    <span>🚗 Car (Passenger)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #0000FF;"></div>
+                    <span>🚌 Bus (Public Transit)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FFA500;"></div>
+                    <span>🚚 Truck (Freight)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #00FF00;"></div>
+                    <span>🏍️ Motorcycle</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #00FFFF;"></div>
+                    <span>🚲 Bicycle</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FF00FF;"></div>
+                    <span>🚶 Pedestrian</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #800080;"></div>
+                    <span>🚊 Tram</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FFFF00;"></div>
+                    <span>🛺 Auto Rickshaw</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Statistics Table -->
+        <div class="chart-container">
+            <h2 style="color: #667eea; margin-bottom: 15px;">📈 Vehicle Type Statistics</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vehicle Type</th>
+                        <th>Count</th>
+                        <th>Avg Speed (km/h)</th>
+                        <th>Total Distance (km)</th>
+                        <th>Messages Sent</th>
+                    </tr>
+                </thead>
+                <tbody id="vehicleStatsBody">
+                    <tr>
+                        <td>🚗 Car</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>🚌 Bus</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>🚚 Truck</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>🏍️ Motorcycle</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let simulationRunning = false;
+        let simulationTime = 0;
+
+        function startSimulation() {
+            simulationRunning = true;
+            document.getElementById('statusIndicator').className = 'status-indicator status-running';
+            updateMetrics();
+            console.log('Simulation started');
+        }
+
+        function pauseSimulation() {
+            simulationRunning = false;
+            document.getElementById('statusIndicator').className = 'status-indicator status-stopped';
+            console.log('Simulation paused');
+        }
+
+        function stopSimulation() {
+            simulationRunning = false;
+            simulationTime = 0;
+            document.getElementById('statusIndicator').className = 'status-indicator status-stopped';
+            updateDisplay();
+            console.log('Simulation stopped');
+        }
+
+        function resetSimulation() {
+            stopSimulation();
+            console.log('Simulation reset');
+        }
+
+        function exportData() {
+            console.log('Exporting data...');
+            alert('Data export functionality will download simulation logs and analytics');
+        }
+
+        function updateMetrics() {
+            if (!simulationRunning) return;
+
+            simulationTime++;
+            
+            // Update time display
+            const hours = Math.floor(simulationTime / 3600);
+            const minutes = Math.floor((simulationTime % 3600) / 60);
+            const seconds = simulationTime % 60;
+            document.getElementById('simTime').textContent = 
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            // Simulate random metrics (in real system, would come from backend)
+            document.getElementById('activeVehicles').textContent = Math.floor(Math.random() * 100) + 50;
+            document.getElementById('messagesSent').textContent = Math.floor(Math.random() * 1000) + 500;
+            document.getElementById('successRate').textContent = (95 + Math.random() * 5).toFixed(1) + '%';
+            document.getElementById('avgLatency').textContent = (10 + Math.random() * 10).toFixed(1) + ' ms';
+            document.getElementById('trustScore').textContent = (0.7 + Math.random() * 0.3).toFixed(2);
+            document.getElementById('avgSpeed').textContent = (30 + Math.random() * 20).toFixed(1) + ' km/h';
+
+            setTimeout(updateMetrics, 1000);
+        }
+
+        function updateDisplay() {
+            document.getElementById('simTime').textContent = '00:00:00';
+            document.getElementById('activeVehicles').textContent = '0';
+            document.getElementById('messagesSent').textContent = '0';
+            document.getElementById('successRate').textContent = '0%';
+            document.getElementById('avgLatency').textContent = '0 ms';
+            document.getElementById('trustScore').textContent = '0.5';
+            document.getElementById('avgSpeed').textContent = '0 km/h';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Smart Traffic Management System Dashboard loaded');
+        });
+    </script>
+</body>
+</html>
