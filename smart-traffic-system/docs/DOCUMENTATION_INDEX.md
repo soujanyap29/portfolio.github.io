@@ -1,11 +1,13 @@
-# Smart Traffic Management System - Complete Documentation
-## 100-Page Journal-Quality Documentation
+# Smart Traffic Management System - NETWORKING Mini Project
+## 100-Page Complete Documentation with Detailed Page Content
+
+**Primary Focus**: Computer Networks (V2V/V2I Communication, Protocol Design, Network Performance)
 
 **Authors:**
-- Soujanya Patil (Pages 1-25)
-- Soujanya Poojari (Pages 26-50)
-- Anushka (Pages 51-75)
-- Apoorva (Pages 76-100)
+- Soujanya Patil (Pages 1-25): Network Architecture & Protocol Foundations
+- Soujanya Poojari (Pages 26-50): Communication Protocols & Network Algorithms  
+- Anushka (Pages 51-75): Network Performance & Simulation Analysis
+- Apoorva (Pages 76-100): Network Security & Advanced Topics
 
 ---
 
