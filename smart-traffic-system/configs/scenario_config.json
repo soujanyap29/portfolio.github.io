@@ -1,0 +1,63 @@
+{
+  "simulation": {
+    "sumo_config": "sumo/scenarios/basic_traffic.sumocfg",
+    "duration": 3600,
+    "step_length": 0.1,
+    "use_gui": false
+  },
+  
+  "adaptive_signals": {
+    "enabled": true,
+    "occupancy_threshold": 0.7,
+    "min_green_time": 20,
+    "max_green_time": 90,
+    "extension_time": 15
+  },
+  
+  "emergency_priority": {
+    "enabled": true,
+    "detection_radius": 100,
+    "green_wave_lookahead": 2,
+    "halt_radius": 100
+  },
+  
+  "v2x_communication": {
+    "enabled": true,
+    "communication_range": 300,
+    "broadcast_interval": 0.5,
+    "spat_broadcast_interval": 1.0
+  },
+  
+  "siot_trust": {
+    "enabled": true,
+    "initial_trust": 0.5,
+    "min_trust_threshold": 0.3,
+    "high_trust_threshold": 0.7,
+    "positive_trust_delta": 0.05,
+    "negative_trust_delta": -0.10,
+    "relationship_discovery_interval": 5.0
+  },
+  
+  "rsu_positions": {
+    "rsu_1": [500, 500],
+    "rsu_2": [1500, 500],
+    "rsu_3": [500, 1500],
+    "rsu_4": [1500, 1500]
+  },
+  
+  "logging": {
+    "event_log": "logs/events.csv",
+    "metrics_log": "logs/metrics.csv",
+    "communication_log": "logs/communication.csv",
+    "database": "database/simulation.db"
+  },
+  
+  "scenario": {
+    "name": "Smart System Full Features",
+    "description": "Complete simulation with adaptive signals, emergency priority, V2X, and SIoT",
+    "map": "maps/city_network.osm",
+    "vehicle_types": ["passenger", "bus", "truck", "bicycle", "rickshaw", "emergency"],
+    "peak_hour_flow": 1200,
+    "emergency_vehicle_count": 3
+  }
+}
