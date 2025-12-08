@@ -102,31 +102,61 @@ export SUMO_HOME=/usr/share/sumo
 
 ## Quick Start
 
-### 1. Convert OSM Map to SUMO Network
+### Prerequisites Check
+
+```bash
+# Test your installation
+python test_installation.py
+```
+
+### 1. Basic Simulation (No GUI)
+
+```bash
+# Run complete simulation for 5 minutes
+python run_simulation.py --duration 300
+
+# View results
+cat logs/summary.txt
+sqlite3 database/traffic_events.db "SELECT COUNT(*) FROM vehicle_logs;"
+```
+
+### 2. Simulation with GUI
+
+```bash
+# Run with SUMO GUI for visualization
+python run_simulation.py --gui --duration 600
+```
+
+### 3. Component-Specific Testing
+
+```bash
+# Test adaptive signals only
+cd python/core
+python adaptive_signals.py ../../sumo/scenarios/basic_traffic.sumocfg
+
+# Test emergency vehicle priority
+python emergency_priority.py ../../sumo/scenarios/basic_traffic.sumocfg
+
+# Test V2X communication
+python v2x_communication.py
+```
+
+### 4. Analytics and Reporting
+
+```bash
+# Generate comparative analysis
+cd analytics
+python comparative_analysis.py
+
+# Run SQL analytics queries
+sqlite3 ../database/traffic_events.db < ../database/queries/analytics_queries.sql
+```
+
+### 5. Convert Custom OSM Maps (Optional)
 
 ```bash
 cd maps/conversion_scripts
-python convert_osm_to_sumo.py ../city_network.osm
-```
-
-### 2. Run Basic Simulation
-
-```bash
-cd sumo/scenarios
-sumo-gui -c basic_traffic.sumocfg
-```
-
-### 3. Run Adaptive Traffic Control
-
-```bash
-cd python
-python adaptive_signals.py --scenario basic --duration 3600
-```
-
-### 4. Run Complete Simulation with All Features
-
-```bash
-python run_simulation.py --config configs/full_scenario.json
+python convert_osm_to_sumo.py your_map.osm
 ```
 
 ## Simulation Scenarios

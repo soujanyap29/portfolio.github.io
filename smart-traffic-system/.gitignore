@@ -1,0 +1,105 @@
+# Temporary files
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+env/
+ENV/
+traffic_env/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# SUMO generated files
+*.fcd.xml
+*.netstate.xml
+*.emission.xml
+*.queue.xml
+*.lanechange.xml
+*.ssm.xml
+*.amitran.xml
+*.vehroutes.xml
+*.tripinfo.xml
+*.summary.xml
+*.statistics.xml
+
+# Database files (generated during simulation)
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Log files
+logs/*.xml
+logs/*.log
+logs/tripinfo.xml
+logs/summary.xml
+logs/emissions.xml
+logs/statistics.xml
+
+# NS3 generated files
+*.pcap
+*.tr
+*.out
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Test outputs
+tests/output/
+tmp/
+temp/
+
+# OS specific
+Thumbs.db
+.DS_Store
+
+# Documentation build
+docs/_build/
+docs/.doctrees/
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Data files (keep samples, ignore large generated files)
+# logs/sample_*.csv is kept in repo
+logs/simulation_*.csv
+logs/full_*.csv
+logs/*_output.csv
+
+# Large result files
+results/
+output/
+
+# Compiled NS3 files
+*.o
+*.a
+ns3/build/
+
+# Python cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Configuration overrides (keep template)
+configs/local_config.json
+configs/custom_*.json
+!configs/scenario_config.json
