@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- SUMO Routes Configuration -->
+<!-- Vehicle types and route definitions for traffic simulation -->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+
+    <!-- Vehicle Type Definitions -->
+    
+    <!-- Standard Passenger Car -->
+    <vType id="passenger" accel="2.6" decel="4.5" sigma="0.5" length="5.0" minGap="2.5" maxSpeed="27.78" color="1,1,0"/>
+    
+    <!-- Bus -->
+    <vType id="bus" accel="1.2" decel="3.5" sigma="0.3" length="12.0" minGap="3.0" maxSpeed="22.22" color="0,0,1"/>
+    
+    <!-- Truck -->
+    <vType id="truck" accel="1.0" decel="3.0" sigma="0.4" length="8.0" minGap="3.5" maxSpeed="22.22" color="0.5,0.5,0.5"/>
+    
+    <!-- Bicycle -->
+    <vType id="bicycle" accel="1.5" decel="3.0" sigma="0.2" length="1.8" minGap="1.0" maxSpeed="8.33" color="0,1,0"/>
+    
+    <!-- Rickshaw -->
+    <vType id="rickshaw" accel="1.8" decel="3.5" sigma="0.4" length="3.0" minGap="2.0" maxSpeed="13.89" color="1,0.5,0"/>
+    
+    <!-- Emergency Vehicle (Ambulance) -->
+    <vType id="emergency" accel="3.0" decel="5.0" sigma="0.2" length="6.0" minGap="2.0" maxSpeed="33.33" color="1,0,0" vClass="emergency"/>
+
+    <!-- Route Definitions -->
+    
+    <!-- North to South Route -->
+    <route id="route_ns" edges="ns_north_1 ns_1_3 ns_3_south"/>
+    
+    <!-- South to North Route -->
+    <route id="route_sn" edges="ns_3_south ns_1_3 ns_north_1"/>
+    
+    <!-- West to East Route -->
+    <route id="route_we" edges="ew_west_1 ew_1_2 ew_2_east"/>
+    
+    <!-- East to West Route -->
+    <route id="route_ew" edges="ew_2_east ew_1_2 ew_west_1"/>
+    
+    <!-- North to East Route (Turn) -->
+    <route id="route_ne" edges="ns_north_1 ew_1_2 ew_2_east"/>
+    
+    <!-- West to South Route (Turn) -->
+    <route id="route_ws" edges="ew_west_1 ns_1_3 ns_3_south"/>
+
+    <!-- Vehicle Flow Definitions -->
+    
+    <!-- Normal Traffic Flow (Peak Hour Simulation) -->
+    <flow id="flow_passenger_ns" type="passenger" route="route_ns" begin="0" end="3600" vehsPerHour="800" departLane="best" departSpeed="max"/>
+    <flow id="flow_passenger_we" type="passenger" route="route_we" begin="0" end="3600" vehsPerHour="600" departLane="best" departSpeed="max"/>
+    
+    <!-- Bus Flow -->
+    <flow id="flow_bus_ns" type="bus" route="route_ns" begin="0" end="3600" vehsPerHour="60" departLane="best" departSpeed="max"/>
+    
+    <!-- Truck Flow -->
+    <flow id="flow_truck_we" type="truck" route="route_we" begin="0" end="3600" vehsPerHour="100" departLane="best" departSpeed="max"/>
+    
+    <!-- Bicycle Flow -->
+    <flow id="flow_bicycle_ns" type="bicycle" route="route_ns" begin="0" end="3600" vehsPerHour="150" departLane="best" departSpeed="max"/>
+    
+    <!-- Rickshaw Flow -->
+    <flow id="flow_rickshaw_we" type="rickshaw" route="route_we" begin="0" end="3600" vehsPerHour="120" departLane="best" departSpeed="max"/>
+
+    <!-- Emergency Vehicles (Sporadic) -->
+    <vehicle id="ambulance_1" type="emergency" route="route_ns" depart="300" color="1,0,0">
+        <param key="has.emergency.device" value="true"/>
+    </vehicle>
+    <vehicle id="ambulance_2" type="emergency" route="route_we" depart="900" color="1,0,0">
+        <param key="has.emergency.device" value="true"/>
+    </vehicle>
+    <vehicle id="ambulance_3" type="emergency" route="route_ns" depart="1800" color="1,0,0">
+        <param key="has.emergency.device" value="true"/>
+    </vehicle>
+
+    <!-- Congestion Test Scenario Vehicles -->
+    <!-- High density flow for testing adaptive signals -->
+    <flow id="congestion_flow_ns" type="passenger" route="route_ns" begin="2000" end="2600" vehsPerHour="1200" departLane="best" departSpeed="max"/>
+    <flow id="congestion_flow_we" type="passenger" route="route_we" begin="2000" end="2600" vehsPerHour="900" departLane="best" departSpeed="max"/>
+
+</routes>

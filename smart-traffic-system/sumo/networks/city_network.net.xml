@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- SUMO Road Network Definition -->
+<!-- Generated for Smart Traffic Management System -->
+<!-- Supports 4-lane and 6-lane scenarios with realistic intersections -->
+
+<net version="1.16" junctionCornerDetail="5" limitTurnSpeed="5.50" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/net_file.xsd">
+
+    <location netOffset="0.00,0.00" convBoundary="0.00,0.00,2000.00,2000.00" origBoundary="-10000.00,-10000.00,10000.00,10000.00" projParameter="!"/>
+
+    <!-- Edge Types -->
+    <type id="highway.primary" priority="13" numLanes="4" speed="27.78"/>
+    <type id="highway.secondary" priority="11" numLanes="2" speed="22.22"/>
+
+    <!-- Nodes (Junctions) -->
+    <node id="junction_1" x="500.00" y="500.00" type="traffic_light" tl="tls_1"/>
+    <node id="junction_2" x="1500.00" y="500.00" type="traffic_light" tl="tls_2"/>
+    <node id="junction_3" x="500.00" y="1500.00" type="traffic_light" tl="tls_3"/>
+    <node id="junction_4" x="1500.00" y="1500.00" type="traffic_light" tl="tls_4"/>
+    
+    <!-- Entry/Exit Nodes -->
+    <node id="entry_north" x="500.00" y="0.00" type="priority"/>
+    <node id="entry_south" x="500.00" y="2000.00" type="priority"/>
+    <node id="entry_east" x="2000.00" y="500.00" type="priority"/>
+    <node id="entry_west" x="0.00" y="500.00" type="priority"/>
+
+    <!-- Edges (Roads) - 6-lane main road -->
+    <edge id="ns_north_1" from="entry_north" to="junction_1" numLanes="3" speed="27.78"/>
+    <edge id="ns_1_3" from="junction_1" to="junction_3" numLanes="3" speed="27.78"/>
+    <edge id="ns_3_south" from="junction_3" to="entry_south" numLanes="3" speed="27.78"/>
+    
+    <!-- 4-lane cross road -->
+    <edge id="ew_west_1" from="entry_west" to="junction_1" numLanes="2" speed="27.78"/>
+    <edge id="ew_1_2" from="junction_1" to="junction_2" numLanes="2" speed="27.78"/>
+    <edge id="ew_2_east" from="junction_2" to="entry_east" numLanes="2" speed="27.78"/>
+
+    <!-- Traffic Light Logic -->
+    <tlLogic id="tls_1" type="static" programID="0" offset="0">
+        <phase duration="42" state="GGGrrr"/>
+        <phase duration="3" state="yyyrrr"/>
+        <phase duration="42" state="rrrGGG"/>
+        <phase duration="3" state="rrryyy"/>
+    </tlLogic>
+
+</net>
