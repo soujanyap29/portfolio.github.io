@@ -1,0 +1,93 @@
+{
+    "signal_programs": {
+        "adaptive": {
+            "type": "actuated",
+            "min_green": 10,
+            "max_green": 60,
+            "yellow_time": 3,
+            "all_red": 2,
+            "gap_time": 3.0,
+            "detector_gap": 2.0
+        },
+        "fixed": {
+            "type": "static",
+            "cycle_time": 90,
+            "phases": [
+                {
+                    "name": "NS_green",
+                    "duration": 42,
+                    "state": "GGGGrrrrGGGGrrrr"
+                },
+                {
+                    "name": "NS_yellow",
+                    "duration": 3,
+                    "state": "yyyyrrrryyyyrrrr"
+                },
+                {
+                    "name": "EW_green",
+                    "duration": 42,
+                    "state": "rrrrGGGGrrrrGGGG"
+                },
+                {
+                    "name": "EW_yellow",
+                    "duration": 3,
+                    "state": "rrrryyyyrrrryyyy"
+                }
+            ]
+        },
+        "peak_hour": {
+            "type": "actuated",
+            "min_green": 15,
+            "max_green": 90,
+            "yellow_time": 4,
+            "all_red": 2,
+            "cycle_time": 120
+        },
+        "off_peak": {
+            "type": "actuated",
+            "min_green": 8,
+            "max_green": 40,
+            "yellow_time": 3,
+            "all_red": 1,
+            "cycle_time": 60
+        },
+        "emergency_NS": {
+            "type": "static",
+            "duration": 120,
+            "state": "GGGGrrrrGGGGrrrr",
+            "description": "All green for North-South emergency corridor"
+        },
+        "emergency_EW": {
+            "type": "static",
+            "duration": 120,
+            "state": "rrrrGGGGrrrrGGGG",
+            "description": "All green for East-West emergency corridor"
+        }
+    },
+    "junction_types": {
+        "J0": {
+            "type": "traffic_light",
+            "default_program": "adaptive",
+            "coordination_offset": 0,
+            "approaches": ["N", "S", "E", "W"]
+        }
+    },
+    "timing_plans": {
+        "morning_peak": {
+            "time_range": "07:00-09:00",
+            "program": "peak_hour"
+        },
+        "midday": {
+            "time_range": "09:00-16:00",
+            "program": "adaptive"
+        },
+        "evening_peak": {
+            "time_range": "16:00-19:00",
+            "program": "peak_hour"
+        },
+        "night": {
+            "time_range": "22:00-06:00",
+            "program": "off_peak"
+        }
+    }
+}

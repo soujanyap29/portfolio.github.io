@@ -1,0 +1,73 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# SUMO Output Files
+*.xml
+!sumo_files/*.xml
+!sumo_files/*.net.xml
+!sumo_files/*.rou.xml
+!sumo_files/*.sumocfg
+!sumo_files/*.add.xml
+!sumo_files/*.tll.xml
+
+# Results and Logs
+results/*.csv
+results/*.txt
+results/*.xml
+results/metrics/
+results/logs/
+results/visualizations/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+
+# Documentation Build
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# OS
+Thumbs.db

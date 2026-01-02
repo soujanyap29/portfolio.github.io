@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    SUMO Configuration File for SMART Traffic System
+    Main configuration that ties all SUMO files together
+-->
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <!-- Network file -->
+        <net-file value="4lane_network.net.xml"/>
+        
+        <!-- Route file -->
+        <route-files value="traffic_routes.rou.xml"/>
+        
+        <!-- Additional files (detectors, outputs) -->
+        <additional-files value="additional_files.add.xml"/>
+    </input>
+
+    <time>
+        <!-- Simulation start time -->
+        <begin value="0"/>
+        
+        <!-- Simulation end time (1 hour = 3600 seconds) -->
+        <end value="3600"/>
+        
+        <!-- Time step size (100ms for smooth simulation) -->
+        <step-length value="0.1"/>
+    </time>
+
+    <processing>
+        <!-- Enable lateral resolution for lane changing -->
+        <lateral-resolution value="0.8"/>
+        
+        <!-- Collision detection -->
+        <collision.action value="warn"/>
+        <collision.mingap-factor value="0.1"/>
+        
+        <!-- Time to teleport vehicles if stuck -->
+        <time-to-teleport value="300"/>
+        
+        <!-- Route search algorithm -->
+        <routing-algorithm value="dijkstra"/>
+    </processing>
+
+    <output>
+        <!-- Summary output file -->
+        <summary-output value="../results/summary.xml"/>
+        
+        <!-- Trip info output -->
+        <tripinfo-output value="../results/tripinfo.xml"/>
+        
+        <!-- Vehicle state output -->
+        <netstate-dump value="../results/netstate.xml"/>
+        
+        <!-- Queue output -->
+        <queue-output value="../results/queue.xml"/>
+    </output>
+
+    <gui_only>
+        <!-- GUI settings (only when using sumo-gui) -->
+        <gui-settings-file value="gui-settings.xml"/>
+        
+        <!-- Start simulation immediately -->
+        <start value="false"/>
+        
+        <!-- Quit on end -->
+        <quit-on-end value="false"/>
+        
+        <!-- Delay between steps (ms) -->
+        <delay value="100"/>
+    </gui_only>
+
+    <report>
+        <!-- Verbose output -->
+        <verbose value="true"/>
+        
+        <!-- No step log (reduces console clutter) -->
+        <no-step-log value="false"/>
+        
+        <!-- Duration log -->
+        <duration-log.statistics value="true"/>
+    </report>
+
+    <random_number>
+        <!-- Random seed for reproducibility -->
+        <seed value="42"/>
+    </random_number>
+
+</configuration>

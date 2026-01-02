@@ -1,0 +1,50 @@
+{
+    "simulation": {
+        "step_length": 0.1,
+        "total_time": 3600,
+        "gui_enabled": false,
+        "real_time_factor": 1.0,
+        "random_seed": 42
+    },
+    "traffic": {
+        "vehicle_density": "medium",
+        "peak_hour_multiplier": 1.5,
+        "emergency_vehicle_probability": 0.01,
+        "vehicle_mix": {
+            "car": 0.70,
+            "truck": 0.10,
+            "bus": 0.05,
+            "motorcycle": 0.15
+        }
+    },
+    "v2x": {
+        "communication_range": 300,
+        "message_frequency": 10,
+        "broadcast_enabled": true,
+        "protocols": ["V2V", "V2I", "V2P"]
+    },
+    "signal_control": {
+        "adaptive_enabled": true,
+        "min_green_time": 10,
+        "max_green_time": 90,
+        "yellow_time": 3,
+        "all_red_time": 2,
+        "default_cycle_time": 90
+    },
+    "emergency": {
+        "detection_range": 500,
+        "priority_duration": 120,
+        "lane_clearance_time": 15,
+        "green_corridor_enabled": true,
+        "priority_levels": {
+            "ambulance": 1,
+            "fire_truck": 2,
+            "police": 3
+        }
+    },
+    "performance": {
+        "metrics_collection_interval": 60,
+        "export_format": "csv",
+        "realtime_monitoring": true
+    }
+}
