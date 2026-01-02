@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Traffic Light Logic for SMART Traffic System
+    Defines adaptive signal control programs
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+
+    <!-- Traffic Light Program: Adaptive Control -->
+    <tlLogic id="J0" type="actuated" programID="adaptive" offset="0">
+        
+        <!-- Phase 0: North-South Green, East-West Red -->
+        <phase duration="31" minDur="10" maxDur="60" state="GGGGrrrrGGGGrrrr"/>
+        
+        <!-- Phase 1: North-South Yellow, East-West Red -->
+        <phase duration="3" minDur="3" maxDur="3" state="yyyyrrrryyyyrrrr"/>
+        
+        <!-- Phase 2: All Red (clearance) -->
+        <phase duration="2" minDur="2" maxDur="2" state="rrrrrrrrrrrrrrrr"/>
+        
+        <!-- Phase 3: North-South Red, East-West Green -->
+        <phase duration="31" minDur="10" maxDur="60" state="rrrrGGGGrrrrGGGG"/>
+        
+        <!-- Phase 4: North-South Red, East-West Yellow -->
+        <phase duration="3" minDur="3" maxDur="3" state="rrrryyyyrrrryyyy"/>
+        
+        <!-- Phase 5: All Red (clearance) -->
+        <phase duration="2" minDur="2" maxDur="2" state="rrrrrrrrrrrrrrrr"/>
+    </tlLogic>
+    
+    <!-- Traffic Light Program: Fixed Time Control (backup) -->
+    <tlLogic id="J0" type="static" programID="fixed" offset="0">
+        
+        <!-- Phase 0: North-South Green -->
+        <phase duration="42" state="GGGGrrrrGGGGrrrr"/>
+        
+        <!-- Phase 1: North-South Yellow -->
+        <phase duration="3" state="yyyyrrrryyyyrrrr"/>
+        
+        <!-- Phase 2: East-West Green -->
+        <phase duration="42" state="rrrrGGGGrrrrGGGG"/>
+        
+        <!-- Phase 3: East-West Yellow -->
+        <phase duration="3" state="rrrryyyyrrrryyyy"/>
+    </tlLogic>
+    
+    <!-- Traffic Light Program: Emergency Mode (all green for priority lane) -->
+    <tlLogic id="J0" type="static" programID="emergency_NS" offset="0">
+        
+        <!-- All green for North-South (emergency corridor) -->
+        <phase duration="120" state="GGGGrrrrGGGGrrrr"/>
+    </tlLogic>
+    
+    <tlLogic id="J0" type="static" programID="emergency_EW" offset="0">
+        
+        <!-- All green for East-West (emergency corridor) -->
+        <phase duration="120" state="rrrrGGGGrrrrGGGG"/>
+    </tlLogic>
+    
+    <!-- Traffic Light Program: Off-Peak (shorter cycles) -->
+    <tlLogic id="J0" type="actuated" programID="off_peak" offset="0">
+        
+        <!-- Phase 0: North-South Green -->
+        <phase duration="25" minDur="8" maxDur="40" state="GGGGrrrrGGGGrrrr"/>
+        
+        <!-- Phase 1: North-South Yellow -->
+        <phase duration="3" minDur="3" maxDur="3" state="yyyyrrrryyyyrrrr"/>
+        
+        <!-- Phase 2: East-West Green -->
+        <phase duration="25" minDur="8" maxDur="40" state="rrrrGGGGrrrrGGGG"/>
+        
+        <!-- Phase 3: East-West Yellow -->
+        <phase duration="3" minDur="3" maxDur="3" state="rrrryyyyrrrryyyy"/>
+    </tlLogic>
+    
+    <!-- Traffic Light Program: Peak Hour (longer cycles) -->
+    <tlLogic id="J0" type="actuated" programID="peak_hour" offset="0">
+        
+        <!-- Phase 0: North-South Green (extended) -->
+        <phase duration="45" minDur="15" maxDur="90" state="GGGGrrrrGGGGrrrr"/>
+        
+        <!-- Phase 1: North-South Yellow -->
+        <phase duration="4" minDur="4" maxDur="4" state="yyyyrrrryyyyrrrr"/>
+        
+        <!-- Phase 2: All Red -->
+        <phase duration="2" minDur="2" maxDur="2" state="rrrrrrrrrrrrrrrr"/>
+        
+        <!-- Phase 3: East-West Green (extended) -->
+        <phase duration="45" minDur="15" maxDur="90" state="rrrrGGGGrrrrGGGG"/>
+        
+        <!-- Phase 4: East-West Yellow -->
+        <phase duration="4" minDur="4" maxDur="4" state="rrrryyyyrrrryyyy"/>
+        
+        <!-- Phase 5: All Red -->
+        <phase duration="2" minDur="2" maxDur="2" state="rrrrrrrrrrrrrrrr"/>
+    </tlLogic>
+
+</additional>

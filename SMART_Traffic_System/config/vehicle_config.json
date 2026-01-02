@@ -1,0 +1,125 @@
+{
+    "vehicle_types": {
+        "car": {
+            "length": 5.0,
+            "width": 1.8,
+            "height": 1.5,
+            "accel": 2.6,
+            "decel": 4.5,
+            "max_speed": 50.0,
+            "min_gap": 2.5,
+            "color": [1, 1, 0],
+            "gui_shape": "passenger",
+            "emission_class": "HBEFA3/PC_G_EU4",
+            "probability": 0.70
+        },
+        "truck": {
+            "length": 12.0,
+            "width": 2.4,
+            "height": 3.0,
+            "accel": 1.8,
+            "decel": 4.0,
+            "max_speed": 40.0,
+            "min_gap": 3.0,
+            "color": [0.5, 0.5, 0.5],
+            "gui_shape": "truck",
+            "emission_class": "HBEFA3/HDV",
+            "probability": 0.10
+        },
+        "bus": {
+            "length": 10.0,
+            "width": 2.5,
+            "height": 3.2,
+            "accel": 2.0,
+            "decel": 4.2,
+            "max_speed": 45.0,
+            "min_gap": 3.0,
+            "color": [0, 0.5, 1],
+            "gui_shape": "bus",
+            "emission_class": "HBEFA3/Bus",
+            "probability": 0.05
+        },
+        "motorcycle": {
+            "length": 2.5,
+            "width": 0.9,
+            "height": 1.3,
+            "accel": 3.5,
+            "decel": 6.0,
+            "max_speed": 60.0,
+            "min_gap": 1.5,
+            "color": [1, 0, 0],
+            "gui_shape": "motorcycle",
+            "emission_class": "HBEFA3/LDV",
+            "probability": 0.15
+        },
+        "ambulance": {
+            "length": 6.0,
+            "width": 2.2,
+            "height": 2.5,
+            "accel": 3.0,
+            "decel": 5.5,
+            "max_speed": 60.0,
+            "min_gap": 2.0,
+            "color": [1, 0, 0],
+            "gui_shape": "emergency",
+            "v_class": "emergency",
+            "priority": 1,
+            "siren": true
+        },
+        "fire_truck": {
+            "length": 10.0,
+            "width": 2.5,
+            "height": 3.5,
+            "accel": 2.5,
+            "decel": 5.0,
+            "max_speed": 55.0,
+            "min_gap": 2.5,
+            "color": [1, 0, 0],
+            "gui_shape": "firebrigade",
+            "v_class": "emergency",
+            "priority": 2,
+            "siren": true
+        },
+        "police": {
+            "length": 5.5,
+            "width": 2.0,
+            "height": 1.6,
+            "accel": 3.0,
+            "decel": 5.5,
+            "max_speed": 60.0,
+            "min_gap": 2.0,
+            "color": [0, 0, 1],
+            "gui_shape": "police",
+            "v_class": "emergency",
+            "priority": 3,
+            "siren": true
+        }
+    },
+    "driver_behavior": {
+        "sigma": 0.5,
+        "tau": 1.0,
+        "speed_factor": 1.0,
+        "speed_dev": 0.1,
+        "impatience": 0.0,
+        "lane_change_model": "LC2013",
+        "car_follow_model": "Krauss"
+    },
+    "traffic_scenarios": {
+        "low_density": {
+            "vehicles_per_hour": 400,
+            "description": "Off-peak traffic"
+        },
+        "medium_density": {
+            "vehicles_per_hour": 800,
+            "description": "Normal traffic conditions"
+        },
+        "high_density": {
+            "vehicles_per_hour": 1200,
+            "description": "Peak hour traffic"
+        },
+        "congested": {
+            "vehicles_per_hour": 1600,
+            "description": "Heavy congestion"
+        }
+    }
+}

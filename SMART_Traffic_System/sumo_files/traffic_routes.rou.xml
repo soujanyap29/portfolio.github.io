@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Traffic Routes and Vehicle Flows for SMART Traffic System
+    Defines vehicle types, routes, and traffic flows
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+
+    <!-- Vehicle Type Definitions -->
+    
+    <!-- Standard Passenger Car -->
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5.0" minGap="2.5" maxSpeed="50" color="1,1,0" guiShape="passenger"/>
+    
+    <!-- Truck/Heavy Vehicle -->
+    <vType id="truck" accel="1.8" decel="4.0" sigma="0.5" length="12.0" minGap="3.0" maxSpeed="40" color="0.5,0.5,0.5" guiShape="truck"/>
+    
+    <!-- Bus -->
+    <vType id="bus" accel="2.0" decel="4.2" sigma="0.5" length="10.0" minGap="3.0" maxSpeed="45" color="0,0.5,1" guiShape="bus"/>
+    
+    <!-- Motorcycle -->
+    <vType id="motorcycle" accel="3.5" decel="6.0" sigma="0.3" length="2.5" minGap="1.5" maxSpeed="60" color="1,0,0" guiShape="motorcycle"/>
+    
+    <!-- Emergency Vehicles -->
+    <vType id="ambulance" accel="3.0" decel="5.5" sigma="0.2" length="6.0" minGap="2.0" maxSpeed="60" color="1,0,0" guiShape="emergency" vClass="emergency"/>
+    <vType id="fire_truck" accel="2.5" decel="5.0" sigma="0.2" length="10.0" minGap="2.5" maxSpeed="55" color="1,0,0" guiShape="firebrigade" vClass="emergency"/>
+    <vType id="police" accel="3.0" decel="5.5" sigma="0.2" length="5.5" minGap="2.0" maxSpeed="60" color="0,0,1" guiShape="police" vClass="emergency"/>
+
+    <!-- Route Definitions -->
+    
+    <!-- North to South Routes (4 possible lanes) -->
+    <route id="route_N_S" edges="N_to_J0 J0_to_S"/>
+    <route id="route_N_E" edges="N_to_J0 J0_to_E"/>
+    <route id="route_N_W" edges="N_to_J0 J0_to_W"/>
+    
+    <!-- South to North Routes -->
+    <route id="route_S_N" edges="S_to_J0 J0_to_N"/>
+    <route id="route_S_E" edges="S_to_J0 J0_to_E"/>
+    <route id="route_S_W" edges="S_to_J0 J0_to_W"/>
+    
+    <!-- East to West Routes -->
+    <route id="route_E_W" edges="E_to_J0 J0_to_W"/>
+    <route id="route_E_N" edges="E_to_J0 J0_to_N"/>
+    <route id="route_E_S" edges="E_to_J0 J0_to_S"/>
+    
+    <!-- West to East Routes -->
+    <route id="route_W_E" edges="W_to_J0 J0_to_E"/>
+    <route id="route_W_N" edges="W_to_J0 J0_to_N"/>
+    <route id="route_W_S" edges="W_to_J0 J0_to_S"/>
+
+    <!-- Traffic Flows -->
+    
+    <!-- Morning Rush Hour: North to South (Heavy) -->
+    <flow id="flow_car_N_S" type="car" route="route_N_S" begin="0" end="3600" vehsPerHour="800" departLane="best" departSpeed="max"/>
+    <flow id="flow_car_N_E" type="car" route="route_N_E" begin="0" end="3600" vehsPerHour="300" departLane="best" departSpeed="max"/>
+    <flow id="flow_car_N_W" type="car" route="route_N_W" begin="0" end="3600" vehsPerHour="200" departLane="best" departSpeed="max"/>
+    
+    <!-- South to North (Moderate) -->
+    <flow id="flow_car_S_N" type="car" route="route_S_N" begin="0" end="3600" vehsPerHour="600" departLane="best" departSpeed="max"/>
+    <flow id="flow_car_S_E" type="car" route="route_S_E" begin="0" end="3600" vehsPerHour="250" departLane="best" departSpeed="max"/>
+    <flow id="flow_car_S_W" type="car" route="route_S_W" begin="0" end="3600" vehsPerHour="150" departLane="best" departSpeed="max"/>
+    
+    <!-- East to West (Heavy) -->
+    <flow id="flow_car_E_W" type="car" route="route_E_W" begin="0" end="3600" vehsPerHour="700" departLane="best" departSpeed="max"/>
+    <flow id="flow_car_E_N" type="car" route="route_E_N" begin="0" end="3600" vehsPerHour="280" departLane="best" departSpeed="max"/>
+    <flow id="flow_car_E_S" type="car" route="route_E_S" begin="0" end="3600" vehsPerHour="220" departLane="best" departSpeed="max"/>
+    
+    <!-- West to East (Moderate) -->
+    <flow id="flow_car_W_E" type="car" route="route_W_E" begin="0" end="3600" vehsPerHour="650" departLane="best" departSpeed="max"/>
+    <flow id="flow_car_W_N" type="car" route="route_W_N" begin="0" end="3600" vehsPerHour="240" departLane="best" departSpeed="max"/>
+    <flow id="flow_car_W_S" type="car" route="route_W_S" begin="0" end="3600" vehsPerHour="180" departLane="best" departSpeed="max"/>
+    
+    <!-- Truck Traffic (Lower frequency) -->
+    <flow id="flow_truck_N_S" type="truck" route="route_N_S" begin="0" end="3600" vehsPerHour="80" departLane="3" departSpeed="max"/>
+    <flow id="flow_truck_S_N" type="truck" route="route_S_N" begin="0" end="3600" vehsPerHour="60" departLane="3" departSpeed="max"/>
+    <flow id="flow_truck_E_W" type="truck" route="route_E_W" begin="0" end="3600" vehsPerHour="70" departLane="3" departSpeed="max"/>
+    <flow id="flow_truck_W_E" type="truck" route="route_W_E" begin="0" end="3600" vehsPerHour="65" departLane="3" departSpeed="max"/>
+    
+    <!-- Bus Traffic -->
+    <flow id="flow_bus_N_S" type="bus" route="route_N_S" begin="0" end="3600" vehsPerHour="30" departLane="2" departSpeed="max"/>
+    <flow id="flow_bus_S_N" type="bus" route="route_S_N" begin="0" end="3600" vehsPerHour="30" departLane="2" departSpeed="max"/>
+    <flow id="flow_bus_E_W" type="bus" route="route_E_W" begin="0" end="3600" vehsPerHour="25" departLane="2" departSpeed="max"/>
+    <flow id="flow_bus_W_E" type="bus" route="route_W_E" begin="0" end="3600" vehsPerHour="25" departLane="2" departSpeed="max"/>
+    
+    <!-- Motorcycle Traffic -->
+    <flow id="flow_moto_N_S" type="motorcycle" route="route_N_S" begin="0" end="3600" vehsPerHour="120" departLane="free" departSpeed="max"/>
+    <flow id="flow_moto_S_N" type="motorcycle" route="route_S_N" begin="0" end="3600" vehsPerHour="100" departLane="free" departSpeed="max"/>
+    <flow id="flow_moto_E_W" type="motorcycle" route="route_E_W" begin="0" end="3600" vehsPerHour="110" departLane="free" departSpeed="max"/>
+    <flow id="flow_moto_W_E" type="motorcycle" route="route_W_E" begin="0" end="3600" vehsPerHour="95" departLane="free" departSpeed="max"/>
+    
+    <!-- Emergency Vehicles (Random, low frequency) -->
+    <flow id="flow_ambulance_N_S" type="ambulance" route="route_N_S" begin="300" end="3600" probability="0.002" departLane="best" departSpeed="max"/>
+    <flow id="flow_ambulance_E_W" type="ambulance" route="route_E_W" begin="300" end="3600" probability="0.002" departLane="best" departSpeed="max"/>
+    
+    <flow id="flow_fire_N_S" type="fire_truck" route="route_N_S" begin="600" end="3600" probability="0.001" departLane="best" departSpeed="max"/>
+    <flow id="flow_fire_W_E" type="fire_truck" route="route_W_E" begin="600" end="3600" probability="0.001" departLane="best" departSpeed="max"/>
+    
+    <flow id="flow_police_S_N" type="police" route="route_S_N" begin="400" end="3600" probability="0.0015" departLane="best" departSpeed="max"/>
+    <flow id="flow_police_E_W" type="police" route="route_E_W" begin="400" end="3600" probability="0.0015" departLane="best" departSpeed="max"/>
+
+    <!-- Individual Emergency Vehicle Examples (for testing) -->
+    <!-- Uncomment these for specific emergency vehicle testing -->
+    <!--
+    <vehicle id="emergency_test_1" type="ambulance" route="route_N_S" depart="100" departLane="2" color="1,0,0"/>
+    <vehicle id="emergency_test_2" type="fire_truck" route="route_E_W" depart="500" departLane="1" color="1,0,0"/>
+    <vehicle id="emergency_test_3" type="police" route="route_W_E" depart="800" departLane="0" color="0,0,1"/>
+    -->
+
+</routes>

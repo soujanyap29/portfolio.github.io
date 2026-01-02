@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+    4-Lane Traffic Network for SMART Traffic System
+    Description: Urban intersection with 4 lanes in each direction
+    Author: SMART Traffic System
+    Date: January 2026
+-->
+
+<net version="1.16" junctionCornerDetail="5" limitTurnSpeed="5.50" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/net_file.xsd">
+
+    <location netOffset="250.00,250.00" convBoundary="0.00,0.00,1000.00,1000.00" origBoundary="-500.00,-500.00,500.00,500.00" projParameter="!"/>
+
+    <!-- Type Definitions -->
+    <type id="urban_arterial" priority="13" numLanes="4" speed="13.89" allow="all"/>
+    
+    <!-- Junction/Node Definitions -->
+    <junction id="J0" type="traffic_light" x="250.00" y="250.00" incLanes="N_to_J0_0 N_to_J0_1 N_to_J0_2 N_to_J0_3 W_to_J0_0 W_to_J0_1 W_to_J0_2 W_to_J0_3 S_to_J0_0 S_to_J0_1 S_to_J0_2 S_to_J0_3 E_to_J0_0 E_to_J0_1 E_to_J0_2 E_to_J0_3" intLanes=":J0_0_0 :J0_1_0 :J0_2_0 :J0_3_0 :J0_4_0 :J0_5_0 :J0_6_0 :J0_7_0 :J0_8_0 :J0_9_0 :J0_10_0 :J0_11_0 :J0_12_0 :J0_13_0 :J0_14_0 :J0_15_0" shape="232.00,262.00 268.00,262.00 268.00,238.00 232.00,238.00">
+        <request index="0" response="0000000000000000" foes="0000100001100000" cont="0"/>
+        <request index="1" response="0000000000000000" foes="1111100011100000" cont="0"/>
+        <request index="2" response="0000000000000000" foes="1111100011100000" cont="0"/>
+        <request index="3" response="0000011100000000" foes="1111011111100000" cont="0"/>
+        <request index="4" response="0000011000000000" foes="1100011000000000" cont="0"/>
+        <request index="5" response="0000011000001111" foes="1100111000001111" cont="0"/>
+        <request index="6" response="0000011000001111" foes="1100111000001111" cont="0"/>
+        <request index="7" response="0011011000001110" foes="0011111000001110" cont="0"/>
+        <request index="8" response="0000000000000000" foes="0010000000001000" cont="0"/>
+        <request index="9" response="0000000000000000" foes="0110000011111000" cont="0"/>
+        <request index="10" response="0000000000000000" foes="0110000011111000" cont="0"/>
+        <request index="11" response="1110000000000111" foes="1110000011111111" cont="0"/>
+        <request index="12" response="0000000000000110" foes="0000000010000110" cont="0"/>
+        <request index="13" response="0000111100001110" foes="0000111110001110" cont="0"/>
+        <request index="14" response="0000111100001110" foes="0000111110001110" cont="0"/>
+        <request index="15" response="0000111001111110" foes="0000111001111110" cont="0"/>
+    </junction>
+    
+    <junction id="N" type="priority" x="250.00" y="750.00" incLanes="J0_to_N_0 J0_to_N_1 J0_to_N_2 J0_to_N_3" intLanes=":N_0_0" shape="250.00,750.00 268.00,750.00 250.00,750.00">
+        <request index="0" response="0" foes="0" cont="0"/>
+    </junction>
+    
+    <junction id="S" type="priority" x="250.00" y="0.00" incLanes="J0_to_S_0 J0_to_S_1 J0_to_S_2 J0_to_S_3" intLanes=":S_0_0" shape="250.00,0.00 232.00,0.00 250.00,0.00">
+        <request index="0" response="0" foes="0" cont="0"/>
+    </junction>
+    
+    <junction id="E" type="priority" x="750.00" y="250.00" incLanes="J0_to_E_0 J0_to_E_1 J0_to_E_2 J0_to_E_3" intLanes=":E_0_0" shape="750.00,250.00 750.00,232.00 750.00,250.00">
+        <request index="0" response="0" foes="0" cont="0"/>
+    </junction>
+    
+    <junction id="W" type="priority" x="0.00" y="250.00" incLanes="J0_to_W_0 J0_to_W_1 J0_to_W_2 J0_to_W_3" intLanes=":W_0_0" shape="0.00,250.00 0.00,268.00 0.00,250.00">
+        <request index="0" response="0" foes="0" cont="0"/>
+    </junction>
+
+    <!-- Edge Definitions (Roads) -->
+    
+    <!-- North to Junction (4 lanes, incoming from north) -->
+    <edge id="N_to_J0" from="N" to="J0" priority="13" type="urban_arterial">
+        <lane id="N_to_J0_0" index="0" speed="13.89" length="500.00" shape="232.00,750.00 232.00,262.00"/>
+        <lane id="N_to_J0_1" index="1" speed="13.89" length="500.00" shape="236.00,750.00 236.00,262.00"/>
+        <lane id="N_to_J0_2" index="2" speed="13.89" length="500.00" shape="240.00,750.00 240.00,262.00"/>
+        <lane id="N_to_J0_3" index="3" speed="13.89" length="500.00" shape="244.00,750.00 244.00,262.00"/>
+    </edge>
+    
+    <!-- Junction to North (4 lanes, outgoing to north) -->
+    <edge id="J0_to_N" from="J0" to="N" priority="13" type="urban_arterial">
+        <lane id="J0_to_N_0" index="0" speed="13.89" length="500.00" shape="268.00,262.00 268.00,750.00"/>
+        <lane id="J0_to_N_1" index="1" speed="13.89" length="500.00" shape="264.00,262.00 264.00,750.00"/>
+        <lane id="J0_to_N_2" index="2" speed="13.89" length="500.00" shape="260.00,262.00 260.00,750.00"/>
+        <lane id="J0_to_N_3" index="3" speed="13.89" length="500.00" shape="256.00,262.00 256.00,750.00"/>
+    </edge>
+    
+    <!-- South to Junction (4 lanes, incoming from south) -->
+    <edge id="S_to_J0" from="S" to="J0" priority="13" type="urban_arterial">
+        <lane id="S_to_J0_0" index="0" speed="13.89" length="238.00" shape="268.00,0.00 268.00,238.00"/>
+        <lane id="S_to_J0_1" index="1" speed="13.89" length="238.00" shape="264.00,0.00 264.00,238.00"/>
+        <lane id="S_to_J0_2" index="2" speed="13.89" length="238.00" shape="260.00,0.00 260.00,238.00"/>
+        <lane id="S_to_J0_3" index="3" speed="13.89" length="238.00" shape="256.00,0.00 256.00,238.00"/>
+    </edge>
+    
+    <!-- Junction to South (4 lanes, outgoing to south) -->
+    <edge id="J0_to_S" from="J0" to="S" priority="13" type="urban_arterial">
+        <lane id="J0_to_S_0" index="0" speed="13.89" length="238.00" shape="232.00,238.00 232.00,0.00"/>
+        <lane id="J0_to_S_1" index="1" speed="13.89" length="238.00" shape="236.00,238.00 236.00,0.00"/>
+        <lane id="J0_to_S_2" index="2" speed="13.89" length="238.00" shape="240.00,238.00 240.00,0.00"/>
+        <lane id="J0_to_S_3" index="3" speed="13.89" length="238.00" shape="244.00,238.00 244.00,0.00"/>
+    </edge>
+    
+    <!-- East to Junction (4 lanes, incoming from east) -->
+    <edge id="E_to_J0" from="E" to="J0" priority="13" type="urban_arterial">
+        <lane id="E_to_J0_0" index="0" speed="13.89" length="500.00" shape="750.00,268.00 268.00,268.00"/>
+        <lane id="E_to_J0_1" index="1" speed="13.89" length="500.00" shape="750.00,264.00 268.00,264.00"/>
+        <lane id="E_to_J0_2" index="2" speed="13.89" length="500.00" shape="750.00,260.00 268.00,260.00"/>
+        <lane id="E_to_J0_3" index="3" speed="13.89" length="500.00" shape="750.00,256.00 268.00,256.00"/>
+    </edge>
+    
+    <!-- Junction to East (4 lanes, outgoing to east) -->
+    <edge id="J0_to_E" from="J0" to="E" priority="13" type="urban_arterial">
+        <lane id="J0_to_E_0" index="0" speed="13.89" length="500.00" shape="268.00,232.00 750.00,232.00"/>
+        <lane id="J0_to_E_1" index="1" speed="13.89" length="500.00" shape="268.00,236.00 750.00,236.00"/>
+        <lane id="J0_to_E_2" index="2" speed="13.89" length="500.00" shape="268.00,240.00 750.00,240.00"/>
+        <lane id="J0_to_E_3" index="3" speed="13.89" length="500.00" shape="268.00,244.00 750.00,244.00"/>
+    </edge>
+    
+    <!-- West to Junction (4 lanes, incoming from west) -->
+    <edge id="W_to_J0" from="W" to="J0" priority="13" type="urban_arterial">
+        <lane id="W_to_J0_0" index="0" speed="13.89" length="232.00" shape="0.00,232.00 232.00,232.00"/>
+        <lane id="W_to_J0_1" index="1" speed="13.89" length="232.00" shape="0.00,236.00 232.00,236.00"/>
+        <lane id="W_to_J0_2" index="2" speed="13.89" length="232.00" shape="0.00,240.00 232.00,240.00"/>
+        <lane id="W_to_J0_3" index="3" speed="13.89" length="232.00" shape="0.00,244.00 232.00,244.00"/>
+    </edge>
+    
+    <!-- Junction to West (4 lanes, outgoing to west) -->
+    <edge id="J0_to_W" from="J0" to="W" priority="13" type="urban_arterial">
+        <lane id="J0_to_W_0" index="0" speed="13.89" length="232.00" shape="232.00,268.00 0.00,268.00"/>
+        <lane id="J0_to_W_1" index="1" speed="13.89" length="232.00" shape="232.00,264.00 0.00,264.00"/>
+        <lane id="J0_to_W_2" index="2" speed="13.89" length="232.00" shape="232.00,260.00 0.00,260.00"/>
+        <lane id="J0_to_W_3" index="3" speed="13.89" length="232.00" shape="232.00,256.00 0.00,256.00"/>
+    </edge>
+
+    <!-- Traffic Light Program -->
+    <tlLogic id="J0" type="static" programID="0" offset="0">
+        <!-- Phase 0: North-South Green -->
+        <phase duration="42" state="GGGGrrrrGGGGrrrr"/>
+        <!-- Phase 1: North-South Yellow -->
+        <phase duration="3" state="yyyyrrrryyyyrrrr"/>
+        <!-- Phase 2: North-South Red, East-West Green -->
+        <phase duration="42" state="rrrrGGGGrrrrGGGG"/>
+        <!-- Phase 3: East-West Yellow -->
+        <phase duration="3" state="rrrryyyyrrrryyyy"/>
+    </tlLogic>
+
+    <!-- Internal Lanes (Junction connections) -->
+    <connection from="N_to_J0" to="J0_to_S" fromLane="0" toLane="0" via=":J0_0_0" tl="J0" linkIndex="0" dir="s" state="O"/>
+    <connection from="N_to_J0" to="J0_to_E" fromLane="1" toLane="1" via=":J0_1_0" tl="J0" linkIndex="1" dir="l" state="o"/>
+    <connection from="N_to_J0" to="J0_to_W" fromLane="2" toLane="2" via=":J0_2_0" tl="J0" linkIndex="2" dir="r" state="o"/>
+    <connection from="N_to_J0" to="J0_to_N" fromLane="3" toLane="3" via=":J0_3_0" tl="J0" linkIndex="3" dir="t" state="o"/>
+    
+    <connection from="E_to_J0" to="J0_to_W" fromLane="0" toLane="0" via=":J0_4_0" tl="J0" linkIndex="4" dir="s" state="O"/>
+    <connection from="E_to_J0" to="J0_to_S" fromLane="1" toLane="1" via=":J0_5_0" tl="J0" linkIndex="5" dir="l" state="o"/>
+    <connection from="E_to_J0" to="J0_to_N" fromLane="2" toLane="2" via=":J0_6_0" tl="J0" linkIndex="6" dir="r" state="o"/>
+    <connection from="E_to_J0" to="J0_to_E" fromLane="3" toLane="3" via=":J0_7_0" tl="J0" linkIndex="7" dir="t" state="o"/>
+    
+    <connection from="S_to_J0" to="J0_to_N" fromLane="0" toLane="0" via=":J0_8_0" tl="J0" linkIndex="8" dir="s" state="O"/>
+    <connection from="S_to_J0" to="J0_to_W" fromLane="1" toLane="1" via=":J0_9_0" tl="J0" linkIndex="9" dir="l" state="o"/>
+    <connection from="S_to_J0" to="J0_to_E" fromLane="2" toLane="2" via=":J0_10_0" tl="J0" linkIndex="10" dir="r" state="o"/>
+    <connection from="S_to_J0" to="J0_to_S" fromLane="3" toLane="3" via=":J0_11_0" tl="J0" linkIndex="11" dir="t" state="o"/>
+    
+    <connection from="W_to_J0" to="J0_to_E" fromLane="0" toLane="0" via=":J0_12_0" tl="J0" linkIndex="12" dir="s" state="O"/>
+    <connection from="W_to_J0" to="J0_to_N" fromLane="1" toLane="1" via=":J0_13_0" tl="J0" linkIndex="13" dir="l" state="o"/>
+    <connection from="W_to_J0" to="J0_to_S" fromLane="2" toLane="2" via=":J0_14_0" tl="J0" linkIndex="14" dir="r" state="o"/>
+    <connection from="W_to_J0" to="J0_to_W" fromLane="3" toLane="3" via=":J0_15_0" tl="J0" linkIndex="15" dir="t" state="o"/>
+
+</net>

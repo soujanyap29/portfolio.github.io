@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Additional Files for SUMO Simulation
+    Defines detectors, outputs, and monitoring devices
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+
+    <!-- Induction Loop Detectors for Traffic Monitoring -->
+    
+    <!-- North Approach - Lane 0 -->
+    <inductionLoop id="det_N_to_J0_0" lane="N_to_J0_0" pos="450" freq="60" file="../results/detector_N_0.xml"/>
+    <inductionLoop id="det_N_to_J0_1" lane="N_to_J0_1" pos="450" freq="60" file="../results/detector_N_1.xml"/>
+    <inductionLoop id="det_N_to_J0_2" lane="N_to_J0_2" pos="450" freq="60" file="../results/detector_N_2.xml"/>
+    <inductionLoop id="det_N_to_J0_3" lane="N_to_J0_3" pos="450" freq="60" file="../results/detector_N_3.xml"/>
+    
+    <!-- South Approach -->
+    <inductionLoop id="det_S_to_J0_0" lane="S_to_J0_0" pos="200" freq="60" file="../results/detector_S_0.xml"/>
+    <inductionLoop id="det_S_to_J0_1" lane="S_to_J0_1" pos="200" freq="60" file="../results/detector_S_1.xml"/>
+    <inductionLoop id="det_S_to_J0_2" lane="S_to_J0_2" pos="200" freq="60" file="../results/detector_S_2.xml"/>
+    <inductionLoop id="det_S_to_J0_3" lane="S_to_J0_3" pos="200" freq="60" file="../results/detector_S_3.xml"/>
+    
+    <!-- East Approach -->
+    <inductionLoop id="det_E_to_J0_0" lane="E_to_J0_0" pos="450" freq="60" file="../results/detector_E_0.xml"/>
+    <inductionLoop id="det_E_to_J0_1" lane="E_to_J0_1" pos="450" freq="60" file="../results/detector_E_1.xml"/>
+    <inductionLoop id="det_E_to_J0_2" lane="E_to_J0_2" pos="450" freq="60" file="../results/detector_E_2.xml"/>
+    <inductionLoop id="det_E_to_J0_3" lane="E_to_J0_3" pos="450" freq="60" file="../results/detector_E_3.xml"/>
+    
+    <!-- West Approach -->
+    <inductionLoop id="det_W_to_J0_0" lane="W_to_J0_0" pos="200" freq="60" file="../results/detector_W_0.xml"/>
+    <inductionLoop id="det_W_to_J0_1" lane="W_to_J0_1" pos="200" freq="60" file="../results/detector_W_1.xml"/>
+    <inductionLoop id="det_W_to_J0_2" lane="W_to_J0_2" pos="200" freq="60" file="../results/detector_W_2.xml"/>
+    <inductionLoop id="det_W_to_J0_3" lane="W_to_J0_3" pos="200" freq="60" file="../results/detector_W_3.xml"/>
+    
+    <!-- Lane Area Detectors (E1) for Queue Length Measurement -->
+    <laneAreaDetector id="queue_N_0" lane="N_to_J0_0" pos="400" endPos="490" freq="30" file="../results/queue_N_0.xml"/>
+    <laneAreaDetector id="queue_N_1" lane="N_to_J0_1" pos="400" endPos="490" freq="30" file="../results/queue_N_1.xml"/>
+    <laneAreaDetector id="queue_N_2" lane="N_to_J0_2" pos="400" endPos="490" freq="30" file="../results/queue_N_2.xml"/>
+    <laneAreaDetector id="queue_N_3" lane="N_to_J0_3" pos="400" endPos="490" freq="30" file="../results/queue_N_3.xml"/>
+    
+    <laneAreaDetector id="queue_S_0" lane="S_to_J0_0" pos="150" endPos="230" freq="30" file="../results/queue_S_0.xml"/>
+    <laneAreaDetector id="queue_S_1" lane="S_to_J0_1" pos="150" endPos="230" freq="30" file="../results/queue_S_1.xml"/>
+    <laneAreaDetector id="queue_S_2" lane="S_to_J0_2" pos="150" endPos="230" freq="30" file="../results/queue_S_2.xml"/>
+    <laneAreaDetector id="queue_S_3" lane="S_to_J0_3" pos="150" endPos="230" freq="30" file="../results/queue_S_3.xml"/>
+    
+    <laneAreaDetector id="queue_E_0" lane="E_to_J0_0" pos="400" endPos="490" freq="30" file="../results/queue_E_0.xml"/>
+    <laneAreaDetector id="queue_E_1" lane="E_to_J0_1" pos="400" endPos="490" freq="30" file="../results/queue_E_1.xml"/>
+    <laneAreaDetector id="queue_E_2" lane="E_to_J0_2" pos="400" endPos="490" freq="30" file="../results/queue_E_2.xml"/>
+    <laneAreaDetector id="queue_E_3" lane="E_to_J0_3" pos="400" endPos="490" freq="30" file="../results/queue_E_3.xml"/>
+    
+    <laneAreaDetector id="queue_W_0" lane="W_to_J0_0" pos="150" endPos="230" freq="30" file="../results/queue_W_0.xml"/>
+    <laneAreaDetector id="queue_W_1" lane="W_to_J0_1" pos="150" endPos="230" freq="30" file="../results/queue_W_1.xml"/>
+    <laneAreaDetector id="queue_W_2" lane="W_to_J0_2" pos="150" endPos="230" freq="30" file="../results/queue_W_2.xml"/>
+    <laneAreaDetector id="queue_W_3" lane="W_to_J0_3" pos="150" endPos="230" freq="30" file="../results/queue_W_3.xml"/>
+    
+    <!-- Multi-Entry Multi-Exit (E3) Detectors for Travel Time -->
+    <entryExitDetector id="e3_N_to_S" freq="60" file="../results/e3_N_to_S.xml">
+        <detEntry lane="N_to_J0_0" pos="0"/>
+        <detEntry lane="N_to_J0_1" pos="0"/>
+        <detEntry lane="N_to_J0_2" pos="0"/>
+        <detEntry lane="N_to_J0_3" pos="0"/>
+        <detExit lane="J0_to_S_0" pos="230"/>
+        <detExit lane="J0_to_S_1" pos="230"/>
+        <detExit lane="J0_to_S_2" pos="230"/>
+        <detExit lane="J0_to_S_3" pos="230"/>
+    </entryExitDetector>
+    
+    <entryExitDetector id="e3_E_to_W" freq="60" file="../results/e3_E_to_W.xml">
+        <detEntry lane="E_to_J0_0" pos="0"/>
+        <detEntry lane="E_to_J0_1" pos="0"/>
+        <detEntry lane="E_to_J0_2" pos="0"/>
+        <detEntry lane="E_to_J0_3" pos="0"/>
+        <detExit lane="J0_to_W_0" pos="230"/>
+        <detExit lane="J0_to_W_1" pos="230"/>
+        <detExit lane="J0_to_W_2" pos="230"/>
+        <detExit lane="J0_to_W_3" pos="230"/>
+    </entryExitDetector>
+    
+    <!-- Variable Speed Signs (for emergency vehicle priority) -->
+    <variableSpeedSign id="vss_N_0" lanes="N_to_J0_0" pos="300"/>
+    <variableSpeedSign id="vss_N_1" lanes="N_to_J0_1" pos="300"/>
+    <variableSpeedSign id="vss_N_2" lanes="N_to_J0_2" pos="300"/>
+    <variableSpeedSign id="vss_N_3" lanes="N_to_J0_3" pos="300"/>
+    
+    <!-- Rerouters (for traffic management) -->
+    <rerouter id="rerouter_J0" edges="N_to_J0 S_to_J0 E_to_J0 W_to_J0" file="../results/rerouter.xml" probability="0.1"/>
+    
+    <!-- Calibrators for traffic flow adjustment -->
+    <calibrator id="cal_N" lane="N_to_J0_0" pos="0" freq="900" output="../results/calibrator_N.xml"/>
+    <calibrator id="cal_S" lane="S_to_J0_0" pos="0" freq="900" output="../results/calibrator_S.xml"/>
+    <calibrator id="cal_E" lane="E_to_J0_0" pos="0" freq="900" output="../results/calibrator_E.xml"/>
+    <calibrator id="cal_W" lane="W_to_J0_0" pos="0" freq="900" output="../results/calibrator_W.xml"/>
+
+</additional>
