@@ -436,7 +436,7 @@ LOCATION_CUES = {
                                "bright focal centrosomal spot"),
     "Lipid Droplet":          ("lipid-droplet targeting sequence",
                                "round lipid-droplet staining"),
-    "Aggresome":              ("aggresomes-forming sequence",
+    "Aggresome":              ("aggresome-forming sequence",
                                "juxtanuclear aggresome staining"),
     "Microtubule":            ("microtubule-associated protein domain",
                                "linear microtubule staining"),
@@ -583,6 +583,10 @@ def main():
         st.subheader("📂 Dataset Paths")
         image_dir = st.text_input("Images directory", value=DEFAULT_IMAGE_DIR)
         csv_path  = st.text_input("CSV file path",    value=DEFAULT_CSV_PATH)
+
+        # Resolve to absolute, normalised paths to prevent path traversal
+        image_dir = os.path.realpath(os.path.abspath(image_dir.strip()))
+        csv_path  = os.path.realpath(os.path.abspath(csv_path.strip()))
 
         st.subheader("🎓 Training Parameters")
         epochs   = st.slider("Epochs",        min_value=1,  max_value=20, value=5)
@@ -840,8 +844,8 @@ def main():
             st.subheader("📋 Confidence Scores Table")
             score_df = pd.DataFrame({
                 "Compartment": label_cols,
-                "Confidence": [f"{p:.1%}" for p in probs],
-                "Predicted":  ["✅" if b else "❌" for b in preds],
+                "Confidence": [f"{p:.1%}" for p in probs[:len(label_cols)]],
+                "Predicted":  ["✅" if b else "❌" for b in preds[:len(label_cols)]],
             })
             st.dataframe(score_df, use_container_width=True, hide_index=True)
 
