@@ -1,0 +1,15 @@
+ollama>=0.1.7
+networkx>=3.2
+streamlit>=1.32.0
+matplotlib>=3.8.0
+plotly>=5.20.0
+pyvis>=0.3.2
+nltk>=3.8.1
+spacy>=3.7.2
+scikit-learn>=1.4.0
+pandas>=2.2.0
+numpy>=1.26.0
+requests>=2.31.0
+ipywidgets>=8.1.2
+notebook>=7.1.0
+ipykernel>=6.29.0

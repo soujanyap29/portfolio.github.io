@@ -1,0 +1,32 @@
+[
+  {
+    "subject": "Albert Einstein",
+    "relation": "born_in",
+    "object": "Germany",
+    "confidence": 0.9
+  },
+  {
+    "subject": "Albert Einstein",
+    "relation": "won",
+    "object": "Nobel Prize",
+    "confidence": 0.9
+  },
+  {
+    "subject": "Marie Curie",
+    "relation": "born_in",
+    "object": "Warsaw, Poland",
+    "confidence": 0.9
+  },
+  {
+    "subject": "Marie Curie",
+    "relation": "won",
+    "object": "Nobel Prize",
+    "confidence": 0.9
+  },
+  {
+    "subject": "Lee",
+    "relation": "invented",
+    "object": "the World Wide Web",
+    "confidence": 0.85
+  }
+]

@@ -1,0 +1,73 @@
+{
+  "nodes": [
+    "Albert Einstein",
+    "Germany",
+    "Nobel Prize",
+    "Marie Curie",
+    "Warsaw, Poland",
+    "Tim Berners-Lee",
+    "the World Wide Web",
+    "CERN",
+    "located in Switzerland",
+    "Switzerland"
+  ],
+  "edges": [
+    {
+      "from": "Albert Einstein",
+      "to": "Germany",
+      "relation": "born_in",
+      "confidence": 0.9,
+      "inferred": false,
+      "timestamp": "2026-05-02T16:01:52.794194"
+    },
+    {
+      "from": "Albert Einstein",
+      "to": "Nobel Prize",
+      "relation": "won",
+      "confidence": 0.9,
+      "inferred": false,
+      "timestamp": "2026-05-02T16:01:52.794218"
+    },
+    {
+      "from": "Marie Curie",
+      "to": "Warsaw, Poland",
+      "relation": "born_in",
+      "confidence": 0.9,
+      "inferred": false,
+      "timestamp": "2026-05-02T16:01:52.794228"
+    },
+    {
+      "from": "Marie Curie",
+      "to": "Nobel Prize",
+      "relation": "won",
+      "confidence": 0.9,
+      "inferred": false,
+      "timestamp": "2026-05-02T16:01:52.794235"
+    },
+    {
+      "from": "Tim Berners-Lee",
+      "to": "the World Wide Web",
+      "relation": "invented",
+      "confidence": 0.85,
+      "inferred": false,
+      "timestamp": "2026-05-02T16:01:52.794242"
+    },
+    {
+      "from": "CERN",
+      "to": "located in Switzerland",
+      "relation": "is_a",
+      "confidence": 0.5,
+      "inferred": false,
+      "timestamp": "2026-05-02T16:01:52.794249"
+    },
+    {
+      "from": "CERN",
+      "to": "Switzerland",
+      "relation": "located_in",
+      "confidence": 0.9,
+      "inferred": false,
+      "timestamp": "2026-05-02T16:01:52.794256"
+    }
+  ],
+  "saved_at": "2026-05-02T16:01:52.794298"
+}
