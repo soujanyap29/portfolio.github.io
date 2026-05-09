@@ -31,7 +31,7 @@ def _load_backend():
     return mod
 
 
-@st.cache_resource(show_spinner='Loading backend pipeline…')
+@st.cache_resource(show_spinner='Loading backend pipeline...')
 def get_backend():
     if not BACKEND_PATH.exists():
         st.error(
@@ -494,9 +494,8 @@ with tab_query:
         subj_input = st.text_input('Entity name', key='sq_subj',
                                     placeholder='e.g. Albert Einstein')
         if st.button('Search by subject', key='btn_subj'):
-            if hasattr(backend, '_kg_builder'):
-                from backend import QueryEngine, _kg_builder  # noqa: F401
-                eng = QueryEngine(backend._kg_builder)
+            if hasattr(backend, '_kg_builder') and hasattr(backend, 'QueryEngine'):
+                eng = backend.QueryEngine(backend._kg_builder)
                 res = eng.by_subject(subj_input)
                 st.write(eng.format_results(res) or 'No results.')
 
@@ -505,9 +504,8 @@ with tab_query:
         obj_input = st.text_input('Object entity', key='sq_obj',
                                    placeholder='e.g. Nobel Prize')
         if st.button('Search by object', key='btn_obj'):
-            if hasattr(backend, '_kg_builder'):
-                from backend import QueryEngine, _kg_builder  # noqa: F401
-                eng = QueryEngine(backend._kg_builder)
+            if hasattr(backend, '_kg_builder') and hasattr(backend, 'QueryEngine'):
+                eng = backend.QueryEngine(backend._kg_builder)
                 res = eng.by_object(obj_input)
                 st.write(eng.format_results(res) or 'No results.')
 
@@ -516,9 +514,8 @@ with tab_query:
         rel_input = st.text_input('Relation label', key='sq_rel',
                                    placeholder='e.g. born_in')
         if st.button('Search by relation', key='btn_rel'):
-            if hasattr(backend, '_kg_builder'):
-                from backend import QueryEngine, _kg_builder  # noqa: F401
-                eng = QueryEngine(backend._kg_builder)
+            if hasattr(backend, '_kg_builder') and hasattr(backend, 'QueryEngine'):
+                eng = backend.QueryEngine(backend._kg_builder)
                 res = eng.by_relation(rel_input)
                 st.write(eng.format_results(res) or 'No results.')
 
