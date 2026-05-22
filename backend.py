@@ -29,7 +29,10 @@ class PreprocessingModule:
 
 
 class NeuralExtractionModule:
-    FALLBACK_RELATIONS = ("is", "are", "was", "were", "works at", "located in", "part of")
+    COMMON_RELATIONS = ("is located in", "located in", "works at", "part of", "is in", "were", "was", "are", "is")
+    FALLBACK_PATTERN = re.compile(
+        rf"\b([A-Za-z0-9][\w\s-]*?)\s+({'|'.join(re.escape(item) for item in COMMON_RELATIONS)})\s+([A-Za-z0-9][\w\s-]+)\b"
+    )
 
     def __init__(self, model: str = "llama3:latest", ollama_url: str = "http://localhost:11434/api/generate"):
         self.model = model
@@ -65,10 +68,8 @@ class NeuralExtractionModule:
     @staticmethod
     def _fallback_extract(text: str) -> str:
         triples = []
-        relations = "|".join(re.escape(item) for item in NeuralExtractionModule.FALLBACK_RELATIONS)
-        pattern = re.compile(rf"\b([A-Za-z0-9][\w\s-]*?)\s+({relations})\s+([A-Za-z0-9][\w\s-]+)\b")
         for sentence in re.split(r"(?<=[.!?])\s+", text):
-            match = pattern.search(sentence)
+            match = NeuralExtractionModule.FALLBACK_PATTERN.search(sentence)
             if match:
                 triples.append(f"({match.group(1).strip()}, {match.group(2).strip()}, {match.group(3).strip()})")
         return "\n".join(triples)
@@ -191,7 +192,7 @@ class InferenceEngine:
                     inferred.append(
                         Triple(
                             subject=a,
-                            relation=f"inferred_{rel_ab}_{rel_bc}"[: InferenceEngine.MAX_RELATION_LENGTH],
+                            relation=f"inferred_{rel_ab}_{rel_bc}"[:InferenceEngine.MAX_RELATION_LENGTH],
                             object=c,
                             confidence=round((graph[a][b].get("confidence", 0.5) + graph[b][c].get("confidence", 0.5)) / 2, 2),
                             inferred=True,
@@ -275,6 +276,9 @@ class NeuralSymbolicKBSystem:
         self.last_inferred_triples: List[Triple] = []
         self.last_evaluation: Dict[str, Any] = {}
 
+    def _active_graph(self) -> nx.DiGraph:
+        return self.storage.load() if self.storage.storage_path.exists() else self.builder.graph
+
     def process_text(self, input_text: str) -> Dict[str, Any]:
         self.last_raw_text = input_text
         sentences = self.preprocessor.clean_text(input_text)
@@ -284,6 +288,7 @@ class NeuralSymbolicKBSystem:
         self.last_filtered_triples, self.last_rejected_triples = self.confidence.filter(self.last_raw_triples)
         self.last_refined_triples = self.reasoner.refine(self.last_filtered_triples)
 
+        self.builder.graph = nx.DiGraph()
         graph = self.builder.build(self.last_refined_triples)
         self.last_inferred_triples = self.inference.infer(graph)
         self.builder.build(self.last_inferred_triples)
@@ -315,12 +320,10 @@ class NeuralSymbolicKBSystem:
         }
 
     def get_graph(self) -> Dict[str, Any]:
-        graph = self.storage.load() if self.storage.storage_path.exists() else self.builder.graph
-        return nx.node_link_data(graph)
+        return nx.node_link_data(self._active_graph())
 
     def query_graph(self, query: str) -> Dict[str, List[Dict[str, Any]]]:
-        graph = self.storage.load() if self.storage.storage_path.exists() else self.builder.graph
-        return self.query_engine.query(graph, query)
+        return self.query_engine.query(self._active_graph(), query)
 
 
 _SYSTEM = NeuralSymbolicKBSystem()
