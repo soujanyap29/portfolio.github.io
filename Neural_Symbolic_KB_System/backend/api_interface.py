@@ -15,6 +15,8 @@ from backend.modules.storage import StorageManager
 from backend.modules.symbolic_reasoning import SymbolicReasoner
 
 class NeuralSymbolicPipeline:
+    """Orchestrates preprocessing, extraction, reasoning, graphing, storage, querying, and evaluation."""
+
     def __init__(self) -> None:
         project_root = Path(__file__).resolve().parent
         self.storage = StorageManager(project_root / "data")
