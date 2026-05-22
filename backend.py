@@ -29,6 +29,8 @@ class PreprocessingModule:
 
 
 class NeuralExtractionModule:
+    FALLBACK_RELATIONS = ("is", "are", "was", "were", "works at", "located in", "part of")
+
     def __init__(self, model: str = "llama3:latest", ollama_url: str = "http://localhost:11434/api/generate"):
         self.model = model
         self.ollama_url = ollama_url
@@ -36,9 +38,9 @@ class NeuralExtractionModule:
     @staticmethod
     def _prompt(text: str) -> str:
         return (
-            "Extract factual knowledge triples from the text.\\n"
-            "Return only triples in this exact format, one per line: (subject, relation, object)\\n"
-            "No explanations, no bullets, no numbering.\\n"
+            "Extract factual knowledge triples from the text.\n"
+            "Return only triples in this exact format, one per line: (subject, relation, object)\n"
+            "No explanations, no bullets, no numbering.\n"
             f"Text: {text}"
         )
 
@@ -63,8 +65,10 @@ class NeuralExtractionModule:
     @staticmethod
     def _fallback_extract(text: str) -> str:
         triples = []
+        relations = "|".join(re.escape(item) for item in NeuralExtractionModule.FALLBACK_RELATIONS)
+        pattern = re.compile(rf"\s*([A-Z][\w\s-]+?)\s+({relations})\s+([A-Z][\w\s-]+)")
         for sentence in re.split(r"(?<=[.!?])\s+", text):
-            match = re.match(r"\s*([A-Z][\w\s-]+?)\s+(is|are|was|were|works at|located in|part of)\s+([A-Z][\w\s-]+)", sentence)
+            match = pattern.match(sentence)
             if match:
                 triples.append(f"({match.group(1).strip()}, {match.group(2).strip()}, {match.group(3).strip()})")
         return "\n".join(triples)
@@ -170,6 +174,8 @@ class StorageManager:
 
 
 class InferenceEngine:
+    MAX_RELATION_LENGTH = 60
+
     @staticmethod
     def infer(graph: nx.DiGraph) -> List[Triple]:
         inferred: List[Triple] = []
@@ -185,7 +191,7 @@ class InferenceEngine:
                     inferred.append(
                         Triple(
                             subject=a,
-                            relation=f"inferred_{rel_ab}_{rel_bc}"[:60],
+                            relation=f"inferred_{rel_ab}_{rel_bc}"[: InferenceEngine.MAX_RELATION_LENGTH],
                             object=c,
                             confidence=round((graph[a][b].get("confidence", 0.5) + graph[b][c].get("confidence", 0.5)) / 2, 2),
                             inferred=True,
