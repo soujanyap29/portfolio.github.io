@@ -1,4 +1,3 @@
-from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -14,16 +13,6 @@ from backend.modules.preprocessing import TextPreprocessor
 from backend.modules.query_engine import QueryEngine
 from backend.modules.storage import StorageManager
 from backend.modules.symbolic_reasoning import SymbolicReasoner
-
-
-@dataclass
-class TripleRecord:
-    subject: str
-    relation: str
-    object: str
-    confidence: float
-    inferred: bool = False
-
 
 class NeuralSymbolicPipeline:
     def __init__(self) -> None:

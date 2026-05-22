@@ -1,5 +1,6 @@
 @echo off
 cd /d %~dp0
+echo Working directory: %CD%
 
 if not exist .venv (
     python -m venv .venv

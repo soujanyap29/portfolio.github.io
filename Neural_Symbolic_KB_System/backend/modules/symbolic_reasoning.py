@@ -1,3 +1,4 @@
+import re
 from typing import Dict, List, Set, Tuple
 
 
@@ -18,10 +19,10 @@ class SymbolicReasoner:
     def infer_entity_type(entity: str) -> str:
         if not entity:
             return "unknown"
-        lowered = entity.lower()
-        if any(x in lowered for x in ["inc", "corp", "company", "ltd", "university"]):
+        tokens = set(re.findall(r"[a-zA-Z]+", entity.lower()))
+        if tokens.intersection({"inc", "corp", "company", "ltd", "university"}):
             return "organization"
-        if any(x in lowered for x in ["city", "state", "country", "region"]):
+        if tokens.intersection({"city", "state", "country", "region"}):
             return "location"
         if entity[:1].isupper():
             if " " in entity:

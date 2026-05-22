@@ -6,6 +6,7 @@ import requests
 
 class OllamaExtractor:
     """Extracts triples using local Ollama LLaMA3 model."""
+    FALLBACK_RELATIONS = ("is located in", "located in", "works at", "part of", "is in")
 
     def __init__(
         self,
@@ -75,8 +76,9 @@ class OllamaExtractor:
 
     @staticmethod
     def _heuristic_fallback(text: str) -> str:
+        relation_pattern = "|".join(re.escape(item) for item in OllamaExtractor.FALLBACK_RELATIONS)
         pattern = re.compile(
-            r"\b([A-Za-z0-9][\w\s-]*?)\s+(is located in|located in|works at|part of|is in)\s+([A-Za-z0-9][\w\s-]+)\b",
+            rf"\b([A-Za-z0-9][\w\s-]*?)\s+({relation_pattern})\s+([A-Za-z0-9][\w\s-]+)\b",
             re.IGNORECASE,
         )
         triples: List[str] = []
