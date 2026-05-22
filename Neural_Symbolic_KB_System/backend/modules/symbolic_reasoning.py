@@ -21,9 +21,9 @@ class SymbolicReasoner:
             return "organization"
         if any(x in lowered for x in ["city", "state", "country", "region"]):
             return "location"
-        if entity[:1].isupper() and " " in entity:
-            return "person"
         if entity[:1].isupper():
+            if " " in entity:
+                return "person"
             return "entity"
         return "unknown"
 

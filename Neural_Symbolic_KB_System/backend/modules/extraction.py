@@ -20,14 +20,14 @@ class OllamaExtractor:
     @staticmethod
     def build_prompt(text: str) -> str:
         return (
-            "You are an information extraction engine.\\n"
-            "Extract factual triples from the input text and return ONLY in this format:\\n"
-            "(subject, relation, object)\\n"
-            "Rules:\\n"
-            "1) No explanation text.\\n"
-            "2) No bullets or numbering.\\n"
-            "3) One triple per line.\\n"
-            "4) Keep relation concise and meaningful.\\n"
+            "You are an information extraction engine.\n"
+            "Extract factual triples from the input text and return ONLY in this format:\n"
+            "(subject, relation, object)\n"
+            "Rules:\n"
+            "1) No explanation text.\n"
+            "2) No bullets or numbering.\n"
+            "3) One triple per line.\n"
+            "4) Keep relation concise and meaningful.\n"
             f"Input: {text}"
         )
 

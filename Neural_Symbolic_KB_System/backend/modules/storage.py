@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict
 
 import networkx as nx
 
@@ -16,11 +16,11 @@ class StorageManager:
         self.graph_path = self.data_dir / "knowledge_graph.json"
 
     @staticmethod
-    def _write_json(path: Path, payload: object) -> None:
+    def _write_json(path: Path, payload: Any) -> None:
         path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
     @staticmethod
-    def _read_json(path: Path, fallback: object) -> object:
+    def _read_json(path: Path, fallback: Any) -> Any:
         if not path.exists():
             return fallback
         return json.loads(path.read_text(encoding="utf-8"))
