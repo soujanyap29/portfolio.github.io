@@ -2,7 +2,7 @@ import json
 import re
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 import networkx as nx
 import requests
@@ -241,7 +241,7 @@ class QueryEngine:
 
 class EvaluationModule:
     @staticmethod
-    def evaluate(raw: List[Triple], filtered: List[Triple], rejected: List[Triple], refined: List[Triple]) -> Dict[str, object]:
+    def evaluate(raw: List[Triple], filtered: List[Triple], rejected: List[Triple], refined: List[Triple]) -> Dict[str, Any]:
         validity_ratio = round((len(filtered) / len(raw)) if raw else 0.0, 2)
         consistency_score = round((len(refined) / len(filtered)) if filtered else 0.0, 2)
         return {
@@ -273,9 +273,9 @@ class NeuralSymbolicKBSystem:
         self.last_rejected_triples: List[Triple] = []
         self.last_refined_triples: List[Triple] = []
         self.last_inferred_triples: List[Triple] = []
-        self.last_evaluation: Dict[str, object] = {}
+        self.last_evaluation: Dict[str, Any] = {}
 
-    def process_text(self, input_text: str) -> Dict[str, object]:
+    def process_text(self, input_text: str) -> Dict[str, Any]:
         self.last_raw_text = input_text
         sentences = self.preprocessor.clean_text(input_text)
         llm_output = self.extractor.extract(" ".join(sentences))
@@ -305,7 +305,7 @@ class NeuralSymbolicKBSystem:
             "evaluation": self.last_evaluation,
         }
 
-    def get_triples(self) -> Dict[str, List[Dict[str, object]]]:
+    def get_triples(self) -> Dict[str, List[Dict[str, Any]]]:
         return {
             "raw": [asdict(t) for t in self.last_raw_triples],
             "filtered": [asdict(t) for t in self.last_filtered_triples],
@@ -314,11 +314,11 @@ class NeuralSymbolicKBSystem:
             "inferred": [asdict(t) for t in self.last_inferred_triples],
         }
 
-    def get_graph(self) -> Dict[str, object]:
+    def get_graph(self) -> Dict[str, Any]:
         graph = self.storage.load() if self.storage.storage_path.exists() else self.builder.graph
         return nx.node_link_data(graph)
 
-    def query_graph(self, query: str) -> Dict[str, List[Dict[str, object]]]:
+    def query_graph(self, query: str) -> Dict[str, List[Dict[str, Any]]]:
         graph = self.storage.load() if self.storage.storage_path.exists() else self.builder.graph
         return self.query_engine.query(graph, query)
 
@@ -326,17 +326,17 @@ class NeuralSymbolicKBSystem:
 _SYSTEM = NeuralSymbolicKBSystem()
 
 
-def process_text(input_text: str) -> Dict[str, object]:
+def process_text(input_text: str) -> Dict[str, Any]:
     return _SYSTEM.process_text(input_text)
 
 
-def get_triples() -> Dict[str, List[Dict[str, object]]]:
+def get_triples() -> Dict[str, List[Dict[str, Any]]]:
     return _SYSTEM.get_triples()
 
 
-def get_graph() -> Dict[str, object]:
+def get_graph() -> Dict[str, Any]:
     return _SYSTEM.get_graph()
 
 
-def query_graph(query: str) -> Dict[str, List[Dict[str, object]]]:
+def query_graph(query: str) -> Dict[str, List[Dict[str, Any]]]:
     return _SYSTEM.query_graph(query)

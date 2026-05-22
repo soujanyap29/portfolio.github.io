@@ -1,4 +1,5 @@
 import json
+from typing import Any, Dict
 
 import streamlit as st
 
@@ -50,7 +51,7 @@ if "query_result" in st.session_state:
 
 st.subheader("Knowledge Graph")
 
-def to_dot(graph_data: dict) -> str:
+def to_dot(graph_data: Dict[str, Any]) -> str:
     nodes = graph_data.get("nodes", [])
     links = graph_data.get("links", [])
     lines = ["digraph G {", "rankdir=LR;"]
@@ -73,7 +74,7 @@ try:
         st.graphviz_chart(to_dot(graph_payload))
     else:
         st.info("Graph is empty. Process text to build the graph.")
-except Exception as exc:  # pylint: disable=broad-except
+except (KeyError, TypeError, ValueError) as exc:
     st.warning(f"Unable to render graph: {exc}")
 
 with st.expander("Backend Interface Snapshot"):
