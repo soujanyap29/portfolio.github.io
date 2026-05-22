@@ -76,7 +76,7 @@ class OllamaExtractor:
     @staticmethod
     def _heuristic_fallback(text: str) -> str:
         pattern = re.compile(
-            r"\b([A-Za-z0-9][\w\s-]*?)\s+(is located in|located in|works at|part of|is in|are|is)\s+([A-Za-z0-9][\w\s-]+)\b",
+            r"\b([A-Za-z0-9][\w\s-]*?)\s+(is located in|located in|works at|part of|is in)\s+([A-Za-z0-9][\w\s-]+)\b",
             re.IGNORECASE,
         )
         triples: List[str] = []

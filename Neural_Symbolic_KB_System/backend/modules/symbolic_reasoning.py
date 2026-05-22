@@ -16,6 +16,8 @@ class SymbolicReasoner:
 
     @staticmethod
     def infer_entity_type(entity: str) -> str:
+        if not entity:
+            return "unknown"
         lowered = entity.lower()
         if any(x in lowered for x in ["inc", "corp", "company", "ltd", "university"]):
             return "organization"

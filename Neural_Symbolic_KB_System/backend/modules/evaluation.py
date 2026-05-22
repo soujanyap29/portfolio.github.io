@@ -35,5 +35,4 @@ class EvaluationEngine:
             "refinement_consistency_ratio": refinement_ratio,
             "knowledge_expansion_ratio": expansion_ratio,
             "average_confidence": average_confidence,
-            "stability_note": "Run process_text multiple times on same input and compare counts for stability analysis.",
         }

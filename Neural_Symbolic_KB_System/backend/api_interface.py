@@ -51,14 +51,14 @@ class NeuralSymbolicPipeline:
             "evaluation": {},
         }
 
-    def _convert_tuple_triples(self, triples: List[tuple]) -> List[Dict[str, object]]:
+    def _convert_tuple_triples(self, tuple_triples: List[tuple]) -> List[Dict[str, object]]:
         return [
             {
                 "subject": item[0],
                 "relation": item[1],
                 "object": item[2],
             }
-            for item in triples
+            for item in tuple_triples
         ]
 
     def process_text(self, input_text: str) -> Dict[str, Any]:
