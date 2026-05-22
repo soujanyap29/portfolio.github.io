@@ -243,14 +243,15 @@ class QueryEngine:
 class EvaluationModule:
     @staticmethod
     def evaluate(raw: List[Triple], filtered: List[Triple], rejected: List[Triple], refined: List[Triple]) -> Dict[str, Any]:
-        validity_ratio = round((len(filtered) / len(raw)) if raw else 0.0, 2)
+        acceptance_ratio = round((len(filtered) / len(raw)) if raw else 0.0, 2)
         consistency_score = round((len(refined) / len(filtered)) if filtered else 0.0, 2)
         return {
             "raw_triples": len(raw),
             "accepted_triples": len(filtered),
             "rejected_triples": len(rejected),
             "refined_triples": len(refined),
-            "validity_ratio": validity_ratio,
+            "acceptance_ratio": acceptance_ratio,
+            "validity_ratio": acceptance_ratio,
             "consistency_score": consistency_score,
         }
 

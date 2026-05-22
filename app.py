@@ -51,19 +51,24 @@ if "query_result" in st.session_state:
 
 st.subheader("Knowledge Graph")
 
+
+def dot_escape(value: Any) -> str:
+    return str(value).replace("\\", "\\\\").replace("\"", "\\\"")
+
+
 def to_dot(graph_data: Dict[str, Any]) -> str:
     nodes = graph_data.get("nodes", [])
     links = graph_data.get("links", [])
     lines = ["digraph G {", "rankdir=LR;"]
     for n in nodes:
-        node = n.get("id")
+        node = dot_escape(n.get("id"))
         lines.append(f'"{node}";')
     for e in links:
-        src = e.get("source")
-        dst = e.get("target")
-        relation = e.get("relation", "")
+        src = dot_escape(e.get("source"))
+        dst = dot_escape(e.get("target"))
+        relation = dot_escape(e.get("relation", ""))
         conf = e.get("confidence", 0.0)
-        label = f"{relation} ({conf})"
+        label = dot_escape(f"{relation} ({conf})")
         lines.append(f'"{src}" -> "{dst}" [label="{label}"];')
     lines.append("}")
     return "\n".join(lines)
