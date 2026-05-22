@@ -29,6 +29,8 @@ if result:
         st.dataframe(result["raw_triples"], use_container_width=True)
         st.subheader("Filtered Triples")
         st.dataframe(result["filtered_triples"], use_container_width=True)
+        st.subheader("Refined Triples")
+        st.dataframe(result.get("refined_triples", []), use_container_width=True)
     with col2:
         st.subheader("Inferred Triples")
         st.dataframe(result["inferred_triples"], use_container_width=True)

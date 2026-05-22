@@ -66,9 +66,9 @@ class NeuralExtractionModule:
     def _fallback_extract(text: str) -> str:
         triples = []
         relations = "|".join(re.escape(item) for item in NeuralExtractionModule.FALLBACK_RELATIONS)
-        pattern = re.compile(rf"\s*([A-Z][\w\s-]+?)\s+({relations})\s+([A-Z][\w\s-]+)")
+        pattern = re.compile(rf"\b([A-Za-z0-9][\w\s-]*?)\s+({relations})\s+([A-Za-z0-9][\w\s-]+)\b")
         for sentence in re.split(r"(?<=[.!?])\s+", text):
-            match = pattern.match(sentence)
+            match = pattern.search(sentence)
             if match:
                 triples.append(f"({match.group(1).strip()}, {match.group(2).strip()}, {match.group(3).strip()})")
         return "\n".join(triples)
@@ -298,7 +298,8 @@ class NeuralSymbolicKBSystem:
 
         return {
             "raw_triples": [asdict(t) for t in self.last_raw_triples],
-            "filtered_triples": [asdict(t) for t in self.last_refined_triples],
+            "filtered_triples": [asdict(t) for t in self.last_filtered_triples],
+            "refined_triples": [asdict(t) for t in self.last_refined_triples],
             "rejected_triples": [asdict(t) for t in self.last_rejected_triples],
             "inferred_triples": [asdict(t) for t in self.last_inferred_triples],
             "evaluation": self.last_evaluation,
@@ -307,7 +308,8 @@ class NeuralSymbolicKBSystem:
     def get_triples(self) -> Dict[str, List[Dict[str, object]]]:
         return {
             "raw": [asdict(t) for t in self.last_raw_triples],
-            "filtered": [asdict(t) for t in self.last_refined_triples],
+            "filtered": [asdict(t) for t in self.last_filtered_triples],
+            "refined": [asdict(t) for t in self.last_refined_triples],
             "rejected": [asdict(t) for t in self.last_rejected_triples],
             "inferred": [asdict(t) for t in self.last_inferred_triples],
         }
