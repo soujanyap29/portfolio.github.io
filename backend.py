@@ -203,7 +203,7 @@ class InferenceEngine:
 
 class QueryEngine:
     @staticmethod
-    def query(graph: nx.DiGraph, query: str) -> Dict[str, List[Dict[str, object]]]:
+    def query(graph: nx.DiGraph, query: str) -> Dict[str, List[Dict[str, Any]]]:
         query = query.strip()
         if not query:
             return {"results": []}
