@@ -1,0 +1,16 @@
+torch
+torchvision
+timm
+transformers
+opencv-python
+tifffile
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+streamlit
+tensorboard
+tqdm
+pyyaml
+jupyter

@@ -1,0 +1,29 @@
+paths:
+  project_root: /home/lab3/min/project
+  output_root: /home/lab3/min/output
+  dataset_csv: /home/lab3/min/merged_dataset.csv
+  image_root: /home/lab3/min/images
+
+training:
+  seed: 42
+  batch_size: 8
+  num_workers: 2
+  epochs: 25
+  lr: 0.0002
+  weight_decay: 0.0001
+  val_split: 0.2
+  early_stopping_patience: 7
+  amp: true
+
+model:
+  image_backbone: efficientnet_b0
+  image_emb_dim: 512
+  seq_model: esm2
+  esm_name: facebook/esm2_t12_35M_UR50D
+  seq_emb_dim: 480
+  fusion_type: attention
+  fusion_dim: 512
+  dropout: 0.2
+
+app:
+  device: cuda
