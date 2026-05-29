@@ -8,6 +8,7 @@ import numpy as np
 import tifffile
 import torch
 
+from src.alzheimers_head import AlzheimersHead
 from src.config import LOCALIZATION_LABELS
 from src.image_preprocessing import build_image_transforms, ensure_three_channels
 from src.utils import GradCAM
@@ -32,10 +33,14 @@ def run_inference(model, image_tensor, sequence: str, seq_embedding: torch.Tenso
         loc_prob = torch.sigmoid(out["localization_logits"]).cpu().numpy()[0]
 
     predictions = {label: float(loc_prob[i]) for i, label in enumerate(LOCALIZATION_LABELS)}
-    alz_prob = float(torch.sigmoid(out["alzheimers_logits"]).cpu().numpy().squeeze())
+    alz_prob = None
+    alz_available = isinstance(getattr(model, 'alzheimers_head', None), AlzheimersHead)
+    if alz_available:
+        alz_prob = float(torch.sigmoid(out["alzheimers_logits"]).cpu().numpy().reshape(-1)[0])
     return {
         "localization_probabilities": predictions,
         "alzheimers_probability": alz_prob,
+        "alzheimers_available": alz_available,
     }
 
 
@@ -44,7 +49,12 @@ def generate_gradcam(model, image_tensor: torch.Tensor, sequence: str, seq_embed
     image_tensor = image_tensor.to(device)
     seq_emb = seq_embedding.to(device) if seq_embedding is not None else None
 
-    target_layer = model.image_encoder.encoder.conv_head if hasattr(model.image_encoder.encoder, "conv_head") else list(model.image_encoder.encoder.children())[-1]
+    if hasattr(model.image_encoder.encoder, "conv_head"):
+        target_layer = model.image_encoder.encoder.conv_head
+    elif hasattr(model.image_encoder.encoder, "layer4"):
+        target_layer = model.image_encoder.encoder.layer4[-1]
+    else:
+        raise ValueError("Unable to determine a valid convolutional layer for Grad-CAM")
     gradcam = GradCAM(model, target_layer)
 
     out = model(images=image_tensor, sequences=[sequence], seq_embedding=seq_emb)

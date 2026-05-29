@@ -58,8 +58,7 @@ class GradCAM:
         def fwd_hook(_, __, output):
             self.activations = output.detach()
 
-        def bwd_hook(_, grad_input, grad_output):
-            del grad_input
+        def bwd_hook(_, _grad_input, grad_output):
             self.gradients = grad_output[0].detach()
 
         self.target_layer.register_forward_hook(fwd_hook)
@@ -71,6 +70,9 @@ class GradCAM:
         weights = self.gradients.mean(dim=(2, 3), keepdim=True)
         cam = (weights * self.activations).sum(dim=1, keepdim=True)
         cam = torch.relu(cam)
-        cam = cam - cam.min()
-        cam = cam / (cam.max() + 1e-8)
+        cam_min, cam_max = cam.min(), cam.max()
+        if cam_max > cam_min:
+            cam = (cam - cam_min) / (cam_max - cam_min)
+        else:
+            cam = torch.zeros_like(cam)
         return cam

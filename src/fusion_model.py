@@ -15,7 +15,10 @@ from src.localization_head import LocalizationHead
 class ImageEncoder(nn.Module):
     def __init__(self, backbone: str = "efficientnet_b0", out_dim: int = 512, pretrained: bool = True):
         super().__init__()
-        model_name = "efficientnet_b0" if backbone == "efficientnet_b0" else "resnet50"
+        allowed = {"efficientnet_b0", "resnet50"}
+        if backbone not in allowed:
+            raise ValueError(f"Unsupported backbone: {backbone}. Allowed: {sorted(allowed)}")
+        model_name = backbone
         self.encoder = timm.create_model(model_name, pretrained=pretrained, num_classes=0, global_pool="avg")
         in_features = self.encoder.num_features
         self.project = nn.Linear(in_features, out_dim)
@@ -48,6 +51,7 @@ class MultimodalLocalizationModel(nn.Module):
     ):
         super().__init__()
         self.seq_model = seq_model
+        self.has_alzheimers_labels = has_alzheimers_labels
         self.image_encoder = ImageEncoder(backbone=image_backbone, out_dim=image_emb_dim)
         self.seq_encoder = BiLSTMSequenceEncoder(hidden_dim=seq_emb_dim // 2) if seq_model == "bilstm" else None
         self.seq_projection = nn.Linear(seq_emb_dim, fusion_dim)

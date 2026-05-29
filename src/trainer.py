@@ -38,11 +38,10 @@ class Trainer:
             seq_emb = batch.get("seq_embedding")
             if seq_emb is not None:
                 seq_emb = seq_emb.to(self.device)
-            sequences = batch["sequence"]
 
             with torch.set_grad_enabled(train):
                 with autocast(enabled=self.scaler.is_enabled()):
-                    out = self.model(images=images, sequences=sequences, seq_embedding=seq_emb)
+                    out = self.model(images=images, sequences=batch["sequence"], seq_embedding=seq_emb)
                     loss = self.criterion(out["localization_logits"], labels)
 
                 if train:

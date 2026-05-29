@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -70,7 +71,11 @@ class ProteinLocalizationDataset(Dataset):
             raise FileNotFoundError(f"Unable to read image: {path}")
         img = ensure_three_channels(img)
         if img.dtype != np.uint8:
-            img = ((img - img.min()) / (img.max() - img.min() + 1e-6) * 255.0).astype(np.uint8)
+            img_min, img_max = float(img.min()), float(img.max())
+            if img_max <= img_min:
+                img = np.zeros_like(img, dtype=np.uint8)
+            else:
+                img = ((img - img_min) / (img_max - img_min) * 255.0).astype(np.uint8)
         return img
 
     def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
@@ -90,7 +95,8 @@ class ProteinLocalizationDataset(Dataset):
         }
 
         if self.esm_cache_dir is not None:
-            cache_file = self.esm_cache_dir / f"{row.get('uniprot_id', idx)}.npy"
+            uid = hashlib.sha256(str(row['sequence']).encode('utf-8')).hexdigest()
+            cache_file = self.esm_cache_dir / f"{uid}.npy"
             if cache_file.exists():
                 item["seq_embedding"] = torch.tensor(np.load(cache_file), dtype=torch.float32)
 

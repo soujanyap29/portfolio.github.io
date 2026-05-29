@@ -24,7 +24,7 @@ class AlzheimersPlaceholderModule(nn.Module):
 
     def __init__(self, in_dim: int):
         super().__init__()
-        self.projection = nn.Linear(in_dim, in_dim)
+        self.in_dim = in_dim
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.projection(x)
+        return torch.zeros(x.shape[0], device=x.device, dtype=x.dtype)

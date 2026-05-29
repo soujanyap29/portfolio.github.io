@@ -71,16 +71,19 @@ if section == "Inference":
             df = pd.DataFrame({"label": list(result["localization_probabilities"].keys()), "probability": list(result["localization_probabilities"].values())})
             st.bar_chart(df.set_index("label"))
         with tabs[1]:
-            st.metric("Alzheimer's association probability", f"{result['alzheimers_probability']:.4f}")
+            if result.get("alzheimers_available") and result.get("alzheimers_probability") is not None:
+                st.metric("Alzheimer's association probability", f"{result['alzheimers_probability']:.4f}")
+            else:
+                st.info("Alzheimer's probability unavailable (placeholder module active; add supervised labels to enable calibrated predictions).")
         with tabs[2]:
-            gradcam_path = output_root / "gradcam" / f"gradcam_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.png"
+            gradcam_path = output_root / "gradcam" / f"gradcam_{datetime.utcnow().strftime('%Y%m%d_%H%M%S_%f')}.png"
             generate_gradcam(model, image_tensor=image_tensor, sequence=sequence.strip(), seq_embedding=None, out_path=str(gradcam_path), device="cpu")
             st.image(str(gradcam_path), caption="Grad-CAM")
         with tabs[3]:
             rec = {
                 "timestamp": datetime.utcnow().isoformat(),
                 **result["localization_probabilities"],
-                "alzheimers_probability": result["alzheimers_probability"],
+                "alzheimers_probability": result.get("alzheimers_probability"),
             }
             row = pd.DataFrame([rec])
             if history_csv.exists():
