@@ -16,7 +16,7 @@ def _resolve_checkpoint_path(path: Path) -> Path:
     allowed_root = CHECKPOINT_DIR.resolve()
     if resolved.suffix.lower() not in {".pt", ".pth", ".bin", ".json"}:
         raise ValueError(f"Unsupported file extension: {resolved.suffix}")
-    if allowed_root not in resolved.parents and resolved != allowed_root:
+    if not (resolved == allowed_root or allowed_root in resolved.parents):
         raise ValueError(f"Checkpoint path must be inside {allowed_root}")
     return resolved
 
@@ -84,16 +84,15 @@ def predict_image(model, image_path: Path, class_to_index: Dict[str, int], devic
 def main():
     parser = argparse.ArgumentParser(description="Inference for Alzheimer MRI classifier.")
     parser.add_argument("--image", type=str, required=True, help="Path to MRI image")
-    parser.add_argument("--checkpoint", type=str, default=str(BEST_CHECKPOINT_PATH))
-    parser.add_argument("--model-pt", type=str, default=str(MODEL_PATH))
-    parser.add_argument("--meta", type=str, default=str(CHECKPOINT_DIR / "model_meta.json"))
     parser.add_argument("--use-pt", action="store_true", help="Load alzheimers_model.pt with model_meta.json")
     args = parser.parse_args()
 
     if args.use_pt:
-        model, class_to_index, model_name = load_model_from_pt_with_meta(Path(args.model_pt), Path(args.meta))
+        model, class_to_index, model_name = load_model_from_pt_with_meta(
+            MODEL_PATH, CHECKPOINT_DIR / "model_meta.json"
+        )
     else:
-        model, class_to_index, model_name = load_model_from_checkpoint(Path(args.checkpoint))
+        model, class_to_index, model_name = load_model_from_checkpoint(BEST_CHECKPOINT_PATH)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     prediction = predict_image(model, Path(args.image), class_to_index, device)
     output = {"model_name": model_name, "model_state_dict_path": str(MODEL_PATH), **prediction}
