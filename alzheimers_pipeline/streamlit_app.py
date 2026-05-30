@@ -1,7 +1,6 @@
 import json
 from io import BytesIO
-from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict
 
 import matplotlib.cm as cm
 import numpy as np
@@ -10,7 +9,7 @@ import torch
 import torchvision.transforms as T
 from PIL import Image
 
-from .config import BEST_CHECKPOINT_PATH, CHECKPOINT_DIR, MODEL_PATH
+from .config import MODEL_PATH
 from .infer import load_model_from_checkpoint, load_model_from_pt_with_meta
 
 
@@ -26,10 +25,10 @@ def preprocess(image: Image.Image):
 
 
 @st.cache_resource
-def load_checkpoint(checkpoint_path: str, use_pt: bool, meta_path: str):
+def load_checkpoint(use_pt: bool):
     if use_pt:
-        return load_model_from_pt_with_meta(Path(checkpoint_path), Path(meta_path))
-    return load_model_from_checkpoint(Path(checkpoint_path))
+        return load_model_from_pt_with_meta()
+    return load_model_from_checkpoint()
 
 
 def predict(model, tensor, class_to_index: Dict[str, int]):
@@ -90,16 +89,11 @@ def main():
     st.title("Alzheimer's Disease MRI Classifier")
     st.write("Upload one or more MRI images to predict dementia stage.")
     use_pt = st.checkbox("Load alzheimers_model.pt", value=True)
-    checkpoint_default = str(MODEL_PATH if use_pt else BEST_CHECKPOINT_PATH)
-    checkpoint_path = st.text_input("Model path", value=checkpoint_default)
-    meta_path = st.text_input("Metadata path", value=str(CHECKPOINT_DIR / "model_meta.json"))
-    if not checkpoint_path:
-        st.stop()
-    model, class_to_index, model_name = load_checkpoint(checkpoint_path, use_pt=use_pt, meta_path=meta_path)
+    model, class_to_index, model_name = load_checkpoint(use_pt=use_pt)
     st.sidebar.header("Model Information")
     st.sidebar.write(f"Architecture: {model_name}")
     st.sidebar.write(f"Classes: {list(class_to_index.keys())}")
-    st.sidebar.write(f"Model file: {checkpoint_path}")
+    st.sidebar.write(f"Model file: {MODEL_PATH}")
 
     uploaded = st.file_uploader("Upload MRI image(s)", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
     if not uploaded:

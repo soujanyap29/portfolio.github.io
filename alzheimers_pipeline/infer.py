@@ -1,7 +1,7 @@
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict
 
 import torch
 import torchvision.transforms as T
@@ -11,26 +11,26 @@ from .config import BEST_CHECKPOINT_PATH, CHECKPOINT_DIR, MODEL_PATH
 from .train import create_model
 
 
-def _resolve_checkpoint_path(path: Path) -> Path:
-    resolved = path.expanduser().resolve(strict=True)
+def _allowed_checkpoint_path(path: Path) -> Path:
+    resolved = path.resolve(strict=True)
     allowed_root = CHECKPOINT_DIR.resolve()
     if resolved.suffix.lower() not in {".pt", ".pth", ".bin", ".json"}:
         raise ValueError(f"Unsupported file extension: {resolved.suffix}")
-    if not (resolved == allowed_root or allowed_root in resolved.parents):
+    if allowed_root not in resolved.parents:
         raise ValueError(f"Checkpoint path must be inside {allowed_root}")
     return resolved
 
 
 def _safe_torch_load(path: Path):
-    resolved = _resolve_checkpoint_path(path)
+    resolved = _allowed_checkpoint_path(path)
     try:
         return torch.load(resolved, map_location="cpu", weights_only=True)
     except TypeError:
         return torch.load(resolved, map_location="cpu")
 
 
-def load_model_from_checkpoint(checkpoint_path: Path):
-    checkpoint = _safe_torch_load(checkpoint_path)
+def load_model_from_checkpoint():
+    checkpoint = _safe_torch_load(BEST_CHECKPOINT_PATH)
     class_to_index = checkpoint["class_to_index"]
     model = create_model(checkpoint["model_name"], num_classes=len(class_to_index))
     model.load_state_dict(checkpoint["state_dict"])
@@ -38,21 +38,21 @@ def load_model_from_checkpoint(checkpoint_path: Path):
     return model, class_to_index, checkpoint["model_name"]
 
 
-def load_model_from_state_dict(model_name: str, class_to_index: Dict[str, int], state_dict_path: Path):
+def load_model_from_state_dict(model_name: str, class_to_index: Dict[str, int]):
     model = create_model(model_name=model_name, num_classes=len(class_to_index))
-    state_dict = _safe_torch_load(state_dict_path)
+    state_dict = _safe_torch_load(MODEL_PATH)
     model.load_state_dict(state_dict)
     model.eval()
     return model
 
 
-def load_model_from_pt_with_meta(state_dict_path: Path, meta_path: Path):
-    resolved_meta = _resolve_checkpoint_path(meta_path)
+def load_model_from_pt_with_meta():
+    resolved_meta = _allowed_checkpoint_path(CHECKPOINT_DIR / "model_meta.json")
     with resolved_meta.open("r", encoding="utf-8") as f:
         meta = json.load(f)
     class_to_index = meta["class_to_index"]
     model_name = meta["model_name"]
-    model = load_model_from_state_dict(model_name, class_to_index, state_dict_path)
+    model = load_model_from_state_dict(model_name, class_to_index)
     return model, class_to_index, model_name
 
 
@@ -88,11 +88,9 @@ def main():
     args = parser.parse_args()
 
     if args.use_pt:
-        model, class_to_index, model_name = load_model_from_pt_with_meta(
-            MODEL_PATH, CHECKPOINT_DIR / "model_meta.json"
-        )
+        model, class_to_index, model_name = load_model_from_pt_with_meta()
     else:
-        model, class_to_index, model_name = load_model_from_checkpoint(BEST_CHECKPOINT_PATH)
+        model, class_to_index, model_name = load_model_from_checkpoint()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     prediction = predict_image(model, Path(args.image), class_to_index, device)
     output = {"model_name": model_name, "model_state_dict_path": str(MODEL_PATH), **prediction}
