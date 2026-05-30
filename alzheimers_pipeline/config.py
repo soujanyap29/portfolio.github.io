@@ -1,9 +1,10 @@
+import os
 from pathlib import Path
 
-CSV_PATH = Path("/home/lab3/min/merged_dataset.csv")
-DATA_ROOT = Path("/home/lab3/min/data")
+CSV_PATH = Path(os.getenv("ALZ_CSV_PATH", "/home/lab3/min/merged_dataset.csv"))
+DATA_ROOT = Path(os.getenv("ALZ_DATA_ROOT", "/home/lab3/min/data"))
 RAW_DATA_DIR = DATA_ROOT / "raw"
-OUTPUT_DIR = Path("/home/lab3/min/output")
+OUTPUT_DIR = Path(os.getenv("ALZ_OUTPUT_DIR", "/home/lab3/min/output"))
 SPLIT_DIR = OUTPUT_DIR / "splits"
 CHECKPOINT_DIR = OUTPUT_DIR / "checkpoints"
 MODEL_PATH = CHECKPOINT_DIR / "alzheimers_model.pt"
@@ -20,4 +21,3 @@ CLASS_ALIASES = {
     "MildDemented": "Mild Demented",
     "ModerateDemented": "Moderate Demented",
 }
-
