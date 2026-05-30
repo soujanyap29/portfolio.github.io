@@ -21,7 +21,7 @@ Why:
 
 ## Install
 ```bash
-pip install -r /tmp/workspace/soujanyap29/portfolio.github.io/alzheimers_pipeline/requirements.txt
+pip install -r alzheimers_pipeline/requirements.txt
 ```
 
 ## Prepare data
@@ -46,7 +46,20 @@ python -m alzheimers_pipeline.infer --image /path/to/mri_image.jpg
 
 ## Streamlit
 ```bash
-streamlit run /tmp/workspace/soujanyap29/portfolio.github.io/alzheimers_pipeline/streamlit_app.py
+streamlit run alzheimers_pipeline/streamlit_app.py
+```
+
+## Path configuration
+Defaults follow your requested paths:
+- `ALZ_CSV_PATH=/home/lab3/min/merged_dataset.csv`
+- `ALZ_DATA_ROOT=/home/lab3/min/data`
+- `ALZ_OUTPUT_DIR=/home/lab3/min/output`
+
+You can override them:
+```bash
+export ALZ_CSV_PATH=/custom/path/merged_dataset.csv
+export ALZ_DATA_ROOT=/custom/path/data
+export ALZ_OUTPUT_DIR=/custom/path/output
 ```
 
 ## Kaggle API setup (if public fallback is used)

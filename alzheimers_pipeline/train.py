@@ -1,5 +1,6 @@
 import argparse
 import json
+import warnings
 from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -63,7 +64,8 @@ def create_model(model_name: str, num_classes: int) -> nn.Module:
     if model_name == "efficientnet_b0":
         try:
             model = efficientnet_b0(weights=EfficientNet_B0_Weights.IMAGENET1K_V1)
-        except Exception:
+        except (RuntimeError, OSError, ValueError) as exc:
+            warnings.warn(f"Falling back to random init for EfficientNet-B0: {exc}")
             model = efficientnet_b0(weights=None)
         in_features = model.classifier[1].in_features
         model.classifier[1] = nn.Linear(in_features, num_classes)
@@ -71,7 +73,8 @@ def create_model(model_name: str, num_classes: int) -> nn.Module:
     if model_name == "resnet50":
         try:
             model = resnet50(weights=ResNet50_Weights.IMAGENET1K_V2)
-        except Exception:
+        except (RuntimeError, OSError, ValueError) as exc:
+            warnings.warn(f"Falling back to random init for ResNet50: {exc}")
             model = resnet50(weights=None)
         in_features = model.fc.in_features
         model.fc = nn.Linear(in_features, num_classes)
@@ -79,7 +82,8 @@ def create_model(model_name: str, num_classes: int) -> nn.Module:
     if model_name == "vit_b_16":
         try:
             model = vit_b_16(weights=ViT_B_16_Weights.IMAGENET1K_V1)
-        except Exception:
+        except (RuntimeError, OSError, ValueError) as exc:
+            warnings.warn(f"Falling back to random init for ViT-B/16: {exc}")
             model = vit_b_16(weights=None)
         in_features = model.heads.head.in_features
         model.heads.head = nn.Linear(in_features, num_classes)
@@ -202,7 +206,7 @@ def train_single_model(
     bad_epochs = 0
     for epoch in range(1, epochs + 1):
         train_loss, train_metrics = run_epoch(model, train_loader, criterion, optimizer, scaler, device, train=True)
-        val_loss, val_metrics = run_epoch(model, val_loader, criterion, optimizer, scaler, device, train=False)
+        val_loss, val_metrics = run_epoch(model, val_loader, criterion, None, scaler, device, train=False)
         history["train_loss"].append(train_loss)
         history["val_loss"].append(val_loss)
         for key, value in train_metrics.items():

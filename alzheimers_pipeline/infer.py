@@ -11,8 +11,26 @@ from .config import BEST_CHECKPOINT_PATH, CHECKPOINT_DIR, MODEL_PATH
 from .train import create_model
 
 
+def _resolve_checkpoint_path(path: Path) -> Path:
+    resolved = path.expanduser().resolve(strict=True)
+    allowed_root = CHECKPOINT_DIR.resolve()
+    if resolved.suffix.lower() not in {".pt", ".pth", ".bin", ".json"}:
+        raise ValueError(f"Unsupported file extension: {resolved.suffix}")
+    if allowed_root not in resolved.parents and resolved != allowed_root:
+        raise ValueError(f"Checkpoint path must be inside {allowed_root}")
+    return resolved
+
+
+def _safe_torch_load(path: Path):
+    resolved = _resolve_checkpoint_path(path)
+    try:
+        return torch.load(resolved, map_location="cpu", weights_only=True)
+    except TypeError:
+        return torch.load(resolved, map_location="cpu")
+
+
 def load_model_from_checkpoint(checkpoint_path: Path):
-    checkpoint = torch.load(checkpoint_path, map_location="cpu")
+    checkpoint = _safe_torch_load(checkpoint_path)
     class_to_index = checkpoint["class_to_index"]
     model = create_model(checkpoint["model_name"], num_classes=len(class_to_index))
     model.load_state_dict(checkpoint["state_dict"])
@@ -22,14 +40,15 @@ def load_model_from_checkpoint(checkpoint_path: Path):
 
 def load_model_from_state_dict(model_name: str, class_to_index: Dict[str, int], state_dict_path: Path):
     model = create_model(model_name=model_name, num_classes=len(class_to_index))
-    state_dict = torch.load(state_dict_path, map_location="cpu")
+    state_dict = _safe_torch_load(state_dict_path)
     model.load_state_dict(state_dict)
     model.eval()
     return model
 
 
 def load_model_from_pt_with_meta(state_dict_path: Path, meta_path: Path):
-    with meta_path.open("r", encoding="utf-8") as f:
+    resolved_meta = _resolve_checkpoint_path(meta_path)
+    with resolved_meta.open("r", encoding="utf-8") as f:
         meta = json.load(f)
     class_to_index = meta["class_to_index"]
     model_name = meta["model_name"]

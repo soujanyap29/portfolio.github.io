@@ -59,7 +59,7 @@ def gradcam_overlay(model, input_tensor, class_idx: int, raw_img: Image.Image):
     def fwd_hook(_, __, output):
         feats["value"] = output
 
-    def bwd_hook(_, grad_input, grad_output):
+    def bwd_hook(_, _grad_input, grad_output):
         grads["value"] = grad_output[0]
 
     handle_fwd = target.register_forward_hook(fwd_hook)
@@ -99,7 +99,7 @@ def main():
     st.sidebar.header("Model Information")
     st.sidebar.write(f"Architecture: {model_name}")
     st.sidebar.write(f"Classes: {list(class_to_index.keys())}")
-    st.sidebar.write(f"Model file: {MODEL_PATH}")
+    st.sidebar.write(f"Model file: {checkpoint_path}")
 
     uploaded = st.file_uploader("Upload MRI image(s)", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
     if not uploaded:
